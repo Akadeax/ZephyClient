@@ -4,7 +4,7 @@ class User {
   List<String> roles;
   String sId;
   String name;
-  Null email;
+  String email;
   String password;
 
   User({this.roles, this.sId, this.name, this.email, this.password});

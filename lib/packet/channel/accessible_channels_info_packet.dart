@@ -1,14 +1,12 @@
 import 'dart:convert';
 
 import 'package:zephy_client/models/channel_model.dart';
-import 'package:zephy_client/models/user_model.dart';
-import 'package:zephy_client/services/server_connection.dart';
 
 import '../packet.dart';
 
 class AccessibleChannelsInfoPacketData {
   List<BaseChannelData> accessibleChannelsData;
-  PopulatedUser forUser;
+  String forUser;
 
   AccessibleChannelsInfoPacketData({this.accessibleChannelsData, this.forUser});
 
@@ -19,8 +17,7 @@ class AccessibleChannelsInfoPacketData {
         accessibleChannelsData.add(new BaseChannelData.fromJson(v));
       });
     }
-    forUser =
-    json['forUser'] != null ? new PopulatedUser.fromJson(json['forUser']) : null;
+    forUser = json['forUser'];
   }
 
   Map<String, dynamic> toJson() {
@@ -29,24 +26,8 @@ class AccessibleChannelsInfoPacketData {
       data['accessibleChannelsData'] =
           this.accessibleChannelsData.map((v) => v.toJson()).toList();
     }
-    if (this.forUser != null) {
-      data['forUser'] = this.forUser.toJson();
-    }
+    data['forUser'] = this.forUser;
     return data;
-  }
-}
-
-
-class AccessibleChannelsInfoPacketHandler extends PacketHandler<AccessibleChannelsInfoPacketHandler> {
-  @override
-  handle(List<int> buffer, ServerConnection serverConn) {
-    AccessibleChannelsInfoPacket received = AccessibleChannelsInfoPacket.fromBuffer(buffer);
-    AccessibleChannelsInfoPacketData data = received.readPacketData();
-
-    print("User ${data.forUser.name} has access to channels:");
-    for(BaseChannelData ch in data.accessibleChannelsData) {
-      print(ch.name);
-    }
   }
 }
 

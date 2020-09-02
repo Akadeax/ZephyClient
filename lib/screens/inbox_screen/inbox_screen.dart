@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
-import 'package:zephy_client/packet/channel/request_accessible_channels_info_packet.dart';
+import 'package:zephy_client/packet/message/populate_messages_packet.dart';
+import 'package:zephy_client/screens/inbox_screen/chat_display.dart';
 import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/server_connection.dart';
 
@@ -16,18 +18,19 @@ class _InboxScreenState extends State<InboxScreen> {
   ProfileData _profileData;
   ServerConnection _conn;
 
+  GlobalKey<ChatDisplayState> chatDisplayKey = GlobalKey<ChatDisplayState>();
+
   @override
   Widget build(BuildContext context) {
     _profileData = Provider.of<ProfileData>(context);
     _conn = Provider.of<ServerConnection>(context);
 
-    print("BUILDING");
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       body: FutureProvider<AccessibleChannelsInfoPacketData>(
         create: (_) async {
-          var packet = RequestAccessibleChannelsInfoPacket(RequestAccessibleChannelsInfoPacketData(
-            forUser: _profileData.loggedInUser.sId
+          var packet = AccessibleChannelsInfoPacket(AccessibleChannelsInfoPacketData(
+              forUser: _profileData.loggedInUser.sId
           ));
           _conn.sendPacket(packet);
 
@@ -39,7 +42,7 @@ class _InboxScreenState extends State<InboxScreen> {
         child: Row(
           children: [
             _sidebar(context),
-            _chat(),
+            Expanded(child: ChatDisplay(key: chatDisplayKey)),
           ],
         ),
       ),
@@ -54,25 +57,34 @@ class _InboxScreenState extends State<InboxScreen> {
       color: Colors.lightBlueAccent,
       child: Consumer<AccessibleChannelsInfoPacketData>(
         builder: (context, val, _) {
-          if(val == null) return Container();
+          if(val == null) return Center(child: Text("Loading..."));
 
           return ListView.builder(
             itemCount: val.accessibleChannelsData.length,
             itemBuilder: (context, index) {
+              BaseChannelData currChannelData = val.accessibleChannelsData[index];
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
                 child: CircleAvatar(
-                  child: Text(val.accessibleChannelsData[index].name[0]),
+                  child: FractionallySizedBox(
+                    heightFactor: 1,
+                    widthFactor: 1,
+                    child: FlatButton(
+                      child: Text(
+                          currChannelData.name.substring(0, 2),
+                          style: TextStyle(color: Colors.white)
+                      ),
+                      onPressed: () {
+                        chatDisplayKey.currentState.displayChannel(currChannelData);
+                      },
+                    ),
+                  ),
                 ),
               );
             },
           );
         },
-      )
+      ),
     );
-  }
-
-  Widget _chat() {
-    return Text("CHAT");
   }
 }

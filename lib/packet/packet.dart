@@ -2,13 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:zephy_client/services/server_connection.dart';
 
 import 'bit_converter.dart';
-
-abstract class PacketHandler<TPacketType> {
-   handle(List<int> buffer, ServerConnection serverConn);
-}
 
 abstract class Packet<TPacketData> {
   @protected
@@ -55,5 +50,4 @@ abstract class Packet<TPacketData> {
   TPacketData readPacketData();
 
   void writePacketData(TPacketData data);
-
 }
