@@ -22,22 +22,17 @@ class _LoginScreenState extends State<LoginScreen> {
   String currEmail = "";
   String currPassword = "";
 
-
   @override
   Widget build(BuildContext context) {
-    conn = Provider.of<ServerConnection>(context);
-    conn.connect(context, widget.connInfo);
+    if(conn == null) {
+      conn = Provider.of<ServerConnection>(context);
+      conn.connect(widget.connInfo);
+    }
 
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SignInForm(),
-            ]
-        ),
+        child: SignInForm(),
       ),
     );
   }

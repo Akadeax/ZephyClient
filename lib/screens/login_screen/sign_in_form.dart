@@ -1,8 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/packet/auth/login_attempt_packet.dart';
+import 'package:zephy_client/packet/auth/login_result_packet.dart';
+import 'package:zephy_client/screens/login_screen/wrong_login_snackbar.dart';
+import 'package:zephy_client/services/nav_wrapper.dart';
+import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/server_connection.dart';
 import 'package:zephy_client/services/validator.dart';
+
+import '../inbox_screen/inbox_screen.dart';
+import 'login_button.dart';
 
 class SignInForm extends StatefulWidget {
   @override
@@ -10,18 +19,24 @@ class SignInForm extends StatefulWidget {
 }
 
 class SignInFormState extends State<SignInForm> {
-  ServerConnection conn;
 
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+
+  ServerConnection _conn;
+  ProfileData _profileData;
+
   String email;
   String password;
 
+  GlobalKey<LoginButtonState> loginBtnKey = GlobalKey<LoginButtonState>();
+
   @override
   Widget build(BuildContext context) {
-    conn = Provider.of<ServerConnection>(context);
+    _conn = Provider.of<ServerConnection>(context);
+    _profileData = Provider.of<ProfileData>(context);
 
     return Form(
-      key: formKey,
+      key: _formKey,
       autovalidate: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -30,18 +45,34 @@ class SignInFormState extends State<SignInForm> {
           SizedBox(height: 30),
           buildPasswordField(context),
           SizedBox(height: 30),
-          FlatButton(
-            child: Text("Login"),
-            color: Colors.grey,
-            onPressed: () {
-              if(formKey.currentState.validate()) {
-                formKey.currentState.save();
-                LoginAttemptPacket packet = new LoginAttemptPacket(LoginAttemptPacketData(
+          LoginButton(
+            key: loginBtnKey,
+            onPressed: () async {
+              if(!_formKey.currentState.validate()) return;
+
+              loginBtnKey.currentState.disableButton();
+
+              _formKey.currentState.save();
+              LoginAttemptPacket packet = new LoginAttemptPacket(LoginAttemptPacketData(
                   email: email,
                   password: password
-                ));
+              ));
 
-                conn.sendPacket(packet);
+              _conn.sendPacket(packet);
+
+              LoginResultPacket result = await _conn.waitForPacket<LoginResultPacket>((buffer) => LoginResultPacket.fromBuffer(buffer));
+              LoginResultPacketData data = result.readPacketData();
+
+              switch(data.statusCode) {
+                case HttpStatus.ok:
+                  _profileData.loggedInUser = data.user;
+                  pushNextFrame(InboxScreen()); break;
+                default:
+                  ScaffoldState curr = Scaffold.of(context);
+                  curr.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+                  curr.showSnackBar(wrongLoginSnackBar());
+                  loginBtnKey.currentState.enableButton();
+                  break;
               }
             },
           ),

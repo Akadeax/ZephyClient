@@ -8,24 +8,17 @@ final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 void main() {
   runApp(
-    _profileDataProvider(),
+    MultiProvider(
+      providers: [
+        Provider<ServerConnection>(create: (_) => ServerConnection()),
+        ChangeNotifierProvider(create: (_) => ProfileData()),
+      ],
+      builder: (_, __) {
+        return _appContent();
+      },
+    )
   );
 }
-
-Widget _profileDataProvider() {
-  return ChangeNotifierProvider<ProfileData>(
-    create: (context) => ProfileData(),
-    child: _serverConnectionProvider(),
-  );
-}
-
-Widget _serverConnectionProvider() {
-  return Provider<ServerConnection>.value(
-    value: ServerConnection(),
-    child: _appContent(),
-  );
-}
-
 
 Widget _appContent() {
   return MaterialApp(

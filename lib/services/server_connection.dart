@@ -1,38 +1,59 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
+import 'package:zephy_client/packet/auth/login_result_packet.dart';
+import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
+import 'package:zephy_client/packet/identify_packet.dart';
 import 'package:zephy_client/packet/packet.dart';
-import 'package:zephy_client/packet/packet_receiver.dart';
 import 'package:zephy_client/services/server_locator.dart';
 
+typedef S ItemCreator<S>(List<int> buffer);
+
 class ServerConnection {
-  PacketReceiver _handler;
-  Socket _socket;
+  static Map<int, Type> _packetTypes = {
+    IdentifyPacket.TYPE: IdentifyPacket.fromBuffer(null).runtimeType,
+    LoginResultPacket.TYPE: LoginResultPacket.fromBuffer(null).runtimeType,
+    AccessibleChannelsInfoPacket.TYPE: AccessibleChannelsInfoPacket.fromBuffer(null).runtimeType,
+  };
 
-  ServerConnection() {
-    _handler = new PacketReceiver(this);
-  }
+  Socket socket;
+  StreamController<Uint8List> broadcastStream = StreamController<Uint8List>.broadcast();
 
-  void connect(BuildContext context, BroadcastResult connInfo) async {
-    if(_socket != null) {
-      return;
+  Future<bool> connect(BroadcastResult connInfo) async {
+    if(socket != null) {
+      return false;
     }
 
-    _socket = await Socket.connect(connInfo.receivedFromAddress, connInfo.receivedFromPort);
-    _listenForPackets();
+    socket = await Socket.connect(connInfo.receivedFromAddress, connInfo.receivedFromPort);
+    socket.listen((List<int> data) {
+      broadcastStream.add(data);
+    });
+    return true;
   }
 
   void sendPacket(Packet toSend) {
-    _socket.add(toSend.buffer);
+    socket.add(toSend.buffer);
   }
 
   void close() {
-    _socket.close();
+    socket.close();
+    broadcastStream.close();
   }
 
-  void _listenForPackets() {
-    _socket.listen((event) {
-      _handler.handle(event.buffer.asUint8List());
-    });
+  Future<TPacketType> waitForPacket<TPacketType>(ItemCreator<TPacketType> creator) async {
+    print("starting to wait for packet...");
+    await for(Uint8List data in broadcastStream.stream) {
+      int packetType = Packet.getPacketTypeFromBuffer(data);
+      log("received something ($packetType): ${utf8.decode(data.sublist(2))}");
+      if(!_packetTypes.containsKey(packetType)) continue;
+      print("the received thing was right! returning the packet.");
+      return creator(data);
+    }
+
+    print("cancelling waiting for packet.");
+    return null;
   }
 }

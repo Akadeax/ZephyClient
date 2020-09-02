@@ -14,6 +14,8 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   Future<BroadcastResult> currentLocate;
 
+  bool hasLocatedServer = false;
+
   _ConnectionScreenState() {
     currentLocate = locator.locate();
   }
@@ -24,7 +26,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
     return Scaffold(
         body: Center(
-          child: _locateBuilder(),
+          child: hasLocatedServer ? Container() : _locateBuilder(),
         )
     );
   }
@@ -41,6 +43,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
             return Text("error! " + snapshot.error.toString());
           }
           if (snapshot.hasData && snapshot.data != null) {
+            hasLocatedServer = true;
             _pushLoginPage(snapshot.data);
             return Container();
           }

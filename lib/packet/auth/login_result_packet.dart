@@ -1,42 +1,7 @@
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zephy_client/models/user_model.dart';
-import 'package:zephy_client/screens/inbox_screen.dart';
-import 'package:zephy_client/services/nav_wrapper.dart';
-import 'package:zephy_client/services/profile_data.dart';
-import 'package:zephy_client/services/server_connection.dart';
 
 import '../packet.dart';
-
-class LoginResultPacketHandler extends PacketHandler<LoginResultPacketHandler> {
-
-  ProfileData profileData = Provider.of<ProfileData>(rootNavContext, listen: false);
-
-  @override
-  handle(List<int> buffer, ServerConnection serverConn) {
-    LoginResultPacket received = LoginResultPacket.fromBuffer(buffer);
-    LoginResultPacketData data = received.readPacketData();
-
-    if(data.statusCode == HttpStatus.ok && data.user != null) {
-      pushNextFrame(InboxScreen());
-      profileData.loggedInUser = data.user;
-    } else {
-      //Scaffold.of(SignInFormState.formKey.currentContext).showSnackBar(wrongLoginSnackbar());
-    }
-  }
-
-  SnackBar wrongLoginSnackbar() {
-    return SnackBar(
-      content: Text("Invalid login data!"),
-      backgroundColor: Colors.redAccent,
-      duration: const Duration(seconds: 3),
-    );
-  }
-}
 
 class LoginResultPacketData {
   int statusCode;
