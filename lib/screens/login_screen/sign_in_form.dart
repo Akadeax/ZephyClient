@@ -66,7 +66,7 @@ class SignInFormState extends State<SignInForm> {
               switch(data.statusCode) {
                 case HttpStatus.ok:
                   _profileData.loggedInUser = data.user;
-                  pushNextFrame(InboxScreen()); break;
+                  pushNextFrame(InboxScreen(), context); break;
                 default:
                   ScaffoldState curr = Scaffold.of(context);
                   curr.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);

@@ -44,7 +44,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
           }
           if (snapshot.hasData && snapshot.data != null) {
             hasLocatedServer = true;
-            _pushLoginPage(snapshot.data);
+            pushNextFrame(LoginScreen(snapshot.data), context);
             return Container();
           }
           else {
@@ -75,9 +75,5 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
   void _retryConnection() {
     currentLocate = locator.locate();
     setState(() {});
-  }
-
-  void _pushLoginPage(BroadcastResult res) {
-    pushNextFrame(LoginScreen(res));
   }
 }

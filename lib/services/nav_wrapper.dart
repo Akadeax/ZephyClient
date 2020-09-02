@@ -4,7 +4,7 @@ import 'package:zephy_client/main.dart';
 
 BuildContext get rootNavContext => navigatorKey.currentState.context;
 
-pushNextFrame(Widget page) {
+pushNextFrame(Widget page, BuildContext context) {
   SchedulerBinding.instance.addPostFrameCallback((_) {
     Navigator.pushReplacement(
         navigatorKey.currentState.context,
