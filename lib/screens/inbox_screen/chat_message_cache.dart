@@ -12,10 +12,8 @@ class ChatMessageCache {
 
   final ChatDisplayState _chatDisplay;
 
-  Timer _updateTimer;
   ChatMessageCache(this._chatDisplay, this._conn, this._channelData) {
     print("---\"${_channelData.sId}\"---");
-    _updateTimer = Timer.periodic(Duration(seconds: 1), (t) => _getMissedMessages());
   }
 
   int _nextPageToLoad = 0;
@@ -25,9 +23,9 @@ class ChatMessageCache {
   Future<void> loadNextPage() async {
     var fetchedPage = await _fetchMessages(_nextPageToLoad);
 
-    if(fetchedPage.isNotEmpty) {
+    if(fetchedPage != null && fetchedPage.isNotEmpty) {
       _nextPageToLoad++;
-      currentDisplayMessages.insertAll(0, fetchedPage.reversed);
+      currentDisplayMessages.addAll(fetchedPage);
 
       _chatDisplay.updateDisplay();
     }
@@ -42,15 +40,10 @@ class ChatMessageCache {
 
     PopulateMessagesPacket recvPacket = await _conn.waitForPacket<PopulateMessagesPacket>((buffer) => PopulateMessagesPacket.fromBuffer(buffer));
     PopulateMessagesPacketData data = recvPacket.readPacketData();
+    if(data == null) return null;
 
     return data.populatedMessages;
   }
 
-  void _getMissedMessages() async {
-    
-  }
-
-  void dispose() {
-    _updateTimer?.cancel();
-  }
+  void dispose() {}
 }

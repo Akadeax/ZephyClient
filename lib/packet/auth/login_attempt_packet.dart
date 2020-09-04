@@ -32,8 +32,10 @@ class LoginAttemptPacket extends Packet<LoginAttemptPacketData> {
 
   @override
   LoginAttemptPacketData readPacketData() {
-    String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
-    return LoginAttemptPacketData.fromJson(jsonDecode(jsonString));
+    try {
+      String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
+      return LoginAttemptPacketData.fromJson(jsonDecode(jsonString));
+    } catch(e) { return null; }
   }
 
   @override

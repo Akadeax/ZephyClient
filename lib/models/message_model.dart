@@ -5,14 +5,16 @@ class Message {
   String sId;
   String content;
   int sentAt;
+  String channel;
 
-  Message({this.author, this.sId, this.content, this.sentAt});
+  Message({this.author, this.sId, this.content, this.sentAt, this.channel});
 
   Message.fromJson(Map<String, dynamic> json) {
     author = json['author'];
     sId = json['_id'];
     content = json['content'];
     sentAt = json['sentAt'];
+    channel = json['channel'];
   }
 
   Map<String, dynamic> toJson() {
@@ -21,6 +23,7 @@ class Message {
     data['_id'] = this.sId;
     data['content'] = this.content;
     data['sentAt'] = this.sentAt;
+    data['channel'] = this.channel;
     return data;
   }
 }
@@ -31,8 +34,10 @@ class PopulatedMessage {
   String sId;
   String content;
   int sentAt;
+  String channel;
 
-  PopulatedMessage({this.author, this.sId, this.content, this.sentAt});
+  PopulatedMessage(
+      {this.author, this.sId, this.content, this.sentAt, this.channel});
 
   PopulatedMessage.fromJson(Map<String, dynamic> json) {
     author =
@@ -40,6 +45,7 @@ class PopulatedMessage {
     sId = json['_id'];
     content = json['content'];
     sentAt = json['sentAt'];
+    channel = json['channel'];
   }
 
   Map<String, dynamic> toJson() {
@@ -50,6 +56,7 @@ class PopulatedMessage {
     data['_id'] = this.sId;
     data['content'] = this.content;
     data['sentAt'] = this.sentAt;
+    data['channel'] = this.channel;
     return data;
   }
 }

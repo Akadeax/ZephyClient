@@ -46,20 +46,22 @@ class ChatDisplayState extends State<ChatDisplay> {
     }
 
     return Scaffold(
-      body: ListView.builder(
-        controller: _controller,
-        reverse: true,
-        itemCount: msgCache.currentDisplayMessages.length,
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: 10),
-            child: SingleMessageDisplay(
-                msgCache.currentDisplayMessages[(msgCache.currentDisplayMessages.length - 1) - index]
-            ),
-          );
-        },
+      body: Scrollbar(
+        child: ListView.builder(
+          controller: _controller,
+          reverse: true,
+          itemCount: msgCache.currentDisplayMessages.length,
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 10),
+              child: SingleMessageDisplay(
+                  msgCache.currentDisplayMessages[index]
+              ),
+            );
+          },
+        ),
       ),
     );
   }

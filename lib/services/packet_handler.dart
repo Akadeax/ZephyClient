@@ -4,7 +4,6 @@ import 'package:zephy_client/packet/auth/login_result_packet.dart';
 import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
 import 'package:zephy_client/packet/identify_packet.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
-import 'package:zephy_client/packet/message/update_viewed_channel_packet.dart';
 import 'package:zephy_client/packet/packet.dart';
 import 'package:zephy_client/services/server_connection.dart';
 
@@ -16,7 +15,6 @@ class PacketHandler {
     LoginResultPacket.TYPE: LoginResultPacket.fromBuffer(null).runtimeType,
     AccessibleChannelsInfoPacket.TYPE: AccessibleChannelsInfoPacket.fromBuffer(null).runtimeType,
     PopulateMessagesPacket.TYPE: PopulateMessagesPacket.fromBuffer(null).runtimeType,
-    UpdateViewedChannelPacket.TYPE: UpdateViewedChannelPacket.fromBuffer(null).runtimeType,
   };
 
   ServerConnection _conn;

@@ -35,9 +35,10 @@ class LoginResultPacket extends Packet<LoginResultPacketData> {
 
   @override
   LoginResultPacketData readPacketData() {
-    String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
-    LoginResultPacketData data = LoginResultPacketData.fromJson(jsonDecode(jsonString));
-    return data;
+    try {
+     String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
+      return LoginResultPacketData.fromJson(jsonDecode(jsonString));
+    } catch(e) { return null; }
   }
 
   @override
