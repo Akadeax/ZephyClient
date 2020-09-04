@@ -39,6 +39,7 @@ class SignInFormState extends State<SignInForm> {
       key: _formKey,
       autovalidate: true,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           buildEmailField(context),

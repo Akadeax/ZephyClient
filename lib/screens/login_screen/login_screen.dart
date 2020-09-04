@@ -24,14 +24,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     if(conn == null) {
       conn = Provider.of<ServerConnection>(context);
       conn.connect(widget.connInfo);
     }
 
     return Scaffold(
-      body: Container(
-        width: MediaQuery.of(context).size.width,
+      body: SizedBox.expand(
         child: SignInForm(),
       ),
     );
