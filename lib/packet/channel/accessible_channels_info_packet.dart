@@ -4,7 +4,7 @@ import 'package:zephy_client/models/channel_model.dart';
 
 import '../packet.dart';
 
-class AccessibleChannelsInfoPacketData {
+class AccessibleChannelsInfoPacketData extends PacketData {
   List<BaseChannelData> accessibleChannelsData;
   String forUser;
 
@@ -33,7 +33,7 @@ class AccessibleChannelsInfoPacketData {
 
 class AccessibleChannelsInfoPacket extends Packet<AccessibleChannelsInfoPacketData> {
   static const int TYPE = 3001;
-  AccessibleChannelsInfoPacket(AccessibleChannelsInfoPacketData data) : super(TYPE) {
+  AccessibleChannelsInfoPacket(AccessibleChannelsInfoPacketData data) : super(TYPE, data) {
     writePacketData(data);
   }
 

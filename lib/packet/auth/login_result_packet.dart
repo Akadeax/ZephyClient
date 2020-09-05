@@ -3,7 +3,7 @@ import 'package:zephy_client/models/user_model.dart';
 
 import '../packet.dart';
 
-class LoginResultPacketData {
+class LoginResultPacketData extends PacketData {
   int statusCode;
   PopulatedUser user;
 
@@ -26,7 +26,7 @@ class LoginResultPacketData {
 
 class LoginResultPacket extends Packet<LoginResultPacketData> {
   static const int TYPE = 2002;
-  LoginResultPacket(LoginResultPacketData data) : super(TYPE) {
+  LoginResultPacket(LoginResultPacketData data) : super(TYPE, data) {
     writePacketData(data);
   }
 

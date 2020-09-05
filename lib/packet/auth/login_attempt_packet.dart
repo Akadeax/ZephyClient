@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import '../packet.dart';
 
-class LoginAttemptPacketData {
+class LoginAttemptPacketData extends PacketData {
   String email;
   String password;
 
@@ -23,7 +23,7 @@ class LoginAttemptPacketData {
 
 class LoginAttemptPacket extends Packet<LoginAttemptPacketData> {
   static const int TYPE = 2000;
-  LoginAttemptPacket(LoginAttemptPacketData data) : super(TYPE) {
+  LoginAttemptPacket(LoginAttemptPacketData data) : super(TYPE, data) {
     writePacketData(data);
   }
 
@@ -32,10 +32,12 @@ class LoginAttemptPacket extends Packet<LoginAttemptPacketData> {
 
   @override
   LoginAttemptPacketData readPacketData() {
+    String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
     try {
-      String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
       return LoginAttemptPacketData.fromJson(jsonDecode(jsonString));
-    } catch(e) { return null; }
+    } catch(e) {
+      return null;
+    }
   }
 
   @override

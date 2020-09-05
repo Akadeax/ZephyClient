@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -23,6 +25,7 @@ class ServerConnection {
 
     _socket = await Socket.connect(connInfo.receivedFromAddress, connInfo.receivedFromPort);
     _socket.listen((List<int> data) {
+      log("recv: '${utf8.decoder.convert(data, Packet.BASE_PACKET_SIZE)}'");
       broadcastStream.add(data);
     });
     return true;
@@ -41,3 +44,4 @@ class ServerConnection {
     return _packetHandler.waitForPacket(creator);
   }
 }
+

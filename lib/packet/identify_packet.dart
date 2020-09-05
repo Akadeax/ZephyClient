@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'packet.dart';
 
-class IdentifyPacketData {
+class IdentifyPacketData extends PacketData {
   String src = "CLIENT";
 
   IdentifyPacketData({this.src});
@@ -20,7 +20,7 @@ class IdentifyPacketData {
 
 class IdentifyPacket extends Packet<IdentifyPacketData> {
   static const int TYPE = 1000;
-  IdentifyPacket(IdentifyPacketData data) : super(TYPE) {
+  IdentifyPacket(IdentifyPacketData data) : super(TYPE, data) {
     writePacketData(data);
   }
 

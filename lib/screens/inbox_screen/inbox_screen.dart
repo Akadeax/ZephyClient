@@ -102,4 +102,11 @@ class _InboxScreenState extends State<InboxScreen> {
       ),
     );
   }
+
+
+  @override
+  void dispose() {
+    _conn.close();
+    super.dispose();
+  }
 }

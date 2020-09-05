@@ -8,7 +8,7 @@ class BitConverter {
     data.setUint16(0, int16);
 
     List<int> out = <int>[];
-    for(int i = SIZE - 1; i >= 0; i--) {
+    for (int i = SIZE - 1; i >= 0; i--) {
       out.add(data.getUint8(i));
     }
     return out;
@@ -18,7 +18,7 @@ class BitConverter {
     const int SIZE = 2;
 
     ByteData data = ByteData(SIZE);
-    for(int i = 0; i < SIZE; i++) {
+    for (int i = 0; i < SIZE; i++) {
       data.setUint8((SIZE - 1) - i, bytes[offset + i]);
     }
 

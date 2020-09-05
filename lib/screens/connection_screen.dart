@@ -12,47 +12,37 @@ class ConnectionScreen extends StatefulWidget {
 class _ConnectionScreenState extends State<ConnectionScreen> {
   ServerLocator locator = ServerLocator(6556, 6557);
 
-  Future<BroadcastResult> currentLocate;
+  Future currentLocateFuture;
 
-  bool hasLocatedServer = false;
-
-  _ConnectionScreenState() {
-    currentLocate = locator.locate();
+  @override
+  void initState() {
+    currentLocateFuture = locator.locate();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // try to locate server, if found, go to login
-
     return Scaffold(
         body: Center(
-          child: hasLocatedServer ? Container() : _locateBuilder(),
+          child: _locateBuilder(),
         )
     );
   }
 
-  FutureBuilder _locateBuilder() {
+  Widget _locateBuilder() {
     return FutureBuilder(
-        future: currentLocate,
-        initialData: null,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return CircularProgressIndicator();
-          }
-          if (snapshot.hasError) {
-            return Text("error! " + snapshot.error.toString());
-          }
-          if (snapshot.hasData && snapshot.data != null) {
-            hasLocatedServer = true;
-            pushNextFrame(LoginScreen(snapshot.data), context);
-            return Container();
-          }
-          else {
-            // if locating fails
-            return _retryWidget();
-          }
+      future: currentLocateFuture,
+      builder: (context, snapshot) {
+        if(snapshot.hasData && snapshot.data != null) {
+          pushNextFrame(LoginScreen(snapshot.data), context);
+          return Container();
+        } else if(snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        }
 
-        });
+        return _retryWidget();
+      }
+    );
   }
 
   Widget _retryWidget() {
@@ -61,19 +51,19 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       children: [
         Text("failed"),
         FlatButton(
-          color: Colors.blueAccent,
-          child: Text(
-            "retry",
-            style: TextStyle(color: Colors.white),
-          ),
-          onPressed: _retryConnection
+            color: Colors.blueAccent,
+            child: Text(
+              "retry",
+              style: TextStyle(color: Colors.white),
+            ),
+            onPressed: _retryConnection
         )
       ],
     );
   }
 
   void _retryConnection() {
-    currentLocate = locator.locate();
+    currentLocateFuture = locator.locate();
     setState(() {});
   }
 }

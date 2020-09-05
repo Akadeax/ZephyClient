@@ -6,7 +6,7 @@ import 'package:zephy_client/models/message_model.dart';
 
 import '../packet.dart';
 
-class PopulateMessagesPacketData {
+class PopulateMessagesPacketData extends PacketData {
   String forChannel = "";
   List<PopulatedMessage> populatedMessages = new List<PopulatedMessage>();
   int page = 0;
@@ -37,11 +37,10 @@ class PopulateMessagesPacketData {
   }
 }
 
-
 class PopulateMessagesPacket extends Packet<PopulateMessagesPacketData> {
   static const int TYPE = 4000;
 
-  PopulateMessagesPacket(PopulateMessagesPacketData data) : super(TYPE) {
+  PopulateMessagesPacket(PopulateMessagesPacketData data) : super(TYPE, data) {
     writePacketData(data);
   }
 
@@ -50,8 +49,8 @@ class PopulateMessagesPacket extends Packet<PopulateMessagesPacketData> {
 
   @override
   PopulateMessagesPacketData readPacketData() {
+    String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
     try {
-      String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
       return PopulateMessagesPacketData.fromJson(jsonDecode(jsonString));
     } catch(e) { return null; }
   }
