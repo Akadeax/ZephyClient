@@ -42,10 +42,8 @@ class AccessibleChannelsInfoPacket extends Packet<AccessibleChannelsInfoPacketDa
 
   @override
   AccessibleChannelsInfoPacketData readPacketData() {
-    try {
-      String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
-      return AccessibleChannelsInfoPacketData.fromJson(jsonDecode(jsonString));
-    } catch(e) { return null; }
+    String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
+    return AccessibleChannelsInfoPacketData.fromJson(jsonDecode(jsonString));
   }
 
   @override

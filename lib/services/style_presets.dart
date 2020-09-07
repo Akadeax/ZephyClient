@@ -12,6 +12,12 @@ class StylePresets {
     );
   }
 
+  static TextStyle get channelNameStyle {
+    return TextStyle(
+      color: Colors.white,
+    );
+  }
+
   static TextStyle get messageStyle {
     return TextStyle(
       color: Colors.black,

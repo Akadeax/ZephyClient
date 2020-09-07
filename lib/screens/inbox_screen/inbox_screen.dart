@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
+import 'package:zephy_client/screens/inbox_screen/single_channel_display.dart';
+import 'package:zephy_client/services/packet_handler.dart';
 import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/server_connection.dart';
-import 'package:zephy_client/services/style_presets.dart';
-
-import 'chat_display.dart';
 
 class InboxScreen extends StatefulWidget {
 
@@ -62,23 +61,10 @@ class _InboxScreenState extends State<InboxScreen> {
                 BaseChannelData currData = val.accessibleChannelsData[index];
                 return Padding(
                     padding: EdgeInsets.symmetric(vertical: 10),
-                    child: CircleAvatar(
-                        backgroundColor: StylePresets.channelIconColor,
-                        child: Container(
-                          child: FlatButton(
-                              shape: CircleBorder(),
-                              child: Text(currData.name.substring(0, 2), style: StylePresets.channelIconStyle),
-                              onPressed: () {
-                                chatNavKey.currentState.pushReplacement(
-                                    PageRouteBuilder(
-                                        pageBuilder: (_, __, ___) {
-                                          return ChatDisplay(forChannel: currData);
-                                        }
-                                    )
-                                );
-                              }
-                          ),
-                        )
+                    child: Consumer<PacketHandler>(
+                      builder: (_, __, ___) {
+                        return SingleChannelDisplay(chatNavKey, currData);
+                      }
                     )
                 );
               },
@@ -106,7 +92,7 @@ class _InboxScreenState extends State<InboxScreen> {
 
   @override
   void dispose() {
-    _conn.close();
+    _conn.closeConnection();
     super.dispose();
   }
 }

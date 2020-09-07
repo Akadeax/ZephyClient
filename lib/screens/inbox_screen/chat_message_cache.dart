@@ -12,9 +12,7 @@ class ChatMessageCache {
 
   final ChatDisplayState _chatDisplay;
 
-  ChatMessageCache(this._chatDisplay, this._conn, this._channelData) {
-    print("---\"${_channelData.sId}\"---");
-  }
+  ChatMessageCache(this._chatDisplay, this._conn, this._channelData);
 
   int _nextPageToLoad = 0;
 
@@ -38,7 +36,11 @@ class ChatMessageCache {
     ));
     _conn.sendPacket(packet);
 
-    PopulateMessagesPacket recvPacket = await _conn.waitForPacket<PopulateMessagesPacket>((buffer) => PopulateMessagesPacket.fromBuffer(buffer));
+    var recvPacket = await _conn.packetHandler.waitForPacket<PopulateMessagesPacket>(
+          PopulateMessagesPacket.TYPE,
+          (buffer) => PopulateMessagesPacket.fromBuffer(buffer)
+    );
+
     PopulateMessagesPacketData data = recvPacket.readPacketData();
     if(data == null) return null;
 

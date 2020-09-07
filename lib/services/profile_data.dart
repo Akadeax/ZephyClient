@@ -14,14 +14,16 @@ class ProfileData with ChangeNotifier {
     notifyListeners();
   }
 
+  /// get all the data of the channels that 'loggedInUser' has access to in accordance with his roles.
   Future<AccessibleChannelsInfoPacketData> fetchAccessibleChannels(ServerConnection conn) async {
     var packet = AccessibleChannelsInfoPacket(AccessibleChannelsInfoPacketData(
         forUser: loggedInUser.sId
     ));
     conn.sendPacket(packet);
 
-    var recvPacket = await conn.waitForPacket<AccessibleChannelsInfoPacket>(
-            (buffer) => AccessibleChannelsInfoPacket.fromBuffer(buffer)
+    var recvPacket = await conn.packetHandler.waitForPacket<AccessibleChannelsInfoPacket>(
+        AccessibleChannelsInfoPacket.TYPE,
+        (buffer) => AccessibleChannelsInfoPacket.fromBuffer(buffer)
     );
     return recvPacket.readPacketData();
   }

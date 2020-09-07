@@ -50,9 +50,7 @@ class PopulateMessagesPacket extends Packet<PopulateMessagesPacketData> {
   @override
   PopulateMessagesPacketData readPacketData() {
     String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
-    try {
-      return PopulateMessagesPacketData.fromJson(jsonDecode(jsonString));
-    } catch(e) { return null; }
+    return PopulateMessagesPacketData.fromJson(jsonDecode(jsonString));
   }
 
   @override

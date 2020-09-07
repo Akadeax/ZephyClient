@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
+import 'package:zephy_client/packet/message/populate_messages_packet.dart';
 import 'package:zephy_client/screens/inbox_screen/chat_message_cache.dart';
 import 'package:zephy_client/screens/inbox_screen/single_message_display.dart';
 import 'package:zephy_client/services/server_connection.dart';
@@ -24,7 +25,8 @@ class ChatDisplayState extends State<ChatDisplay> {
   @override
   void initState() {
     _controller.addListener(() async {
-      if(isAtEnd) {
+      bool isLoadingMessages = _conn.packetHandler.isPacketWaitOpen(PopulateMessagesPacket.TYPE);
+      if(isAtEnd && !isLoadingMessages) {
         loadNextPage();
       }
     });
@@ -36,34 +38,69 @@ class ChatDisplayState extends State<ChatDisplay> {
   @override
   Widget build(BuildContext context) {
     _conn = Provider.of<ServerConnection>(context);
+
     if(msgCache == null) {
       msgCache = ChatMessageCache(this, _conn, widget.forChannel);
       loadNextPage();
     }
 
-    if(msgCache.currentDisplayMessages.isEmpty) {
-      return Container();
-    }
-
     return Scaffold(
-      body: Scrollbar(
-        child: ListView.builder(
-          controller: _controller,
-          reverse: true,
-          itemCount: msgCache.currentDisplayMessages.length,
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: EdgeInsets.symmetric(vertical: 10),
-              child: SingleMessageDisplay(
-                  msgCache.currentDisplayMessages[index]
-              ),
-            );
-          },
-        ),
+      body: Column(
+        children: [
+          _channelNameDisplay(context),
+          _messageListView(),
+        ]
       ),
     );
+  }
+
+  Widget _channelNameDisplay(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
+    return Container(
+        height: size.height / 10,
+        color: Colors.blue,
+        child: Center(
+          child: Text(widget.forChannel.name),
+        )
+    );
+  }
+
+  Widget _messageListView() {
+    if(msgCache.currentDisplayMessages.isEmpty) {
+      return Expanded(
+        child: Center(
+          child: FractionallySizedBox(
+            widthFactor: 0.8,
+            child: Container(
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+
+    } else {
+      return Expanded(
+        child: Scrollbar(
+          child: ListView.builder(
+            controller: _controller,
+            reverse: true,
+            itemCount: msgCache.currentDisplayMessages.length,
+            scrollDirection: Axis.vertical,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: SingleMessageDisplay(
+                    msgCache.currentDisplayMessages[index]
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+    }
   }
 
   void loadNextPage() async {
@@ -71,7 +108,9 @@ class ChatDisplayState extends State<ChatDisplay> {
   }
 
   void updateDisplay() {
-    setState(() {});
+    if(this.mounted) {
+     setState(() {});
+    }
   }
 
   @override

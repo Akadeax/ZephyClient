@@ -57,7 +57,7 @@ abstract class Packet<TPacketData> {
 
 
   String readString(int offset, int count) {
-    return utf8.decode(buffer.getRange(offset, offset + count).toList());
+    return utf8.decode(buffer.getRange(offset, offset + count).toList(), allowMalformed: true);
   }
 
   void writeString(String value, int offset) {

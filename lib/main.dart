@@ -6,12 +6,15 @@ import 'package:zephy_client/services/server_connection.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
+ServerConnection conn = ServerConnection();
+
 void main() {
   runApp(
     MultiProvider(
       providers: [
-        Provider<ServerConnection>(create: (_) => ServerConnection()),
+        Provider<ServerConnection>(create: (_) => conn),
         ChangeNotifierProvider(create: (_) => ProfileData()),
+        ChangeNotifierProvider.value(value: conn.packetHandler),
       ],
       builder: (_, __) {
         return _appContent();

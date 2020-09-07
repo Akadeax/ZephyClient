@@ -10,6 +10,8 @@ class ServerLocator {
 
   ServerLocator(this.sendPort, this.listenPort);
 
+  /// tries to locate the server on the local network and returning the location of it;
+  /// times out after one second, returning null.
   Future<BroadcastResult> locate() async {
     BroadcastResult res = await _locate().timeout(Duration(seconds: 1), onTimeout: () {
       print("locating timed out!");
@@ -27,10 +29,10 @@ class ServerLocator {
     IdentifyPacket sendPacket = IdentifyPacket(IdentifyPacketData(src: "CLIENT"));
     _socket.send(sendPacket.buffer, InternetAddress("255.255.255.255"), sendPort);
 
-    return await waitForAnswer();
+    return await _waitForAnswer();
   }
 
-  waitForAnswer() async {
+  _waitForAnswer() async {
     await for(RawSocketEvent event in _socket) {
 
       if(event != RawSocketEvent.read) continue;

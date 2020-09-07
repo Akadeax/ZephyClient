@@ -50,36 +50,50 @@ class SignInFormState extends State<SignInForm> {
             key: loginBtnKey,
             onPressed: () async {
               if(!_formKey.currentState.validate()) return;
-
-              loginBtnKey.currentState.disableButton();
-
-              _formKey.currentState.save();
-              LoginAttemptPacket packet = new LoginAttemptPacket(LoginAttemptPacketData(
-                  email: email,
-                  password: password
-              ));
-
-              _conn.sendPacket(packet);
-
-              LoginResultPacket result = await _conn.waitForPacket<LoginResultPacket>((buffer) => LoginResultPacket.fromBuffer(buffer));
-              LoginResultPacketData data = result.readPacketData();
-
-              switch(data.statusCode) {
-                case HttpStatus.ok:
-                  _profileData.loggedInUser = data.user;
-                  pushNextFrame(InboxScreen(), context); break;
-                default:
-                  ScaffoldState curr = Scaffold.of(context);
-                  curr.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
-                  curr.showSnackBar(wrongLoginSnackBar());
-                  loginBtnKey.currentState.enableButton();
-                  break;
-              }
+              await _login(email, password);
             },
           ),
+          // TODO: REMOVE -> DEBUG
+          FlatButton(
+            child: Text("admin"),
+            onPressed: () async {
+              await _login("admin@admin.com", "admin");
+            },
+          )
         ],
       ),
     );
+  }
+
+  Future<void> _login(String mail, String pass) async {
+    loginBtnKey.currentState.disableButton();
+
+    _formKey.currentState.save();
+    LoginAttemptPacket packet = new LoginAttemptPacket(LoginAttemptPacketData(
+        email: mail,
+        password: pass
+    ));
+
+    _conn.sendPacket(packet);
+
+    var result = await _conn.packetHandler.waitForPacket<LoginResultPacket>(
+        LoginResultPacket.TYPE,
+            (buffer) => LoginResultPacket.fromBuffer(buffer)
+    );
+    LoginResultPacketData data = result.readPacketData();
+
+    switch(data.statusCode) {
+      case HttpStatus.ok:
+        _profileData.loggedInUser = data.user;
+        pushNextFrame(InboxScreen(), context); break;
+      default:
+        ScaffoldState curr = Scaffold.of(context);
+        curr.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+        curr.showSnackBar(wrongLoginSnackBar());
+        loginBtnKey.currentState.enableButton();
+        break;
+    }
+
   }
 
   Widget buildEmailField(BuildContext context) {
