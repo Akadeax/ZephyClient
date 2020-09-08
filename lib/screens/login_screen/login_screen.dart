@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/screens/login_screen/sign_in_form.dart';
-import 'package:zephy_client/services/server_connection.dart';
-import 'package:zephy_client/services/server_locator.dart';
+import 'package:zephy_client/services/sockets/server_connection.dart';
+import 'package:zephy_client/services/sockets/server_locator.dart';
 
 class LoginScreen extends StatefulWidget {
 

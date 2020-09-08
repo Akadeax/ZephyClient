@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
-import 'package:zephy_client/services/server_connection.dart';
+import 'package:zephy_client/services/sockets/server_connection.dart';
 import 'package:zephy_client/services/style_presets.dart';
 
-import 'chat_display.dart';
+import 'chat/chat_display.dart';
 
 class SingleChannelDisplay extends StatelessWidget {
   final GlobalKey<NavigatorState> chatNav;

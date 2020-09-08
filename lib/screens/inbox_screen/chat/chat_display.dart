@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
-import 'package:zephy_client/screens/inbox_screen/chat_message_cache.dart';
+import 'package:zephy_client/screens/inbox_screen/chat/send_message_display.dart';
 import 'package:zephy_client/screens/inbox_screen/single_message_display.dart';
-import 'package:zephy_client/services/server_connection.dart';
+import 'package:zephy_client/services/sockets/server_connection.dart';
+
+import 'chat_message_cache.dart';
 
 class ChatDisplay extends StatefulWidget {
 
@@ -15,6 +17,7 @@ class ChatDisplay extends StatefulWidget {
   @override
   ChatDisplayState createState() => ChatDisplayState();
 }
+
 
 class ChatDisplayState extends State<ChatDisplay> {
   ServerConnection _conn;
@@ -46,10 +49,11 @@ class ChatDisplayState extends State<ChatDisplay> {
 
     return Scaffold(
       body: Column(
-        children: [
-          _channelNameDisplay(context),
-          _messageListView(),
-        ]
+          children: [
+            _channelNameDisplay(context),
+            _messageListView(),
+            SendMessageDisplay(),
+          ]
       ),
     );
   }
@@ -109,7 +113,7 @@ class ChatDisplayState extends State<ChatDisplay> {
 
   void updateDisplay() {
     if(this.mounted) {
-     setState(() {});
+      setState(() {});
     }
   }
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:zephy_client/services/nav_wrapper.dart';
-import 'package:zephy_client/services/server_locator.dart';
+import 'package:zephy_client/services/sockets/server_locator.dart';
 
-import 'login_screen/login_screen.dart';
+import '../login_screen/login_screen.dart';
 
 class ConnectionScreen extends StatefulWidget {
   @override
@@ -34,7 +34,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       future: currentLocateFuture,
       builder: (context, snapshot) {
         if(snapshot.hasData && snapshot.data != null) {
-          pushNextFrame(LoginScreen(snapshot.data), context);
+           pushNextFrame(LoginScreen(snapshot.data), context);
           return Container();
         } else if(snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -50,6 +50,7 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("failed"),
+        SizedBox(height: 10),
         FlatButton(
             color: Colors.blueAccent,
             child: Text(

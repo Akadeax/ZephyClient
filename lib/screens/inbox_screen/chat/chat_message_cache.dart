@@ -1,16 +1,14 @@
-import 'dart:async';
-
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/models/message_model.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
-import 'package:zephy_client/screens/inbox_screen/chat_display.dart';
-import 'package:zephy_client/services/server_connection.dart';
+import 'chat_display.dart';
+import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class ChatMessageCache {
   final ServerConnection _conn;
   final BaseChannelData _channelData;
 
-  final ChatDisplayState _chatDisplay;
+  ChatDisplayState _chatDisplay;
 
   ChatMessageCache(this._chatDisplay, this._conn, this._channelData);
 
@@ -31,14 +29,14 @@ class ChatMessageCache {
 
   Future<List<PopulatedMessage>> _fetchMessages(int page) async {
     PopulateMessagesPacket packet = PopulateMessagesPacket(PopulateMessagesPacketData(
-      forChannel: _channelData.sId,
-      page: page
+        forChannel: _channelData.sId,
+        page: page
     ));
     _conn.sendPacket(packet);
 
     var recvPacket = await _conn.packetHandler.waitForPacket<PopulateMessagesPacket>(
-          PopulateMessagesPacket.TYPE,
-          (buffer) => PopulateMessagesPacket.fromBuffer(buffer)
+        PopulateMessagesPacket.TYPE,
+            (buffer) => PopulateMessagesPacket.fromBuffer(buffer)
     );
 
     PopulateMessagesPacketData data = recvPacket.readPacketData();

@@ -7,7 +7,7 @@ import 'package:zephy_client/packet/auth/login_result_packet.dart';
 import 'package:zephy_client/screens/login_screen/wrong_login_snackbar.dart';
 import 'package:zephy_client/services/nav_wrapper.dart';
 import 'package:zephy_client/services/profile_data.dart';
-import 'package:zephy_client/services/server_connection.dart';
+import 'package:zephy_client/services/sockets/server_connection.dart';
 import 'package:zephy_client/services/validator.dart';
 
 import '../inbox_screen/inbox_screen.dart';

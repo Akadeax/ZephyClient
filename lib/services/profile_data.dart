@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:zephy_client/models/user_model.dart';
 import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
-import 'package:zephy_client/services/server_connection.dart';
+import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class ProfileData with ChangeNotifier {
   PopulatedUser _loggedInUser;

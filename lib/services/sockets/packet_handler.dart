@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:zephy_client/packet/packet.dart';
-import 'package:zephy_client/services/server_connection.dart';
+import 'package:zephy_client/services/sockets/server_connection.dart';
 
 typedef S ItemCreator<S>(List<int> buffer);
 
