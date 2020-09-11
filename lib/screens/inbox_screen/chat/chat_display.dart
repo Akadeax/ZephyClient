@@ -4,6 +4,7 @@ import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
 import 'package:zephy_client/screens/inbox_screen/chat/send_message_display.dart';
 import 'package:zephy_client/screens/inbox_screen/single_message_display.dart';
+import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 
 import 'chat_message_cache.dart';
@@ -21,6 +22,7 @@ class ChatDisplay extends StatefulWidget {
 
 class ChatDisplayState extends State<ChatDisplay> {
   ServerConnection _conn;
+  ProfileData _profileData;
   ChatMessageCache msgCache;
 
   ScrollController _controller = ScrollController();
@@ -41,9 +43,10 @@ class ChatDisplayState extends State<ChatDisplay> {
   @override
   Widget build(BuildContext context) {
     _conn = Provider.of<ServerConnection>(context);
+    _profileData = Provider.of<ProfileData>(context);
 
     if(msgCache == null) {
-      msgCache = ChatMessageCache(this, _conn, widget.forChannel);
+      msgCache = ChatMessageCache(this, _conn, widget.forChannel, _profileData);
       loadNextPage();
     }
 
@@ -52,17 +55,15 @@ class ChatDisplayState extends State<ChatDisplay> {
           children: [
             _channelNameDisplay(context),
             _messageListView(),
-            SendMessageDisplay(),
+            SendMessageDisplay(widget.forChannel),
           ]
       ),
     );
   }
 
   Widget _channelNameDisplay(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-
     return Container(
-        height: size.height / 10,
+        height: 50,
         color: Colors.blue,
         child: Center(
           child: Text(widget.forChannel.name),

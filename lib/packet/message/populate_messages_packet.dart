@@ -8,31 +8,34 @@ import '../packet.dart';
 
 class PopulateMessagesPacketData extends PacketData {
   String forChannel = "";
-  List<PopulatedMessage> populatedMessages = new List<PopulatedMessage>();
   int page = 0;
+  String user = "";
+  List<PopulatedMessage> populatedMessages = new List<PopulatedMessage>();
 
   PopulateMessagesPacketData(
-      {this.forChannel, this.populatedMessages, this.page});
+      {this.forChannel, this.user, this.page, this.populatedMessages});
 
   PopulateMessagesPacketData.fromJson(Map<String, dynamic> json) {
     forChannel = json['forChannel'];
+    user = json['user'];
+    page = json['page'];
     if (json['populatedMessages'] != null) {
       populatedMessages = new List<PopulatedMessage>();
       json['populatedMessages'].forEach((v) {
         populatedMessages.add(new PopulatedMessage.fromJson(v));
       });
     }
-    page = json['page'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['page'] = this.page;
+    data['user'] = this.user;
     data['forChannel'] = this.forChannel;
     if (this.populatedMessages != null) {
       data['populatedMessages'] =
           this.populatedMessages.map((v) => v.toJson()).toList();
     }
-    data['page'] = this.page;
     return data;
   }
 }

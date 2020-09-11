@@ -101,7 +101,7 @@ class SignInFormState extends State<SignInForm> {
       width: MediaQuery.of(context).size.width * 0.7,
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
-        onSaved: (newVal) => email = newVal,
+        onChanged: (String newVal) => email = newVal,
         validator: (value) {
           // if no value entered (= ""), display now error
           if(value.isEmpty) return null;
@@ -124,10 +124,7 @@ class SignInFormState extends State<SignInForm> {
       width: MediaQuery.of(context).size.width * 0.7,
       child: TextFormField(
         obscureText: true,
-        onSaved: (newVal) => password = newVal,
-        onChanged: (value) {
-
-        },
+        onChanged: (String newVal) => password = newVal,
         validator: (value) {
           if(value.isEmpty) return null;
           else if(!isValidPassword(value)) {

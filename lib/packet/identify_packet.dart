@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/packet/packet_handler.dart';
+
 import 'packet.dart';
 
 class IdentifyPacketData extends PacketData {
@@ -16,7 +18,6 @@ class IdentifyPacketData extends PacketData {
     return data;
   }
 }
-
 
 class IdentifyPacket extends Packet<IdentifyPacketData> {
   static const int TYPE = 1000;

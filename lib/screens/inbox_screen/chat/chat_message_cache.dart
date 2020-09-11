@@ -1,20 +1,38 @@
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/models/message_model.dart';
+import 'package:zephy_client/packet/message/message_send_packet.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
+import 'package:zephy_client/services/profile_data.dart';
 import 'chat_display.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class ChatMessageCache {
   final ServerConnection _conn;
   final BaseChannelData _channelData;
+  final ProfileData _profileData;
 
   ChatDisplayState _chatDisplay;
-
-  ChatMessageCache(this._chatDisplay, this._conn, this._channelData);
 
   int _nextPageToLoad = 0;
 
   List<PopulatedMessage> currentDisplayMessages = new List<PopulatedMessage>();
+
+  ChatMessageCache(this._chatDisplay, this._conn, this._channelData, this._profileData) {
+    _receiveMessages();
+  }
+
+  void _receiveMessages() async {
+    while(true) {
+      MessageSendPacket msgSend = await _conn.packetHandler.waitForPacket<MessageSendPacket>(
+          MessageSendPacket.TYPE,
+              (buffer) => MessageSendPacket.fromBuffer(buffer)
+      );
+
+      currentDisplayMessages.insert(0, msgSend.readPacketData().returnMessage);
+      _chatDisplay.updateDisplay();
+    }
+  }
+
 
   Future<void> loadNextPage() async {
     var fetchedPage = await _fetchMessages(_nextPageToLoad);
@@ -30,6 +48,7 @@ class ChatMessageCache {
   Future<List<PopulatedMessage>> _fetchMessages(int page) async {
     PopulateMessagesPacket packet = PopulateMessagesPacket(PopulateMessagesPacketData(
         forChannel: _channelData.sId,
+        user: _profileData.loggedInUser.sId,
         page: page
     ));
     _conn.sendPacket(packet);
