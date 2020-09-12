@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/identify_packet.dart';
 import 'package:zephy_client/packet/message/message_send_packet.dart';
-import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class SendMessageDisplay extends StatefulWidget {
@@ -19,7 +18,6 @@ class SendMessageDisplay extends StatefulWidget {
 class _SendMessageDisplayState extends State<SendMessageDisplay> {
 
   ServerConnection _conn;
-  ProfileData _profileData;
 
   String currMessage = "";
 
@@ -28,7 +26,6 @@ class _SendMessageDisplayState extends State<SendMessageDisplay> {
   @override
   Widget build(BuildContext context) {
     _conn = Provider.of<ServerConnection>(context);
-    _profileData = Provider.of<ProfileData>(context);
     Size size = MediaQuery.of(context).size;
 
     return Container(
@@ -59,7 +56,6 @@ class _SendMessageDisplayState extends State<SendMessageDisplay> {
                 MessageSendPacket sendPacket = MessageSendPacket(MessageSendPacketData(
                   message: _controller.text,
                   channel: widget.channel.sId,
-                  author: _profileData.loggedInUser.sId,
                 ));
 
                 _conn.sendPacket(sendPacket);

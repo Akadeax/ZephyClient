@@ -37,7 +37,7 @@ class SignInFormState extends State<SignInForm> {
 
     return Form(
       key: _formKey,
-      autovalidate: true,
+      autovalidateMode: AutovalidateMode.always,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

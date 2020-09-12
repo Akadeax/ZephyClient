@@ -13,7 +13,7 @@ class ServerLocator {
   /// tries to locate the server on the local network and returning the location of it;
   /// times out after one second, returning null.
   Future<BroadcastResult> locate() async {
-    BroadcastResult res = await _locate().timeout(Duration(seconds: 1), onTimeout: () {
+    BroadcastResult res = await _locate().timeout(Duration(seconds: 2), onTimeout: () {
       print("locating timed out!");
       return null;
     });

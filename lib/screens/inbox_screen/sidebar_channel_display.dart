@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
+import 'package:zephy_client/packet/packet_handler.dart';
 import 'package:zephy_client/screens/inbox_screen/single_channel_display.dart';
 import 'package:zephy_client/services/profile_data.dart';
-import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/packet/packet_handler.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class SidebarChannelDisplay extends StatefulWidget {

@@ -9,11 +9,10 @@ class SingleMessageDisplay extends StatelessWidget {
   final PopulatedMessage toDisplay;
   SingleMessageDisplay(this.toDisplay);
 
-  ProfileData _profileData;
 
   @override
   Widget build(BuildContext context) {
-    _profileData = Provider.of<ProfileData>(context);
+    ProfileData _profileData = Provider.of<ProfileData>(context);
 
     bool isAuthor = _profileData.loggedInUser.sId == toDisplay.author.sId;
     Color messageColor = isAuthor ? Colors.blue[300] : Colors.grey;

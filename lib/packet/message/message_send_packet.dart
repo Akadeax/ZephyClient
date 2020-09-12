@@ -6,16 +6,14 @@ import 'package:zephy_client/packet/packet.dart';
 class MessageSendPacketData extends PacketData {
   String message;
   String channel;
-  String author;
   PopulatedMessage returnMessage;
 
   MessageSendPacketData(
-      {this.message, this.channel, this.author, this.returnMessage});
+      {this.message, this.channel, this.returnMessage});
 
   MessageSendPacketData.fromJson(Map<String, dynamic> json) {
     message = json['message'];
     channel = json['channel'];
-    author = json['author'];
     returnMessage = json['returnMessage'] != null
         ? new PopulatedMessage.fromJson(json['returnMessage'])
         : null;
@@ -25,7 +23,6 @@ class MessageSendPacketData extends PacketData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['message'] = this.message;
     data['channel'] = this.channel;
-    data['author'] = this.author;
     if (this.returnMessage != null) {
       data['returnMessage'] = this.returnMessage.toJson();
     }

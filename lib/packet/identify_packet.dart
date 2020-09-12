@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/packet/packet_handler.dart';
 
 import 'packet.dart';
 
