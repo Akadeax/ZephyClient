@@ -80,6 +80,7 @@ class SignInFormState extends State<SignInForm> {
         LoginResultPacket.TYPE,
             (buffer) => LoginResultPacket.fromBuffer(buffer)
     );
+    if(result == null) return;
     LoginResultPacketData data = result.readPacketData();
 
     switch(data.statusCode) {

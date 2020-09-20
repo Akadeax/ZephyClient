@@ -2,6 +2,8 @@ import 'dart:async';
  import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:zephy_client/main.dart';
 import 'package:zephy_client/packet/packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
 import 'package:zephy_client/services/sockets/server_locator.dart';
@@ -32,7 +34,7 @@ class ServerConnection {
     return true;
   }
 
-  void _listen(List<int> data) {
+  void _listen(List<int> data) async {
     // if this is the start of a new packet
     if(_currPacketRequiredSize == -1) {
       _currPacketRequiredSize = Packet.getPacketSizeFromBuffer(data);
@@ -64,10 +66,23 @@ class ServerConnection {
       _listen(currData);
     }
 
+    try {
+      await _socket.done;
+    } catch(e) {
+      Scaffold.of(navigatorKey.currentContext).showSnackBar(lostConnectionSnackBar());
+    }
   }
 
   void sendPacket(Packet toSend) {
     _socket.add(toSend.buffer);
+  }
+
+  SnackBar lostConnectionSnackBar() {
+    return SnackBar(
+      duration: const Duration(seconds: 2),
+      content: Text("Lost connection to server!"),
+      backgroundColor: Colors.red,
+    );
   }
 
   void closeConnection() {

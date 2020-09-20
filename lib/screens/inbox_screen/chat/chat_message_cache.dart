@@ -27,6 +27,7 @@ class ChatMessageCache {
           MessageSendPacket.TYPE,
               (buffer) => MessageSendPacket.fromBuffer(buffer)
       );
+      if(msgSend == null) return;
 
       currentDisplayMessages.insert(0, msgSend.readPacketData().returnMessage);
       _chatDisplay.updateDisplay();
@@ -57,6 +58,7 @@ class ChatMessageCache {
         PopulateMessagesPacket.TYPE,
             (buffer) => PopulateMessagesPacket.fromBuffer(buffer)
     );
+    if(recvPacket == null) return null;
 
     PopulateMessagesPacketData data = recvPacket.readPacketData();
     if(data == null) return null;

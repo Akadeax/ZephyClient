@@ -17,6 +17,8 @@ class SingleMessageDisplay extends StatelessWidget {
     bool isAuthor = _profileData.loggedInUser.sId == toDisplay.author.sId;
     Color messageColor = isAuthor ? Colors.blue[300] : Colors.grey;
 
+    DateTime time = DateTime.fromMillisecondsSinceEpoch((toDisplay.sentAt * 1000).round(), isUtc: true);
+
     return Center(
       child: FractionallySizedBox(
         widthFactor: 0.8,
@@ -27,9 +29,19 @@ class SingleMessageDisplay extends StatelessWidget {
           ),
           child: Padding(
             padding: EdgeInsets.all(10),
-            child: Text(
-              "${toDisplay.author.name}: ${toDisplay.content}",
-              style: StylePresets.messageStyle,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "${toDisplay.author.name} at ${time.toString()}",
+                  style: StylePresets.messageTitleStyle,
+                ),
+                Text(
+                  "${toDisplay.content}",
+                  style: StylePresets.messageContentStyle,
+                ),
+              ],
             ),
           ),
         ),

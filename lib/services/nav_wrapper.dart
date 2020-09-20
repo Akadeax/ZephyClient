@@ -14,3 +14,12 @@ pushNextFrame(Widget page, BuildContext context) {
     );
   });
 }
+
+push(Widget page, BuildContext context) {
+  Navigator.pushReplacement(
+      navigatorKey.currentState.context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => page,
+      )
+  );
+}

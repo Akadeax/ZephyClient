@@ -18,7 +18,14 @@ class StylePresets {
     );
   }
 
-  static TextStyle get messageStyle {
+  static TextStyle get messageTitleStyle {
+    return TextStyle(
+      color: Colors.grey[800],
+      fontSize: 12,
+    );
+  }
+
+  static TextStyle get messageContentStyle {
     return TextStyle(
       color: Colors.black,
       fontSize: 15,
