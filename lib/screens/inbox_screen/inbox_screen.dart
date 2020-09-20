@@ -20,13 +20,13 @@ class _InboxScreenState extends State<InboxScreen> {
     _conn = Provider.of<ServerConnection>(context);
 
     return Scaffold(
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SidebarChannelDisplay(chatNavKey),
-            _chat(context),
-          ],
-        )
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SidebarChannelDisplay(chatNavKey),
+          _chat(context),
+        ],
+      )
     );
   }
 

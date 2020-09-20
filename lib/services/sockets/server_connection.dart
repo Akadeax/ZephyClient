@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:zephy_client/main.dart';
 import 'package:zephy_client/packet/packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
+import 'package:zephy_client/screens/fatal_error_screen/fatal_error_screen.dart';
+import 'package:zephy_client/services/nav_wrapper.dart';
 import 'package:zephy_client/services/sockets/server_locator.dart';
 
 class ServerConnection {
@@ -69,7 +71,10 @@ class ServerConnection {
     try {
       await _socket.done;
     } catch(e) {
-      Scaffold.of(navigatorKey.currentContext).showSnackBar(lostConnectionSnackBar());
+      push(
+          FatalErrorScreen(displayError: "Server connection error:\n${e.toString()}"),
+          navigatorKey.currentContext
+      );
     }
   }
 

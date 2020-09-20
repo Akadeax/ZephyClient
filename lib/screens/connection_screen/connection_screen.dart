@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zephy_client/screens/connection_screen/retry_widget.dart';
 import 'package:zephy_client/services/nav_wrapper.dart';
 import 'package:zephy_client/services/sockets/server_locator.dart';
 
@@ -22,10 +23,9 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-        body: Center(
-          child: _locateBuilder(),
-        )
+      body: Center(child: _locateBuilder()),
     );
   }
 
@@ -40,26 +40,11 @@ class _ConnectionScreenState extends State<ConnectionScreen> {
           return CircularProgressIndicator();
         }
 
-        return _retryWidget();
+        return RetryWidget(
+            onPressed: _retryConnection,
+          retryText: "Connection failed!",
+        );
       }
-    );
-  }
-
-  Widget _retryWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text("failed"),
-        SizedBox(height: 10),
-        FlatButton(
-            color: Colors.blueAccent,
-            child: Text(
-              "retry",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: _retryConnection
-        )
-      ],
     );
   }
 
