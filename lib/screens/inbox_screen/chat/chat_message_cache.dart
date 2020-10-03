@@ -17,15 +17,17 @@ class ChatMessageCache {
 
   List<PopulatedMessage> currentDisplayMessages = new List<PopulatedMessage>();
 
+  bool disposed = false;
   ChatMessageCache(this._chatDisplay, this._conn, this._channelData, this._profileData) {
     _receiveMessages();
   }
 
   void _receiveMessages() async {
     while(true) {
+      if(disposed) return;
       MessageSendPacket msgSend = await _conn.packetHandler.waitForPacket<MessageSendPacket>(
           MessageSendPacket.TYPE,
-              (buffer) => MessageSendPacket.fromBuffer(buffer)
+          (buffer) => MessageSendPacket.fromBuffer(buffer)
       );
       if(msgSend == null) return;
 

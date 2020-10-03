@@ -11,7 +11,7 @@ class ConnectionScreen extends StatefulWidget {
 }
 
 class _ConnectionScreenState extends State<ConnectionScreen> {
-  ServerLocator locator = ServerLocator(6556, 6557);
+  ServerLocator locator = ServerLocator(sendPort: 6556, listenPort: 6557);
 
   Future currentLocateFuture;
 

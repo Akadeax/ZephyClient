@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
-import 'package:zephy_client/screens/inbox_screen/single_channel_display.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/screens/inbox_screen/sidebar/single_channel_display.dart';
 import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 
@@ -22,12 +22,15 @@ class _SidebarChannelDisplayState extends State<SidebarChannelDisplay> {
   ServerConnection _conn;
   ProfileData _profileData;
 
+
   @override
   Widget build(BuildContext context) {
     _conn = Provider.of<ServerConnection>(context);
     _profileData = Provider.of<ProfileData>(context);
+
     Size size = MediaQuery.of(context).size;
 
+    
     return FutureProvider<AccessibleChannelsInfoPacketData>(
       create: (_) async {
         return await _profileData.fetchAccessibleChannels(_conn);

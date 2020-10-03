@@ -6,20 +6,31 @@ BuildContext get rootNavContext => navigatorKey.currentState.context;
 
 pushNextFrame(Widget page, BuildContext context) {
   SchedulerBinding.instance.addPostFrameCallback((_) {
-    Navigator.pushReplacement(
-        navigatorKey.currentState.context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => page,
-        )
-    );
+    push(page, context);
   });
 }
 
 push(Widget page, BuildContext context) {
-  Navigator.pushReplacement(
-      navigatorKey.currentState.context,
+  pushOnNav(
+      page,
+      Navigator.of(context)
+  );
+}
+
+pushOnNav(Widget page, NavigatorState nav) {
+  nav.pushReplacement(
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => page,
+        maintainState: false,
+        transitionDuration: const Duration(milliseconds: 200),
+        transitionsBuilder: (context, anim, secAnim, child) {
+          return FadeTransition(
+            opacity: anim,
+            child: child,
+          );
+        },
+        pageBuilder: (context, anim, secAnim) {
+          return page;
+        },
       )
   );
 }

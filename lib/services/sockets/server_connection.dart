@@ -2,7 +2,6 @@ import 'dart:async';
  import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:zephy_client/main.dart';
 import 'package:zephy_client/packet/packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
@@ -80,14 +79,6 @@ class ServerConnection {
 
   void sendPacket(Packet toSend) {
     _socket.add(toSend.buffer);
-  }
-
-  SnackBar lostConnectionSnackBar() {
-    return SnackBar(
-      duration: const Duration(seconds: 2),
-      content: Text("Lost connection to server!"),
-      backgroundColor: Colors.red,
-    );
   }
 
   void closeConnection() {

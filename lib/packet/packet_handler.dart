@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -18,9 +19,13 @@ class PacketHandler with ChangeNotifier {
   /// ```dart
   /// MyPacket p = waitForPacket<MyPacket>(MyPacket.TYPE, (buffer) => MyPacket.fromBuffer(buffer));
   /// ```
+  /// note: Damn you flutter, you can't cancel futures? This causes bugs with messages still
+  /// being waited for in this function but not actually in any function scope, maybe
+  /// fix one day.
   Future<TPacketType> waitForPacket<TPacketType extends Packet>(int type, ItemCreator<TPacketType> creator) async {
     print("starting to wait for packet...");
     _activeRequests.add(type);
+    // next frame because widgets waiting might be building while calling this method
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       notifyListeners();
     });
