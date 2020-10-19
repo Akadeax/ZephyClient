@@ -81,6 +81,8 @@ class ServerConnection {
     _socket.add(toSend.buffer);
   }
 
+  bool get isConnected => _socket != null;
+
   void closeConnection() {
     _socket.close();
     packetStream.close();

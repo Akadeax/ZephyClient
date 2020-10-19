@@ -2,16 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/message/message_send_packet.dart';
+import 'package:zephy_client/screens/inbox_screen/inbox_screen.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class SendMessageDisplay extends StatefulWidget {
-  final BaseChannelData channel;
-
-
-  SendMessageDisplay(this.channel);
-
   @override
   _SendMessageDisplayState createState() => _SendMessageDisplayState();
 }
@@ -24,10 +19,12 @@ class _SendMessageDisplayState extends State<SendMessageDisplay> {
 
   TextEditingController _controller = TextEditingController();
   FocusNode _controllerFocus = FocusNode();
+  DisplayChannel displayChannel;
   @override
   Widget build(BuildContext context) {
     _conn = Provider.of<ServerConnection>(context);
     Size size = MediaQuery.of(context).size;
+    displayChannel = Provider.of<DisplayChannel>(context);
 
     return Container(
         height: 50,
@@ -80,7 +77,7 @@ class _SendMessageDisplayState extends State<SendMessageDisplay> {
 
     MessageSendPacket packet = MessageSendPacket(MessageSendPacketData(
       message: _controller.text,
-      channel: widget.channel.sId,
+      channel: displayChannel.baseChannelData.sId,
     ));
 
     _controller.clear();

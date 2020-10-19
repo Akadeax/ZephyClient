@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zephy_client/models/channel_model.dart';
+import 'package:zephy_client/models/role_model.dart';
 import 'package:zephy_client/packet/channel/modify_channel_roles_packet.dart';
-import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/screens/inbox_screen/sidebar/sidebar_channel_display.dart';
+import 'package:zephy_client/screens/inbox_screen/sidebar/sidebar_channel_display.dart';
+import 'package:zephy_client/services/packet_wait.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class InboxScreen extends StatefulWidget {
@@ -16,42 +19,40 @@ class _InboxScreenState extends State<InboxScreen> {
 
   GlobalKey<NavigatorState> chatNavKey = GlobalKey<NavigatorState>();
 
-  Future<void> waitForRolesMod() async {
-    var packet = await modifyFuture;
+  DisplayChannel displayChannel = DisplayChannel();
 
-    var data = packet.readPacketData();
-    switch(data.action) {
-      // TODO: reload accessible channels?
-      case ModifyChannelRolesAction.ADD:
-        break;
-      // TODO: reload accessible channels, maybe kick out of current one?
-      case ModifyChannelRolesAction.REMOVE:
-        break;
-    }
-  }
-
-  Future<ModifyChannelRolesPacket> modifyFuture;
+  PacketWait modifyRolesWait = PacketWait<ModifyChannelRolesPacket>(
+      ModifyChannelRolesPacket.TYPE,
+      (buffer) => ModifyChannelRolesPacket.fromBuffer(buffer)
+  );
 
   @override
   Widget build(BuildContext context) {
     _conn = Provider.of<ServerConnection>(context);
 
-    if(modifyFuture == null) {
-      modifyFuture = _conn.packetHandler.waitForPacket(
-          ModifyChannelRolesPacket.TYPE,
-              (buffer) => ModifyChannelRolesPacket.fromBuffer(buffer)
-      );
-      waitForRolesMod();
-    }
+    modifyRolesWait.startWait(_conn, (packet) {
+      ModifyChannelRolesPacketData data = packet.readPacketData();
+      List<Role> roles = displayChannel.roles;
+      for(Role r in roles) {
+        if(r.sId == data.role) {
+          displayChannel.roles.remove(r);
+          break;
+        }
+      }
+      displayChannel.notify();
+    });
 
-    return Scaffold(
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          SidebarChannelDisplay(chatNavKey),
-          _chat(context),
-        ],
-      )
+    return ChangeNotifierProvider<DisplayChannel>.value(
+      value: displayChannel,
+      child: Scaffold(
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SidebarChannelDisplay(chatNavKey),
+            _chat(context),
+          ],
+        )
+      ),
     );
   }
 
@@ -68,11 +69,12 @@ class _InboxScreenState extends State<InboxScreen> {
       ),
     );
   }
+}
 
-
-  @override
-  void dispose() {
-    _conn.closeConnection();
-    super.dispose();
+class DisplayChannel extends ChangeNotifier {
+  BaseChannelData baseChannelData = BaseChannelData();
+  List<Role> roles = List<Role>();
+  void notify() {
+    notifyListeners();
   }
 }

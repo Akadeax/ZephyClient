@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
 import 'package:zephy_client/screens/inbox_screen/chat/send_message_display.dart';
+import 'package:zephy_client/screens/inbox_screen/inbox_screen.dart';
 import 'package:zephy_client/screens/inbox_screen/single_message_display.dart';
 import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
@@ -10,15 +10,9 @@ import 'package:zephy_client/services/sockets/server_connection.dart';
 import 'chat_message_cache.dart';
 
 class ChatDisplay extends StatefulWidget {
-
-  final BaseChannelData forChannel;
-
-  ChatDisplay({this.forChannel});
-
   @override
   ChatDisplayState createState() => ChatDisplayState();
 }
-
 
 class ChatDisplayState extends State<ChatDisplay> {
   ServerConnection _conn;
@@ -40,13 +34,16 @@ class ChatDisplayState extends State<ChatDisplay> {
 
   bool get isAtEnd => _controller.offset >= _controller.position.maxScrollExtent && !_controller.position.outOfRange;
 
+  DisplayChannel displayChannel;
   @override
   Widget build(BuildContext context) {
     _conn = Provider.of<ServerConnection>(context);
     _profileData = Provider.of<ProfileData>(context);
 
+    displayChannel = Provider.of<DisplayChannel>(context);
+
     if(msgCache == null) {
-      msgCache = ChatMessageCache(this, _conn, widget.forChannel, _profileData);
+      msgCache = ChatMessageCache(this, _conn, displayChannel.baseChannelData, _profileData);
       loadNextPage();
     }
 
@@ -55,7 +52,7 @@ class ChatDisplayState extends State<ChatDisplay> {
           children: [
             _channelNameDisplay(context),
             _messageListView(),
-            SendMessageDisplay(widget.forChannel),
+            SendMessageDisplay(),
           ]
       ),
     );
@@ -66,7 +63,7 @@ class ChatDisplayState extends State<ChatDisplay> {
         height: 50,
         color: Colors.blue,
         child: Center(
-          child: Text(widget.forChannel.name),
+          child: Text(displayChannel.baseChannelData.name),
         )
     );
   }

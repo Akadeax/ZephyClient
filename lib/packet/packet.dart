@@ -39,6 +39,7 @@ abstract class Packet<TPacketData> {
   }
 
   static int getPacketTypeFromBuffer(List<int> buffer) {
+    if(buffer.length < 2) return null;
     return BitConverter.getUint16(buffer);
   }
 

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zephy_client/models/channel_model.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
 import 'package:zephy_client/screens/inbox_screen/channel_admin_display.dart';
+import 'package:zephy_client/screens/inbox_screen/inbox_screen.dart';
 import 'package:zephy_client/services/nav_wrapper.dart';
 import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
@@ -24,6 +25,8 @@ class SingleChannelDisplay extends StatelessWidget {
     ProfileData profData = Provider.of<ProfileData>(context);
     bool isLoadingMessages = _conn.packetHandler.isPacketWaitOpen(PopulateMessagesPacket.TYPE);
 
+    DisplayChannel displayChannel = Provider.of<DisplayChannel>(context);
+
     return CircleAvatar(
         backgroundColor: isLoadingMessages ? Colors.black : StylePresets.channelIconColor,
         child: Container(
@@ -33,13 +36,14 @@ class SingleChannelDisplay extends StatelessWidget {
             onPressed: () {
               if(isLoadingMessages) return;
 
-              pushOnNav(ChatDisplay(forChannel: data), chatNav.currentState);
+              displayChannel.baseChannelData = data;
+              pushOnNav(ChatDisplay(), chatNav.currentState);
             },
             onLongPress: () {
               if(!isAdmin(profData.loggedInUser)) return;
 
-              print("PUSH");
-              pushOnNav(ChannelAdminDisplay(data), chatNav.currentState);
+              displayChannel.baseChannelData = data;
+              pushOnNav(ChannelAdminDisplay(), chatNav.currentState);
             },
           ),
         )
