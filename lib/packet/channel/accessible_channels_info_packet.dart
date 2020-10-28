@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:zephy_client/models/channel_model.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/channel_model.dart';
 
 import '../packet.dart';
 

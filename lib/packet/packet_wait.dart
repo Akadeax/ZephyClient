@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:zephy_client/networking/server_connection.dart';
 import 'package:zephy_client/packet/packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
-import 'package:zephy_client/services/sockets/server_connection.dart';
 
 class PacketWait<TPacketType extends Packet> {
 

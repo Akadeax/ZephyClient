@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/models/channel_model.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/channel_model.dart';
 import 'package:zephy_client/packet/channel/accessible_channels_info_packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
 import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/screens/inbox_screen/sidebar/single_channel_display.dart';

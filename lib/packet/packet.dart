@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:zephy_client/utils/bit_converter.dart';
 
-import '../services/bit_converter.dart';
 
 abstract class PacketData {
   PacketData();

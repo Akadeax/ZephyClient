@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/models/message_model.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/message_model.dart';
 import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/style_presets.dart';
 

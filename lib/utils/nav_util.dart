@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:zephy_client/main.dart';
 
-BuildContext get rootNavContext => navigatorKey.currentState.context;
+BuildContext get rootNavContext => mainNavKey.currentState.context;
 
 pushNextFrame(Widget page, BuildContext context) {
   SchedulerBinding.instance.addPostFrameCallback((_) {

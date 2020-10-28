@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/models/channel_model.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/channel_model.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
 import 'package:zephy_client/screens/inbox_screen/channel_admin_display.dart';
 import 'package:zephy_client/screens/inbox_screen/inbox_screen.dart';
-import 'package:zephy_client/services/nav_wrapper.dart';
+import 'package:zephy_client/services/nav_util.dart';
 import 'package:zephy_client/services/profile_data.dart';
 import 'package:zephy_client/services/sockets/server_connection.dart';
 import 'package:zephy_client/services/style_presets.dart';

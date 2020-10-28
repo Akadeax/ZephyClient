@@ -2,12 +2,12 @@ import 'dart:async';
  import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:zephy_client/main.dart';
+import 'package:zephy_client/networking/server_locator.dart';
 import 'package:zephy_client/packet/packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
-import 'package:zephy_client/screens/fatal_error_screen/fatal_error_screen.dart';
-import 'package:zephy_client/services/nav_wrapper.dart';
-import 'package:zephy_client/services/sockets/server_locator.dart';
+import 'package:zephy_client/utils/nav_util.dart';
+
+
 
 class ServerConnection {
   Socket _socket;
@@ -70,10 +70,7 @@ class ServerConnection {
     try {
       await _socket.done;
     } catch(e) {
-      push(
-          FatalErrorScreen(displayError: "Server connection error:\n${e.toString()}"),
-          navigatorKey.currentContext
-      );
+      // TODO: Push error screen?
     }
   }
 

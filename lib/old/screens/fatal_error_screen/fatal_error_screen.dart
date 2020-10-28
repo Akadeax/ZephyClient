@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:zephy_client/screens/connection_screen/retry_widget.dart';
+import 'package:zephy_client/screens/connection_screen/retry_connection_widget.dart';
 
 class FatalErrorScreen extends StatelessWidget {
   final String displayError;

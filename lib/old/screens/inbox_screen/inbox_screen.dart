@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/models/channel_model.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/channel_model.dart';
 import 'package:zephy_client/models/role_model.dart';
 import 'package:zephy_client/packet/channel/modify_channel_roles_packet.dart';
 import 'package:zephy_client/screens/inbox_screen/sidebar/sidebar_channel_display.dart';

@@ -20,12 +20,10 @@ class _ChannelAdminDisplayState extends State<ChannelAdminDisplay> {
       (buffer) => FetchChannelRolesPacket.fromBuffer(buffer),
   );
 
-  ServerConnection _conn;
   DisplayChannel _displayChannel;
 
   @override
   void initState() {
-    _conn = Provider.of<ServerConnection>(context, listen: false);
     _displayChannel = Provider.of<DisplayChannel>(context, listen: false);
 
     var packet = FetchChannelRolesPacket(FetchChannelRolesPacketData(

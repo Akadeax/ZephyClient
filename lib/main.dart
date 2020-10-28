@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/packet/packet_handler.dart';
+import 'package:zephy_client/networking/server_connection.dart';
+import 'package:zephy_client/prov/current_login_user.dart';
 import 'package:zephy_client/screens/connection_screen/connection_screen.dart';
-import 'package:zephy_client/services/profile_data.dart';
-import 'package:zephy_client/services/sockets/server_connection.dart';
 
-final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> mainNavKey = GlobalKey();
 
-ServerConnection conn = ServerConnection();
-void main() {
+main() {
   runApp(
-    MultiProvider(
-      providers: [
-        Provider<ServerConnection>(create: (_) => conn),
-        ChangeNotifierProvider(create: (_) => ProfileData()),
-        ChangeNotifierProvider<PacketHandler>.value(value: conn.packetHandler),
-      ],
-      builder: (_, __) {
-        return _appContent();
-      },
-    )
+    _providers(
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        navigatorKey: mainNavKey,
+        home: _content(),
+      ),
+    ),
   );
 }
 
-Widget _appContent() {
-  return MaterialApp(
-    navigatorKey: navigatorKey,
-    home: ConnectionScreen(),
-    debugShowCheckedModeBanner: false,
+Widget _providers({@required Widget child}) {
+  return MultiProvider(
+    providers: [
+      _connProvider(),
+      _currentLoginUserProvider(),
+    ],
+    child: child,
   );
+}
+
+Widget _connProvider() => Provider<ServerConnection>(create: (_) => ServerConnection());
+Widget _currentLoginUserProvider() => Provider<CurrentLoginUser>(create: (_) => CurrentLoginUser());
+
+Widget _content() {
+  return ConnectionScreen();
 }

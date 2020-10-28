@@ -1,38 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:zephy_client/screens/login_screen/sign_in_form.dart';
-import 'package:zephy_client/services/sockets/server_connection.dart';
-import 'package:zephy_client/services/sockets/server_locator.dart';
+import 'package:zephy_client/app/text_styles.dart';
+import 'package:zephy_client/networking/server_locator.dart';
+import 'package:zephy_client/screens/login_screen/login_screen_logic.dart';
+
+import 'components/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
-
-  final BroadcastResult connInfo;
-
-  LoginScreen(this.connInfo);
+  final BroadcastResult connectionData;
+  LoginScreen(this.connectionData);
 
   @override
-  _LoginScreenState createState() {
-    return _LoginScreenState();
-  }
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  ServerConnection conn;
+class LoginScreenState extends State<LoginScreen> {
+  LoginScreenLogic logic;
+  LoginScreenState() {
+    logic = LoginScreenLogic(this);
 
-  String currEmail = "";
-  String currPassword = "";
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    if(conn == null) {
-      conn = Provider.of<ServerConnection>(context);
-      conn.connect(widget.connInfo);
-    }
-
     return Scaffold(
-      body: SizedBox.expand(
-        child: SignInForm(),
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: LoginForm(logic),
+      ),
+    );
+  }
+
+  SnackBar wrongLoginSnackbar() {
+    return SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(
+        LoginScreenAppData.invalidLoginText,
+        style: AppTextStyles.snackbarStyle,
       ),
     );
   }

@@ -1,5 +1,5 @@
-import 'package:zephy_client/models/channel_model.dart';
-import 'package:zephy_client/models/message_model.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/channel_model.dart';
+import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/message_model.dart';
 import 'package:zephy_client/packet/message/message_send_packet.dart';
 import 'package:zephy_client/packet/message/populate_messages_packet.dart';
 import 'package:zephy_client/services/profile_data.dart';

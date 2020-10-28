@@ -1,55 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:zephy_client/screens/connection_screen/retry_widget.dart';
-import 'package:zephy_client/services/nav_wrapper.dart';
-import 'package:zephy_client/services/sockets/server_locator.dart';
+import 'package:provider/provider.dart';
+import 'package:zephy_client/networking/server_connection.dart';
+import 'package:zephy_client/screens/connection_screen/components/retry_connection_widget.dart';
 
-import '../login_screen/login_screen.dart';
+import 'connection_screen_logic.dart';
 
 class ConnectionScreen extends StatefulWidget {
+
   @override
-  _ConnectionScreenState createState() => _ConnectionScreenState();
+  ConnectionScreenState createState() => ConnectionScreenState();
 }
 
-class _ConnectionScreenState extends State<ConnectionScreen> {
-  ServerLocator locator = ServerLocator(sendPort: 6556, listenPort: 6557);
+class ConnectionScreenState extends State<ConnectionScreen> {
+  ConnectionScreenLogic logic;
 
-  Future currentLocateFuture;
-
-  @override
-  void initState() {
-    currentLocateFuture = locator.locate();
-    super.initState();
+  ConnectionScreenState() {
+    logic = ConnectionScreenLogic(this);
   }
 
   @override
   Widget build(BuildContext context) {
-
+    print(Provider.of<ServerConnection>(context, listen: false));
     return Scaffold(
-      body: Center(child: _locateBuilder()),
+      body: Center(
+        child: logic.locateBuilder(context),
+      )
     );
   }
 
-  Widget _locateBuilder() {
-    return FutureBuilder(
-      future: currentLocateFuture,
-      builder: (context, snapshot) {
-        if(snapshot.hasData && snapshot.data != null) {
-           pushNextFrame(LoginScreen(snapshot.data), context);
-          return Container();
-        } else if(snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        }
-
-        return RetryWidget(
-            onPressed: _retryConnection,
-          retryText: "Connection failed!",
-        );
-      }
-    );
+  Widget get loadingWidget {
+    return CircularProgressIndicator();
   }
 
-  void _retryConnection() {
-    currentLocateFuture = locator.locate();
-    setState(() {});
+  Widget get retryConnectionWidget {
+    return RetryConnectionWidget(logic);
   }
+
+  void update() => setState(() {});
 }
