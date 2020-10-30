@@ -2,12 +2,12 @@ import 'dart:async';
  import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:zephy_client/main.dart';
 import 'package:zephy_client/networking/server_locator.dart';
 import 'package:zephy_client/packet/packet.dart';
 import 'package:zephy_client/packet/packet_handler.dart';
+import 'package:zephy_client/screens/fatal_error_screen/fatal_error_screen.dart';
 import 'package:zephy_client/utils/nav_util.dart';
-
-
 
 class ServerConnection {
   Socket _socket;
@@ -17,6 +17,16 @@ class ServerConnection {
 
   ServerConnection() {
     this.packetHandler = PacketHandler(this);
+  }
+
+  waitError() async {
+    try {
+      await _socket.done;
+    } on Exception catch(e) {
+      print("FATAL: $e");
+      pushOnNav(FatalErrorScreen(), mainNavKey.currentState);
+
+    }
   }
 
   List<int> _currPacketTotal = [];
@@ -32,6 +42,7 @@ class ServerConnection {
 
     _socket.listen(_listen);
 
+    waitError();
     return true;
   }
 
@@ -67,11 +78,6 @@ class ServerConnection {
       _listen(currData);
     }
 
-    try {
-      await _socket.done;
-    } catch(e) {
-      // TODO: Push error screen?
-    }
   }
 
   void sendPacket(Packet toSend) {
@@ -79,7 +85,7 @@ class ServerConnection {
   }
 
   bool get isConnected => _socket != null;
-
+  
   void closeConnection() {
     _socket.close();
     packetStream.close();

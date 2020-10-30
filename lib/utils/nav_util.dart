@@ -22,13 +22,13 @@ pushOnNav(Widget page, NavigatorState nav) {
       PageRouteBuilder(
         maintainState: false,
         transitionDuration: const Duration(milliseconds: 200),
-        transitionsBuilder: (context, anim, secAnim, child) {
+        transitionsBuilder: (_, anim, __, child) {
           return FadeTransition(
             opacity: anim,
             child: child,
           );
         },
-        pageBuilder: (context, anim, secAnim) {
+        pageBuilder: (_, __, ___) {
           return page;
         },
       )
