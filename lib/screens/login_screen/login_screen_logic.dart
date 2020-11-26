@@ -3,10 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/app/text_styles.dart';
+import 'package:zephy_client/main.dart';
 import 'package:zephy_client/networking/server_connection.dart';
 import 'package:zephy_client/packet/auth/login_attempt_packet.dart';
 import 'package:zephy_client/packet/auth/login_result_packet.dart';
 import 'package:zephy_client/packet/packet_wait.dart';
+import 'package:zephy_client/prov/current_login_user.dart';
+import 'package:zephy_client/screens/inbox_screen/inbox_screen.dart';
+import 'package:zephy_client/utils/nav_util.dart';
 import 'package:zephy_client/utils/validator.dart';
 import 'package:zephy_client/widgets/disable_button.dart';
 
@@ -43,20 +47,26 @@ class LoginScreenLogic {
     ));
     conn.sendPacket(packet);
 
-    loginResponseWait.startWait(conn, (packet) {
-      LoginResultPacketData data = packet.readPacketData();
-      if(data.statusCode == HttpStatus.ok) {
-        // TODO: Push inbox
-        print("Right login! ${data.user}");
-      } else {
-        print("wrong login!");
-        ScaffoldState scaff = Scaffold.of(loginFormKey.currentContext);
-        scaff.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
-        scaff.showSnackBar(
+    loginResponseWait.startWait(conn, onLoginResponse);
+  }
+
+  void onLoginResponse(packet) {
+    LoginResultPacketData data = packet.readPacketData();
+    if(data.statusCode == HttpStatus.ok) {
+      CurrentLoginUser user = screen.context.read<CurrentLoginUser>();
+      user.setUser(data.user);
+
+      pushOnNav(InboxScreen(), mainNavKey.currentState);
+
+      print("Right login! ${data.user}");
+    } else {
+      print("wrong login!");
+      ScaffoldState scaff = Scaffold.of(loginFormKey.currentContext);
+      scaff.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+      scaff.showSnackBar(
           screen.wrongLoginSnackbar()
-        );
-      }
-    });
+      );
+    }
   }
 
   Future<void> tryAdminLogin() async {

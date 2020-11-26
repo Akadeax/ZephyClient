@@ -17,20 +17,30 @@ push(Widget page, BuildContext context) {
   );
 }
 
-pushOnNav(Widget page, NavigatorState nav) {
-  nav.pushReplacement(
-      PageRouteBuilder(
-        maintainState: false,
-        transitionDuration: const Duration(milliseconds: 200),
-        transitionsBuilder: (_, anim, __, child) {
-          return FadeTransition(
-            opacity: anim,
-            child: child,
-          );
-        },
-        pageBuilder: (_, __, ___) {
-          return page;
-        },
-      )
+pushOnNav(Widget page, NavigatorState nav, [bool replace = true]) {
+  if(replace) {
+    nav.pushReplacement(
+        pageRouteBuilder(page)
+    );
+  } else {
+    nav.push(
+      pageRouteBuilder(page)
+    );
+  }
+}
+
+PageRouteBuilder pageRouteBuilder(Widget page) {
+  return PageRouteBuilder(
+    maintainState: false,
+    transitionDuration: const Duration(milliseconds: 200),
+    transitionsBuilder: (_, anim, __, child) {
+      return FadeTransition(
+        opacity: anim,
+        child: child,
+      );
+    },
+    pageBuilder: (_, __, ___) {
+      return page;
+    },
   );
 }

@@ -33,7 +33,7 @@ class _SidebarChannelDisplayState extends State<SidebarChannelDisplay> {
     
     return FutureProvider<AccessibleChannelsInfoPacketData>(
       create: (_) async {
-        return await _profileData.fetchAccessibleChannels(_conn);
+        return await _profileData.accessibleChannelsStream(_conn);
       },
       child: Consumer<AccessibleChannelsInfoPacketData>(
         builder: (context, val, _) {

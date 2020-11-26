@@ -24,4 +24,25 @@ class AppTextStyles {
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
+
+  static const TextStyle channelIconStyle = const TextStyle(
+    color: Colors.white,
+    fontSize: 18,
+  );
+
+  static const TextStyle singleMessageAuthorStyle = const TextStyle(
+    fontWeight: FontWeight.w400,
+    color: Colors.white,
+    fontSize: 15,
+  );
+  static const TextStyle singleMessageTextStyle = const TextStyle(
+    color: Colors.white,
+    fontSize: 13,
+  );
+
+  static const TextStyle chatInfoDisplayStyle = const TextStyle(
+    color: Colors.white,
+    fontSize: 17,
+    fontWeight: FontWeight.bold,
+  );
 }

@@ -35,8 +35,7 @@ class LoginFormState extends State<LoginForm> {
     return Container(
       width: MediaQuery.of(context).size.width * 0.7,
       child: TextFormField(
-        keyboardType: TextInputType.visiblePassword,
-        obscureText: true,
+        keyboardType: TextInputType.emailAddress,
         onChanged: (String newVal) => widget.logic.currEmail = newVal,
         validator: widget.logic.emailValidator,
         decoration: InputDecoration(
@@ -54,7 +53,7 @@ class LoginFormState extends State<LoginForm> {
       child: TextFormField(
         keyboardType: TextInputType.visiblePassword,
         obscureText: true,
-        onChanged: (String newVal) => widget.logic.currEmail = newVal,
+        onChanged: (String newVal) => widget.logic.currPassword = newVal,
         validator: widget.logic.passwordValidator,
         decoration: InputDecoration(
           labelText: "Password",
@@ -78,7 +77,7 @@ class LoginFormState extends State<LoginForm> {
     );
   }
 
-  // TODO: remove
+  // TODO: remove, debug
   Widget debugAdminButton() {
     return FlatButton(
       child: Text(

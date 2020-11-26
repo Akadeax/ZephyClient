@@ -29,7 +29,7 @@ Widget _providers({@required Widget child}) {
 }
 
 Widget _connProvider() => Provider<ServerConnection>(create: (_) => ServerConnection());
-Widget _currentLoginUserProvider() => Provider<CurrentLoginUser>(create: (_) => CurrentLoginUser());
+Widget _currentLoginUserProvider() => ChangeNotifierProvider<CurrentLoginUser>(create: (_) => CurrentLoginUser());
 
 Widget _content() {
   return ConnectionScreen();

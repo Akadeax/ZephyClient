@@ -20,7 +20,6 @@ class ConnectionScreenState extends State<ConnectionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(Provider.of<ServerConnection>(context, listen: false));
     return Scaffold(
       body: Center(
         child: logic.locateBuilder(context),

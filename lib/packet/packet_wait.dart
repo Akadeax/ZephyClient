@@ -6,7 +6,7 @@ import 'package:zephy_client/packet/packet_handler.dart';
 
 class PacketWait<TPacketType extends Packet> {
 
-  bool _disposed = false;
+  bool disposed = false;
 
   int type;
   PacketCreator<TPacketType> creator;
@@ -20,13 +20,13 @@ class PacketWait<TPacketType extends Packet> {
 
     stream = conn.packetHandler.packetStream<TPacketType>(type, creator);
     await for(TPacketType packet in stream) {
-      if(_disposed) return;
+      if(disposed) return;
       onGot(packet);
     }
   }
 
   void dispose() {
     stream = null;
-    _disposed = true;
+    disposed = true;
   }
 }

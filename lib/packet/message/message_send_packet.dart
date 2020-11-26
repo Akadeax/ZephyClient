@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'file:///D:/dev/Programming/Dart/Flutter/zephy_client/lib/models/message_model.dart';
+import 'package:zephy_client/models/message_model.dart';
 import 'package:zephy_client/packet/packet.dart';
 
 class MessageSendPacketData extends PacketData {
