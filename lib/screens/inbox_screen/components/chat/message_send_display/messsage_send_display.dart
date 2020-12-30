@@ -20,7 +20,7 @@ class MessageSendDisplayState extends State<MessageSendDisplay> {
     Size size = MediaQuery.of(context).size;
 
     return Container(
-      color: AppColorSets.colorPrimaryLightBlue,
+      color: ColorSets.primaryLight,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,7 +45,7 @@ class MessageSendDisplayState extends State<MessageSendDisplay> {
                 "send",
                 style: AppTextStyles.buttonLabelStyle
               ),
-              color: AppColorSets.colorPrimaryDarkBlue,
+              color: ColorSets.primaryDark,
               onPressed: () => logic.sendMessage(context),
             ),
           )

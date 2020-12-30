@@ -25,7 +25,7 @@ class SidebarChannelsDisplayState extends State<SidebarChannelsDisplay> {
       heightFactor: 1.0,
       child: Container(
         width: SidebarChannelsDisplayAppData.sidebarWidth,
-        color: AppColorSets.colorPrimaryBlue,
+        color: ColorSets.primary,
       ),
     );
   }
@@ -35,9 +35,19 @@ class SidebarChannelsDisplayState extends State<SidebarChannelsDisplay> {
       heightFactor: 1.0,
       child: Container(
         width: SidebarChannelsDisplayAppData.sidebarWidth,
-        color: AppColorSets.colorPrimaryBlue,
-        child: logic.channelsListView(data)
+        color: ColorSets.primary,
+        child: sidebarChannelsListView(data),
       ),
+    );
+  }
+
+  Widget sidebarChannelsListView(AccessibleChannelsInfoPacketData data) {
+    return ListView.builder(
+        padding: SidebarChannelsDisplayAppData.listViewPadding,
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
+        itemCount: data.accessibleChannelsData.length,
+        itemBuilder: (ctx, i) => logic.channelsListViewItemBuilder(i, data)
     );
   }
 }

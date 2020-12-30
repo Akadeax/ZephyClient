@@ -10,7 +10,7 @@ class ChatInfoDisplay extends StatelessWidget {
     CurrentDisplayChannel channel = Provider.of<CurrentDisplayChannel>(context);
 
     return Container(
-      color: AppColorSets.colorPrimaryDarkBlue,
+      color: ColorSets.primaryDark,
       child: Center(
         child: Text(
           channel.baseChannelData.name ?? "",

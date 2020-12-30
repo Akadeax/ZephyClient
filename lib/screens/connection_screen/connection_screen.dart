@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:zephy_client/networking/server_connection.dart';
 import 'package:zephy_client/screens/connection_screen/components/retry_connection_widget.dart';
 
 import 'connection_screen_logic.dart';

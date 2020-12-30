@@ -67,8 +67,8 @@ class LoginFormState extends State<LoginForm> {
   Widget loginButton() {
     return DisableButton(
       key: widget.logic.loginButton,
-      enabledColor: AppColorSets.colorPrimaryBlue,
-      disabledColor: AppColorSets.colorDisabledButton,
+      enabledColor: ColorSets.primary,
+      disabledColor: ColorSets.disabledButton,
       child: Text(
         LoginScreenAppData.loginButtonText,
         style: AppTextStyles.buttonLabelStyle,

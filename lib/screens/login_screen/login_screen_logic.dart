@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/app/text_styles.dart';
 import 'package:zephy_client/main.dart';
 import 'package:zephy_client/networking/server_connection.dart';
 import 'package:zephy_client/packet/auth/login_attempt_packet.dart';

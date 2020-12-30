@@ -23,7 +23,6 @@ class PacketHandler with ChangeNotifier {
   /// being waited for in this function but not actually in any function scope, maybe
   /// fix one day.
   Future<TPacketType> waitForPacket<TPacketType extends Packet>(int type, PacketCreator<TPacketType> creator) async {
-    print("starting to wait for packet ($type)...");
     _activeRequests.add(type);
     notifyNextFrame();
 
@@ -32,7 +31,6 @@ class PacketHandler with ChangeNotifier {
 
       if(type != packetType) continue;
 
-      print("got packet in wait ($packetType).");
       _activeRequests.remove(type);
       notifyListeners();
       return creator(data);
@@ -44,7 +42,6 @@ class PacketHandler with ChangeNotifier {
 
   /// open a stream that receives all Packets of TPacketType and puts them in the returned stream.
   Stream<TPacketType> packetStream<TPacketType extends Packet>(int type, PacketCreator<TPacketType> creator) async* {
-    print("starting packet wait stream...");
     notifyNextFrame();
 
     await for(Uint8List data in _conn.packetStream.stream) {

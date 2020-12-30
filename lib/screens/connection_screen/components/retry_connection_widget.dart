@@ -25,7 +25,7 @@ class RetryConnectionWidget extends StatelessWidget {
         ),
         SizedBox(height: ConnectionScreenAppData.retrySeperatorHeight),
         FlatButton(
-          color: AppColorSets.colorPrimaryBlue,
+          color: ColorSets.primary,
           child: Text(
             ConnectionScreenAppData.retryButtonText,
             style: AppTextStyles.buttonLabelStyle,

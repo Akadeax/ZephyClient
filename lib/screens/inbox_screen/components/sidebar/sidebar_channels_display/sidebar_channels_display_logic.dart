@@ -34,18 +34,10 @@ class SidebarChannelsDisplayLogic {
     );
   }
 
-  Widget channelsListView(AccessibleChannelsInfoPacketData data) {
-    return ListView.builder(
-      padding: SidebarChannelsDisplayAppData.listViewPadding,
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: data.accessibleChannelsData.length,
-      itemBuilder: (ctx, i) {
-        return Padding(
-          padding: SidebarChannelsDisplayAppData.listViewItemsPadding,
-          child: SingleChannelDisplay(data.accessibleChannelsData[i])
-        );
-      }
+  Widget channelsListViewItemBuilder(int i, AccessibleChannelsInfoPacketData data) {
+    return Padding(
+        padding: SidebarChannelsDisplayAppData.listViewItemsPadding,
+        child: SingleChannelDisplay(data.accessibleChannelsData[i])
     );
   }
 

@@ -10,7 +10,6 @@ import 'package:zephy_client/prov/current_login_user.dart';
 import 'package:zephy_client/screens/inbox_screen/components/chat/single_message_display.dart';
 
 class ChatDisplayLogic {
-  bool disposed = false;
 
   int nextPageToLoad = 0;
 
@@ -59,7 +58,6 @@ class ChatDisplayLogic {
   }
 
   void onMessageLoadReceived(PopulateMessagesPacketData data, BuildContext context) {
-    if(disposed) return;
     CurrentDisplayChannel channel = Provider.of<CurrentDisplayChannel>(context, listen: false);
 
     channel.messages.addAll(data.populatedMessages);
@@ -67,8 +65,6 @@ class ChatDisplayLogic {
   }
 
   void onMessageSendReceived(MessageSendPacketData data, BuildContext context) {
-    if(disposed) return;
-
     CurrentDisplayChannel channel = Provider.of<CurrentDisplayChannel>(context, listen: false);
 
     channel.messages.insert(0, data.returnMessage);
@@ -95,7 +91,6 @@ class ChatDisplayLogic {
 
 
   void dispose() {
-    disposed = true;
     messageLoadWait.dispose();
     messageReceiveWait.dispose();
   }
