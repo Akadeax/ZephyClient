@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:zephy_client/packet/identify_packet.dart';
-import 'package:zephy_client/packet/packet.dart';
+import 'package:zephy_client/networking/packet/general/identify_packet.dart';
+import 'package:zephy_client/networking/packet/packet.dart';
 
 class ServerLocator {
   RawDatagramSocket _socket;

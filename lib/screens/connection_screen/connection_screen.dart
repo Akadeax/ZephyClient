@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:zephy_client/screens/connection_screen/components/retry_connection_widget.dart';
+import 'package:zephy_client/widgets/loading/loading.dart';
 
 import 'connection_screen_logic.dart';
 
 class ConnectionScreen extends StatefulWidget {
-
   @override
   ConnectionScreenState createState() => ConnectionScreenState();
 }
 
+
 class ConnectionScreenState extends State<ConnectionScreen> {
   ConnectionScreenLogic logic;
-
   ConnectionScreenState() {
     logic = ConnectionScreenLogic(this);
   }
@@ -20,18 +19,16 @@ class ConnectionScreenState extends State<ConnectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: logic.locateBuilder(context),
-      )
+          child: logic.locateWidget(context),
+      ),
     );
   }
 
-  Widget get loadingWidget {
-    return CircularProgressIndicator();
+  Widget loading() {
+    return Loading(singleBallSize: 25);
   }
 
-  Widget get retryConnectionWidget {
-    return RetryConnectionWidget(logic);
+  void rebuild() {
+    setState(() {});
   }
-
-  void update() => setState(() {});
 }

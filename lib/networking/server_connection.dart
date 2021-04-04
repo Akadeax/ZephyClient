@@ -2,12 +2,9 @@ import 'dart:async';
  import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:zephy_client/main.dart';
+import 'package:zephy_client/networking/packet/packet.dart';
+import 'package:zephy_client/networking/packet/packet_handler.dart';
 import 'package:zephy_client/networking/server_locator.dart';
-import 'package:zephy_client/packet/packet.dart';
-import 'package:zephy_client/packet/packet_handler.dart';
-import 'package:zephy_client/screens/fatal_error_screen/fatal_error_screen.dart';
-import 'package:zephy_client/utils/nav_util.dart';
 
 class ServerConnection {
   Socket _socket;
@@ -24,8 +21,7 @@ class ServerConnection {
       await _socket.done;
     } on Exception catch(e) {
       print("FATAL: $e");
-      pushOnNav(FatalErrorScreen(), mainNavKey.currentState);
-
+      //TODO: Handle Fatal error in UI
     }
   }
 
