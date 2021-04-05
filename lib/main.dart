@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zephy_client/app/themes.dart';
 import 'package:zephy_client/networking/server_connection.dart';
 import 'package:zephy_client/screens/connection_screen/connection_screen.dart';
 
@@ -12,6 +13,8 @@ main() {
         debugShowCheckedModeBanner: false,
         navigatorKey: mainNavKey,
         home: _content(),
+        themeMode: ThemeMode.dark,
+        darkTheme: darkTheme,
       ),
     ),
   );

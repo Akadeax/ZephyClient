@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:zephy_client/utils/list_util.dart';
 
-import 'loading.dart';
 
 List<Color> loadingColor = [];
 List<Color> errorColor = [];
@@ -20,10 +18,10 @@ List<TweenSequenceItem<Color>> rotatingColor([List<Color> colors]) {
 
 class AnimatedLoadingCircle extends StatefulWidget {
   final int offset;
-  final List<Color> initialColors;
+  final List<Color> colors;
   final double singleBallSize;
 
-  AnimatedLoadingCircle({Key key, @required this.offset, this.initialColors, this.singleBallSize = 30}) : super(key: key);
+  AnimatedLoadingCircle({Key key, @required this.offset, this.colors, this.singleBallSize = 30}) : super(key: key);
 
   @override
   AnimatedLoadingCircleState createState() => AnimatedLoadingCircleState();
@@ -33,8 +31,6 @@ class AnimatedLoadingCircle extends StatefulWidget {
 class AnimatedLoadingCircleState extends State<AnimatedLoadingCircle> with SingleTickerProviderStateMixin  {
   AnimationController _controller;
   Animation<Color> _colorAnim;
-  List<Color> _currentColors;
-
 
   @override
   void initState() {
@@ -43,21 +39,12 @@ class AnimatedLoadingCircleState extends State<AnimatedLoadingCircle> with Singl
       vsync: this,
     )..forward()..repeat();
 
-    setAnim(widget.initialColors, widget.offset);
+    _colorAnim = TweenSequence<Color>(rotate(rotatingColor(widget.colors), widget.offset)).animate(_controller);
     super.initState();
-  }
-
-  void setAnim(List<Color> colors, int tweenOffset) {
-    _currentColors = colors;
-    _colorAnim = TweenSequence<Color>(rotate(rotatingColor(colors), tweenOffset)).animate(_controller);
   }
 
   @override
   Widget build(BuildContext context) {
-    LoadingState state = Provider.of<LoadingState>(context);
-    if(state.currentColors != _currentColors) {
-      setAnim(state.currentColors, widget.offset);
-    }
     return AnimatedBuilder(
       animation: _controller,
       builder: (ctx, _) {

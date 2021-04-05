@@ -1,5 +1,19 @@
 import 'package:flutter/material.dart';
 
+ThemeData get darkTheme => ThemeData(
+  brightness: Brightness.dark,
+  colorScheme: darkColorScheme,
+
+  textTheme: Typography.whiteRedmond,
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: MaterialStateProperty.all(darkColorScheme.primary),
+      foregroundColor: MaterialStateProperty.all(darkColorScheme.onPrimary),
+      padding: MaterialStateProperty.all(EdgeInsets.all(15)),
+    )
+  )
+);
+
 ColorScheme get darkColorScheme => ColorScheme(
   brightness: Brightness.dark,
 
@@ -19,3 +33,4 @@ ColorScheme get darkColorScheme => ColorScheme(
   onSurface: Color(0xFF9BA2B4),
   onError: Color(0xFFF2A853),
 );
+

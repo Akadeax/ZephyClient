@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zephy_client/networking/server_locator.dart';
 import 'package:zephy_client/utils/nav_util.dart';
-import 'package:zephy_client/widgets/loading/loading.dart';
 
 import 'connection_screen.dart';
 
@@ -18,33 +17,33 @@ class ConnectionScreenLogic {
 
 
   FutureBuilder locateWidget(BuildContext context) {
-    /*return FutureComponent(
-      future: Future.delayed(Duration(seconds: 2)),
-      loading: screen.loading(),
-      error: (err) {
-        return Container();
-      },
-      resolved: (data) {
-        pushLoginScreen(context, data);
-        return Container();
-      },
-    );*/
-
     return FutureBuilder(
-      future: Future.delayed(Duration(seconds: 2)),
+      future: currentLocateFuture,
       builder: (ctx, snapshot) {
-        Loading loading = screen.loading();
 
-        if(snapshot.connectionState == ConnectionState.done && snapshot.data != null)
+        bool dataIsValid = !snapshot.hasError && snapshot.data != null;
+        bool isLoading = snapshot.connectionState == ConnectionState.waiting;
+
+        // Server Location was successful
+        if(dataIsValid && !isLoading) {
+          // TODO: Handle successful locating
           return Container();
-        else if(snapshot.connectionState == ConnectionState.waiting) {
-          loading.state.currentColors = loadingColors;
         }
-        else {
-          loading.state.currentColors = errorColors;
-        }
-        print("RET");
-        return loading;
+
+        bool showError = !dataIsValid && !isLoading;
+
+        return AnimatedCrossFade(
+          duration: screen.fadeToError,
+          reverseDuration: screen.fadeFromError,
+
+          firstChild: screen.loading(),
+          secondChild: screen.error(),
+
+          crossFadeState: showError ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          layoutBuilder: fadeLayoutBuilder,
+        );
+
+
       }
     );
   }
@@ -57,5 +56,22 @@ class ConnectionScreenLogic {
 
   void pushLoginScreen(BuildContext context, data) {
     pushNextFrame(Container(), context);
+  }
+
+  Widget fadeLayoutBuilder(top, topKey, bottom, bottomKey) {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        Positioned(
+          key: bottomKey,
+          child: bottom,
+        ),
+        Positioned(
+          key: topKey,
+          child: top,
+        ),
+      ],
+    );
   }
 }
