@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:zephy_client/networking/server_locator.dart';
+import 'package:zephy_client/screens/login_screen/login_screen.dart';
 import 'package:zephy_client/utils/nav_util.dart';
 
 import 'connection_screen.dart';
@@ -26,8 +27,7 @@ class ConnectionScreenLogic {
 
         // Server Location was successful
         if(dataIsValid && !isLoading) {
-          // TODO: Handle successful locating
-          return Container();
+          pushNextFrame(LoginScreen(snapshot.data), context);
         }
 
         bool showError = !dataIsValid && !isLoading;
@@ -42,8 +42,6 @@ class ConnectionScreenLogic {
           crossFadeState: showError ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           layoutBuilder: fadeLayoutBuilder,
         );
-
-
       }
     );
   }

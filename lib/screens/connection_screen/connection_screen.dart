@@ -8,11 +8,9 @@ class ConnectionScreen extends StatefulWidget {
   ConnectionScreenState createState() => ConnectionScreenState();
 }
 
-
 class ConnectionScreenState extends State<ConnectionScreen> {
   Duration fadeToError = const Duration(milliseconds: 200);
   Duration fadeFromError = const Duration(milliseconds: 75);
-
 
   ConnectionScreenLogic logic;
   ConnectionScreenState() {
@@ -29,7 +27,7 @@ class ConnectionScreenState extends State<ConnectionScreen> {
   }
 
   Widget loading([List<Color> colors]) {
-    return Loading(singleBallSize: 25, colors: colors == null ? loadingColors : colors);
+    return Loading(singleBallSize: 25, colors: colors == null ? getLoadingColors(context) : colors);
   }
 
   Widget error() {
@@ -42,7 +40,7 @@ class ConnectionScreenState extends State<ConnectionScreen> {
         alignment: Alignment.center,
         clipBehavior: Clip.none,
         children: [
-          loading(errorColors),
+          loading(getErrorColors(context)),
           Positioned(
               top: size.height / 2 + 60,
               child: Column(

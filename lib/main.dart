@@ -14,7 +14,7 @@ main() {
         navigatorKey: mainNavKey,
         home: _content(),
         themeMode: ThemeMode.dark,
-        darkTheme: darkTheme,
+        darkTheme: ZephyDark.theme,
       ),
     ),
   );
