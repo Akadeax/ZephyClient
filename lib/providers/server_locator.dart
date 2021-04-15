@@ -8,10 +8,12 @@ import 'package:zephy_client/services/networking/packet/packet.dart';
 class ServerLocator {
   static const int TIMEOUT_SECS = 2;
 
+  BroadcastResult lastBroadcastResult;
+
   RawDatagramSocket _socket;
   final int sendPort, listenPort;
 
-  ServerLocator({this.sendPort, this.listenPort});
+  ServerLocator({this.sendPort = 6556, this.listenPort = 6557});
 
   /// tries to locate the server on the local network and returning the location of it;
   /// times out after one second, returning null.
@@ -21,6 +23,7 @@ class ServerLocator {
       return null;
     });
     _socket.close();
+    lastBroadcastResult = res;
     return res;
   }
 
@@ -66,8 +69,8 @@ class BroadcastResult {
   int receivedFromPort;
 
   BroadcastResult(
-      this.receivedResult,
-      this.receivedFromAddress,
-      this.receivedFromPort
-      );
+    this.receivedResult,
+    this.receivedFromAddress,
+    this.receivedFromPort
+  );
 }

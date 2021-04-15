@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zephy_client/providers/server_connection.dart';
+import 'package:zephy_client/providers/server_locator.dart';
 import 'package:zephy_client/routes.dart';
 import 'package:zephy_client/theme/dark.dart';
 
@@ -13,6 +14,7 @@ class ZephyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<ServerLocator>(create: (_) => ServerLocator()),
         Provider<ServerConnection>(create: (_) => ServerConnection()),
       ],
       child: MaterialApp(

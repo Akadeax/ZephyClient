@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zephy_client/components/loading/errable_loading.dart';
-import 'package:zephy_client/services/networking/server_locator.dart';
+import 'package:zephy_client/providers/server_connection.dart';
+import 'package:zephy_client/providers/server_locator.dart';
 import 'package:zephy_client/util/controller_view.dart';
 
 class ConnectionScreen extends StatefulWidget {
@@ -12,13 +14,14 @@ class _ConnectionScreenController extends State<ConnectionScreen> {
   @override
   Widget build(BuildContext context) => _ConnectionScreenView(this);
 
-  ServerLocator locator = ServerLocator(sendPort: 6556, listenPort: 6557);
+  ServerLocator locator;
   Future currentLocateFuture;
 
   GlobalKey<ErrableLoadingController> loadingKey = GlobalKey();
 
   @override
   void initState() {
+    locator = Provider.of<ServerLocator>(context, listen: false);
     currentLocateFuture = locator.locate();
     super.initState();
   }
@@ -60,6 +63,7 @@ class _ConnectionScreenView extends WidgetView<ConnectionScreen, _ConnectionScre
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
         body: Center(
           child: state.locateBuilder(
