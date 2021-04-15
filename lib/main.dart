@@ -1,36 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/app/themes.dart';
-import 'package:zephy_client/networking/server_connection.dart';
-import 'package:zephy_client/screens/connection_screen/connection_screen.dart';
+import 'package:zephy_client/providers/server_connection.dart';
+import 'package:zephy_client/routes.dart';
+import 'package:zephy_client/theme/dark.dart';
 
-GlobalKey<NavigatorState> mainNavKey = GlobalKey();
+void main() {
+  runApp(ZephyApp());
+}
 
-main() {
-  runApp(
-    _providers(
+class ZephyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider<ServerConnection>(create: (_) => ServerConnection()),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        navigatorKey: mainNavKey,
-        home: _content(),
-        themeMode: ThemeMode.dark,
-        darkTheme: ZephyDark.theme,
+        title: "Zephy",
+        theme: ZephyDark.theme,
+        initialRoute: "/connect",
+        routes: routes,
       ),
-    ),
-  );
-}
-
-Widget _providers({@required Widget child}) {
-  return MultiProvider(
-    providers: [
-      _connProvider(),
-    ],
-    child: child,
-  );
-}
-
-Widget _connProvider() => Provider<ServerConnection>(create: (_) => ServerConnection());
-
-Widget _content() {
-  return ConnectionScreen();
+    );
+  }
 }

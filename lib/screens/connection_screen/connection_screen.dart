@@ -1,69 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:zephy_client/widgets/loading/loading.dart';
-
-import 'connection_screen_logic.dart';
+import 'package:zephy_client/components/loading/errable_loading.dart';
+import 'package:zephy_client/services/networking/server_locator.dart';
+import 'package:zephy_client/util/controller_view.dart';
 
 class ConnectionScreen extends StatefulWidget {
   @override
-  ConnectionScreenState createState() => ConnectionScreenState();
+  _ConnectionScreenController createState() => _ConnectionScreenController();
 }
 
-class ConnectionScreenState extends State<ConnectionScreen> {
-  Duration fadeToError = const Duration(milliseconds: 200);
-  Duration fadeFromError = const Duration(milliseconds: 75);
+class _ConnectionScreenController extends State<ConnectionScreen> {
+  @override
+  Widget build(BuildContext context) => _ConnectionScreenView(this);
 
-  ConnectionScreenLogic logic;
-  ConnectionScreenState() {
-    logic = ConnectionScreenLogic(this);
+  ServerLocator locator = ServerLocator(sendPort: 6556, listenPort: 6557);
+  Future currentLocateFuture;
+
+  GlobalKey<ErrableLoadingController> loadingKey = GlobalKey();
+
+  @override
+  void initState() {
+    currentLocateFuture = locator.locate();
+    super.initState();
   }
+
+  FutureBuilder locateBuilder({
+    @required BuildContext context,
+    @required ErrableLoading loading,
+  }) {
+    return FutureBuilder(
+        future: currentLocateFuture,
+        builder: (builderCtx, snapshot) {
+          bool dataIsValid = !snapshot.hasError && snapshot.data != null;
+          bool isLoading = snapshot.connectionState == ConnectionState.waiting;
+
+          // Server Location was successful
+          if (dataIsValid && !isLoading) {
+            // TODO: transition to login screen together with snapshot.data
+          }
+
+          bool shouldShowError = !dataIsValid && !isLoading;
+
+          if(loadingKey.currentState != null)
+            loadingKey.currentState.showError = shouldShowError;
+
+          return loading;
+        }
+    );
+  }
+
+  void retryButton() {
+    currentLocateFuture = locator.locate();
+    setState(() {});
+  }
+}
+
+
+class _ConnectionScreenView extends WidgetView<ConnectionScreen, _ConnectionScreenController> {
+  _ConnectionScreenView(_ConnectionScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: logic.locateWidget(context),
-      ),
-    );
-  }
+        body: Center(
+          child: state.locateBuilder(
+            context: context,
+            loading: ErrableLoading(
+              key: state.loadingKey,
+              onButtonPress: state.retryButton,
 
-  Widget loading([List<Color> colors]) {
-    return Loading(singleBallSize: 25, colors: colors == null ? getLoadingColors(context) : colors);
-  }
+              singleBallSize: 25,
+              loadingSize: 85,
 
-  Widget error() {
-    Size size = MediaQuery.of(context).size;
-
-    return Container(
-      width: size.width,
-      height: size.height,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        children: [
-          loading(getErrorColors(context)),
-          Positioned(
-              top: size.height / 2 + 60,
-              child: Column(
-                children: [
-                  SizedBox(height: 15),
-                  Text(
-                    "A valid server could not be located on your network.",
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                  SizedBox(height: 15),
-                  TextButton(
-                    child: Text("Retry Connection"),
-                    onPressed: logic.onRetryPressed,
-                  ),
-                ],
-              )
+              height: 300,
+            ),
           ),
-        ],
-      ),
+        )
     );
-  }
-
-  void rebuild() {
-    setState(() {});
   }
 }
