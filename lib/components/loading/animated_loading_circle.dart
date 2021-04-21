@@ -23,8 +23,9 @@ class AnimatedLoadingCircle extends StatefulWidget {
   final int offset;
   final List<Color> colors;
   final double singleBallSize;
+  final double animationSpeed;
 
-  AnimatedLoadingCircle({Key key, @required this.offset, this.colors, this.singleBallSize = 30}) : super(key: key);
+  AnimatedLoadingCircle({Key key, @required this.offset, this.colors, this.singleBallSize = 30, this.animationSpeed = 1}) : super(key: key);
 
   @override
   AnimatedLoadingCircleState createState() => AnimatedLoadingCircleState();
@@ -38,7 +39,7 @@ class AnimatedLoadingCircleState extends State<AnimatedLoadingCircle> with Singl
   @override
   void initState() {
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: (1000 * widget.animationSpeed).floor()),
       vsync: this,
     )..forward()..repeat();
 

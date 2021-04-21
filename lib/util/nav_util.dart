@@ -1,21 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:zephy_client/main.dart';
 
-void navPush(BuildContext context, String route) {
-  Navigator.of(context).pushReplacementNamed(route);
+void rootNavPush(String route) {
+  rootNav.currentState.pushReplacementNamed(route);
 }
 
-PageRouteBuilder pageRouteBuilder(Widget page) {
-  return PageRouteBuilder(
-    maintainState: false,
-    transitionDuration: const Duration(milliseconds: 200),
-    transitionsBuilder: (_, anim, __, child) {
-      return FadeTransition(
-        opacity: anim,
-        child: child,
-      );
-    },
-    pageBuilder: (_, __, ___) {
-      return page;
-    },
-  );
+void rootNavPushDelayed(String route) {
+  SchedulerBinding.instance.addPostFrameCallback((timeStamp) => rootNavPush(route));
 }

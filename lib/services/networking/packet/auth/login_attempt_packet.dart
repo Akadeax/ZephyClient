@@ -4,22 +4,19 @@ import 'package:zephy_client/services/networking/packet/packet.dart';
 
 
 class LoginAttemptPacketData extends PacketData {
-  String username;
-  String email;
+  String identifier;
   String password;
 
-  LoginAttemptPacketData({this.username, this.email, this.password});
+  LoginAttemptPacketData({this.identifier, this.password});
 
   LoginAttemptPacketData.fromJson(Map<String, dynamic> json) {
-    username = json['username'];
-    email = json['email'];
+    identifier = json['identifier'];
     password = json['password'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['username'] = this.username;
-    data['email'] = this.email;
+    data['identifier'] = this.identifier;
     data['password'] = this.password;
     return data;
   }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/loading/errable_loading.dart';
-import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/providers/server_locator.dart';
-import 'package:zephy_client/util/controller_view.dart';
+import 'package:zephy_client/util/nav_util.dart';
 
 class ConnectionScreen extends StatefulWidget {
   @override
@@ -38,7 +38,7 @@ class _ConnectionScreenController extends State<ConnectionScreen> {
 
           // Server Location was successful
           if (dataIsValid && !isLoading) {
-            // TODO: transition to login screen together with snapshot.data
+            rootNavPushDelayed("/login");
           }
 
           bool shouldShowError = !dataIsValid && !isLoading;
@@ -58,26 +58,31 @@ class _ConnectionScreenController extends State<ConnectionScreen> {
 }
 
 
-class _ConnectionScreenView extends WidgetView<ConnectionScreen, _ConnectionScreenController> {
+class _ConnectionScreenView extends StatefulWidgetView<ConnectionScreen, _ConnectionScreenController> {
   _ConnectionScreenView(_ConnectionScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
-        body: Center(
-          child: state.locateBuilder(
-            context: context,
-            loading: ErrableLoading(
-              key: state.loadingKey,
-              onButtonPress: state.retryButton,
+        resizeToAvoidBottomInset: false,
+        body: Column(
+          children: [
+            Expanded(child: Container(), flex: 100),
+            Expanded(
+              flex: 175,
+              child: controller.locateBuilder(
+                context: context,
+                loading: ErrableLoading(
+                  key: controller.loadingKey,
+                  onErrorButtonPress: controller.retryButton,
 
-              singleBallSize: 25,
-              loadingSize: 85,
-
-              height: 300,
+                  singleBallSize: 25,
+                  loadingSize: 85,
+                ),
+              ),
             ),
-          ),
+          ]
         )
     );
   }

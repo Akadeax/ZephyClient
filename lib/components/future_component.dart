@@ -15,6 +15,7 @@ class FutureComponent<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder<T>(
         future: future,
         builder: (context, snapshot) {

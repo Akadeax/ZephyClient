@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/loading/loading.dart';
-import 'package:zephy_client/util/controller_view.dart';
 import 'package:zephy_client/util/layout_builders.dart';
 
 class ErrableLoading extends StatefulWidget {
-  final double width;
-  final double height;
-  final Function() onButtonPress;
+  final Function() onErrorButtonPress;
 
   final String errorText;
   final String buttonText;
@@ -19,11 +17,9 @@ class ErrableLoading extends StatefulWidget {
 
   const ErrableLoading({
     @required Key key,
-    this.width = 500,
-    this.height = 300,
-    @required this.onButtonPress,
-    this.errorText = "An error has occured.",
-    this.buttonText = "Retry",
+    @required this.onErrorButtonPress,
+    this.errorText = "Failed to locate a server.",
+    this.buttonText = "RETRY",
     this.singleBallSize,
     this.loadingSize,
   }) : super(key: key);
@@ -62,53 +58,66 @@ class ErrableLoadingController extends State<ErrableLoading> {
 }
 
 
-class ErrableLoadingView extends WidgetView<ErrableLoading, ErrableLoadingController> {
+class ErrableLoadingView extends StatefulWidgetView<ErrableLoading, ErrableLoadingController> {
   ErrableLoadingView(ErrableLoadingController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
-    return state.fadeableLoading(
+    return controller.fadeableLoading(
       loading: loading(context),
       error: error(context),
     );
   }
 
-  Widget loading(BuildContext context, [List<Color> colors]) {
-    return Loading(
-        totalSize: widget.loadingSize,
-        singleBallSize: widget.singleBallSize,
-        colors: colors == null ? getLoadingColors(context) : colors,
+  Widget loading(BuildContext context, ) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Positioned(
+          top: 0,
+          child: _loadingCircle(getLoadingColors(context)),
+        ),
+      ],
     );
   }
 
   Widget error(BuildContext context) {
-    return Container(
-      width: widget.width,
-      height: widget.height,
-      child: Stack(
-        alignment: Alignment.center,
-        clipBehavior: Clip.none,
-        children: [
-          loading(context, getErrorColors(context)),
-          Positioned(
-              bottom: 0,
-              child: Column(
-                children: [
-                  SizedBox(height: 15),
-                  Text(
-                    widget.errorText,
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                  SizedBox(height: 15),
-                  TextButton(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Positioned(
+          top: 0,
+          child: _loadingCircle(getErrorColors(context)),
+        ),
+        Positioned(
+            top: 125,
+            child: Column(
+              children: [
+                Text(
+                  widget.errorText,
+                  style: Theme.of(context).textTheme.subtitle1,
+                ),
+                SizedBox(height: 40),
+                ElevatedButton(
+                  child: Padding(
                     child: Text(widget.buttonText),
-                    onPressed: widget.onButtonPress,
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
                   ),
-                ],
-              )
-          ),
-        ],
-      ),
+                  onPressed: widget.onErrorButtonPress,
+                ),
+              ],
+            )
+        ),
+      ],
+    );
+  }
+
+  Widget _loadingCircle(List<Color> colors) {
+    return Loading(
+      totalSize: widget.loadingSize,
+      singleBallSize: widget.singleBallSize,
+      colors: colors,
+      animationSpeed: 0.6,
     );
   }
 }

@@ -2,19 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:zephy_client/util/color_util.dart';
 import 'animated_loading_circle.dart';
 
-//List<Color> loadingColors = [Color(0xFFC7E0FC), Color(0xFF318FFA), Color(0xFF0054B5)];
-//List<Color> errorColors = [Color(0xFFFFA1A1), Color(0xFFFA3131), Color(0xFFB50000)];
-
 List<Color> getLoadingColors(BuildContext context) {
   const double COLOR_DIFF_AMOUNT = 0.1;
-  Color main = Theme.of(context).colorScheme.primary;
-  return <Color>[darken(main, COLOR_DIFF_AMOUNT), main, lighten(main, COLOR_DIFF_AMOUNT)];
+  Color sec = Theme.of(context).colorScheme.secondary;
+  return <Color>[darken(sec, COLOR_DIFF_AMOUNT), sec, lighten(sec, COLOR_DIFF_AMOUNT)];
 }
 
 List<Color> getErrorColors(BuildContext context) {
   const double COLOR_DIFF_AMOUNT = 0.1;
-  Color main = Theme.of(context).colorScheme.error;
-  return <Color>[darken(main, COLOR_DIFF_AMOUNT), main, lighten(main, COLOR_DIFF_AMOUNT)];
+  Color err = Theme.of(context).colorScheme.error;
+  return <Color>[darken(err, COLOR_DIFF_AMOUNT), err, lighten(err, COLOR_DIFF_AMOUNT)];
 }
 
 class Loading extends StatelessWidget {
@@ -22,9 +19,9 @@ class Loading extends StatelessWidget {
   final double singleBallSize;
   final List<Color> colors;
   final bool static;
+  final double animationSpeed;
 
-
-  Loading({this.totalSize = 75, this.singleBallSize = 25, this.colors, this.static = false});
+  Loading({this.totalSize = 75, this.singleBallSize = 25, this.colors, this.static = false, this.animationSpeed});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -65,6 +62,6 @@ class Loading extends StatelessWidget {
       );
     }
 
-    return AnimatedLoadingCircle(offset: offset, singleBallSize: singleBallSize, colors: colors);
+    return AnimatedLoadingCircle(offset: offset, singleBallSize: singleBallSize, colors: colors, animationSpeed: animationSpeed);
   }
 }

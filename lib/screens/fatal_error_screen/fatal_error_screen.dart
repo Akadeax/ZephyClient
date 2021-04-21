@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:zephy_client/util/controller_view.dart';
+import 'package:widget_view/widget_view.dart';
 
 class FatalErrorScreen extends StatelessWidget {
 
@@ -15,7 +15,7 @@ contacting an administrator.
 }
 
 
-class _FatalErrorScreenView extends StatelessView<FatalErrorScreen> {
+class _FatalErrorScreenView extends StatelessWidgetView<FatalErrorScreen> {
   const _FatalErrorScreenView(FatalErrorScreen widget) : super(widget);
 
   Widget build(BuildContext context) {
@@ -29,12 +29,13 @@ class _FatalErrorScreenView extends StatelessView<FatalErrorScreen> {
             Text(
               ":(",
               style: theme.textTheme.headline1.copyWith(
-                color: theme.colorScheme.secondary,
+                color: theme.colorScheme.error,
+                fontWeight: FontWeight.w300,
               ),
             ),
-            SizedBox(height: 15),
+            SizedBox(height: 40),
             Text(
-              widget.fatalErrorText,
+              controller.fatalErrorText,
               style: theme.textTheme.subtitle1,
               textAlign: TextAlign.center,
             )
