@@ -1,36 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:zephy_client/networking/server_connection.dart';
-import 'package:zephy_client/prov/current_login_user.dart';
-import 'package:zephy_client/screens/connection_screen/connection_screen.dart';
+import 'package:zephy_client/providers/server_connection.dart';
+import 'package:zephy_client/providers/server_locator.dart';
+import 'package:zephy_client/routes.dart';
+import 'package:zephy_client/theme/themes.dart';
 
-GlobalKey<NavigatorState> mainNavKey = GlobalKey();
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]
+  );
 
-main() {
-  runApp(
-    _providers(
+  runApp(ZephyApp());
+}
+GlobalKey<NavigatorState> rootNav = GlobalKey();
+
+class ZephyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider<ServerLocator>(create: (_) => ServerLocator()),
+        Provider<ServerConnection>(create: (_) => ServerConnection()),
+      ],
       child: MaterialApp(
+        navigatorKey: rootNav,
         debugShowCheckedModeBanner: false,
-        navigatorKey: mainNavKey,
-        home: _content(),
+        title: "Zephy",
+        theme: ZephyDark.theme,
+        onGenerateRoute: routeGenerator,
       ),
-    ),
-  );
-}
-
-Widget _providers({@required Widget child}) {
-  return MultiProvider(
-    providers: [
-      _connProvider(),
-      _currentLoginUserProvider(),
-    ],
-    child: child,
-  );
-}
-
-Widget _connProvider() => Provider<ServerConnection>(create: (_) => ServerConnection());
-Widget _currentLoginUserProvider() => ChangeNotifierProvider<CurrentLoginUser>(create: (_) => CurrentLoginUser());
-
-Widget _content() {
-  return ConnectionScreen();
+    );
+  }
 }

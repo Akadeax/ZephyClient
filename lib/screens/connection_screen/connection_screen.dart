@@ -1,37 +1,89 @@
 import 'package:flutter/material.dart';
-import 'package:zephy_client/screens/connection_screen/components/retry_connection_widget.dart';
-
-import 'connection_screen_logic.dart';
+import 'package:provider/provider.dart';
+import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/loading/errable_loading.dart';
+import 'package:zephy_client/providers/server_locator.dart';
+import 'package:zephy_client/util/nav_util.dart';
 
 class ConnectionScreen extends StatefulWidget {
-
   @override
-  ConnectionScreenState createState() => ConnectionScreenState();
+  _ConnectionScreenController createState() => _ConnectionScreenController();
 }
 
-class ConnectionScreenState extends State<ConnectionScreen> {
-  ConnectionScreenLogic logic;
+class _ConnectionScreenController extends State<ConnectionScreen> {
+  @override
+  Widget build(BuildContext context) => _ConnectionScreenView(this);
 
-  ConnectionScreenState() {
-    logic = ConnectionScreenLogic(this);
-  }
+  ServerLocator locator;
+  Future currentLocateFuture;
+
+  GlobalKey<ErrableLoadingController> loadingKey = GlobalKey();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: logic.locateBuilder(context),
-      )
+  void initState() {
+    locator = Provider.of<ServerLocator>(context, listen: false);
+    currentLocateFuture = locator.locate();
+    super.initState();
+  }
+
+  FutureBuilder locateBuilder({
+    @required BuildContext context,
+    @required ErrableLoading loading,
+  }) {
+    return FutureBuilder(
+        future: currentLocateFuture,
+        builder: (builderCtx, snapshot) {
+          bool dataIsValid = !snapshot.hasError && snapshot.data != null;
+          bool isLoading = snapshot.connectionState == ConnectionState.waiting;
+
+          // Server Location was successful
+          if (dataIsValid && !isLoading) {
+            rootNavPushDelayed("/login");
+          }
+
+          bool shouldShowError = !dataIsValid && !isLoading;
+
+          if(loadingKey.currentState != null)
+            loadingKey.currentState.showError = shouldShowError;
+
+          return loading;
+        }
     );
   }
 
-  Widget get loadingWidget {
-    return CircularProgressIndicator();
+  void retryButton() {
+    currentLocateFuture = locator.locate();
+    setState(() {});
   }
+}
 
-  Widget get retryConnectionWidget {
-    return RetryConnectionWidget(logic);
+
+class _ConnectionScreenView extends StatefulWidgetView<ConnectionScreen, _ConnectionScreenController> {
+  _ConnectionScreenView(_ConnectionScreenController state) : super(state);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Column(
+          children: [
+            Expanded(child: Container(), flex: 100),
+            Expanded(
+              flex: 175,
+              child: controller.locateBuilder(
+                context: context,
+                loading: ErrableLoading(
+                  key: controller.loadingKey,
+                  onErrorButtonPress: controller.retryButton,
+
+                  singleBallSize: 25,
+                  loadingSize: 85,
+                ),
+              ),
+            ),
+          ]
+        )
+    );
   }
-
-  void update() => setState(() {});
 }
