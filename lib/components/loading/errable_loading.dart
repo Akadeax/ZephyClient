@@ -13,7 +13,7 @@ class ErrableLoading extends StatefulWidget {
   final double singleBallSize;
 
   final Duration fadeToError = const Duration(milliseconds: 200);
-  final Duration fadeFromError = const Duration(milliseconds: 75);
+  final Duration fadeFromError = const Duration(milliseconds: 125);
 
   const ErrableLoading({
     @required Key key,

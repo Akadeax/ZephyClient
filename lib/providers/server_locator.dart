@@ -6,7 +6,7 @@ import 'package:zephy_client/services/networking/packet/packet.dart';
 
 
 class ServerLocator {
-  static const int TIMEOUT_SECS = 2;
+  static const int TIMEOUT_SECS = 5;
 
   BroadcastResult lastBroadcastResult;
 
@@ -52,6 +52,11 @@ class ServerLocator {
 
       IdentifyPacket recvPacket = IdentifyPacket.fromBuffer(dgram.data);
       print("Received answer from '${recvPacket.readPacketData().src}'!");
+
+      // to improve user experience; doesn't instantly jump to login screen
+      // after successful loation
+      await Future.delayed(const Duration(seconds: 1));
+
       return BroadcastResult(recvPacket, dgram.address, dgram.port);
     }
 

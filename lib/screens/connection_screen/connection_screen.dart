@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/circle_decoration_painter.dart';
 import 'package:zephy_client/components/loading/errable_loading.dart';
 import 'package:zephy_client/providers/server_locator.dart';
 import 'package:zephy_client/util/nav_util.dart';
@@ -68,9 +69,9 @@ class _ConnectionScreenView extends StatefulWidgetView<ConnectionScreen, _Connec
         resizeToAvoidBottomInset: false,
         body: Column(
           children: [
-            Expanded(child: Container(), flex: 100),
+            Expanded(flex: 25, child: Container()),
             Expanded(
-              flex: 175,
+              flex: 35,
               child: controller.locateBuilder(
                 context: context,
                 loading: ErrableLoading(
@@ -79,6 +80,15 @@ class _ConnectionScreenView extends StatefulWidgetView<ConnectionScreen, _Connec
 
                   singleBallSize: 25,
                   loadingSize: 85,
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 10,
+              child: CustomPaint(
+                size: Size.infinite,
+                painter: CircleDecorationPainter(
+                    theme: Theme.of(context)
                 ),
               ),
             ),

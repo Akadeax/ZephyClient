@@ -17,11 +17,14 @@ class ZephyLight {
     error: Color(0xFFFA3131),
   );
 
+  static get textTheme => Typography.blackRedmond;
+
   static ThemeData get theme => ThemeData(
-      brightness: Brightness.light,
-      colorScheme: colorScheme,
-      textTheme: Typography.blackRedmond,
-      elevatedButtonTheme: _elevatedButtonThemeData(colorScheme),
+    brightness: Brightness.light,
+    colorScheme: colorScheme,
+    textTheme: textTheme,
+    elevatedButtonTheme: _elevatedButtonThemeData(colorScheme),
+    snackBarTheme: _snackBarTheme(colorScheme, textTheme),
   );
 }
 
@@ -38,14 +41,19 @@ class ZephyDark {
     background: Color(0xFF222222),
     onBackground: Colors.white,
     onSurface: Color(0xFFB2B2B2),
+    error: Color(0xFFFF5252),
+    onError: Colors.white,
   );
+
+  static get textTheme => Typography.whiteRedmond;
 
   static ThemeData get theme => ThemeData(
     brightness: Brightness.dark,
     colorScheme: colorScheme,
-    textTheme: Typography.whiteRedmond,
+    textTheme: textTheme,
     elevatedButtonTheme: _elevatedButtonThemeData(colorScheme),
     scaffoldBackgroundColor: colorScheme.background,
+    snackBarTheme: _snackBarTheme(colorScheme, textTheme),
   );
 }
 
@@ -59,5 +67,16 @@ _elevatedButtonThemeData(ColorScheme col) {
         borderRadius: BorderRadius.circular(10),
       )
     ),
+  );
+}
+
+_snackBarTheme(ColorScheme col, TextTheme text) {
+  return SnackBarThemeData(
+    backgroundColor: col.error,
+    contentTextStyle: text.bodyText2.copyWith(
+      color: col.onError,
+    ),
+    elevation: 5,
+    behavior: SnackBarBehavior.floating,
   );
 }

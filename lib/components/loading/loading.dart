@@ -3,13 +3,13 @@ import 'package:zephy_client/util/color_util.dart';
 import 'animated_loading_circle.dart';
 
 List<Color> getLoadingColors(BuildContext context) {
-  const double COLOR_DIFF_AMOUNT = 0.1;
+  const double COLOR_DIFF_AMOUNT = 0.15;
   Color sec = Theme.of(context).colorScheme.secondary;
   return <Color>[darken(sec, COLOR_DIFF_AMOUNT), sec, lighten(sec, COLOR_DIFF_AMOUNT)];
 }
 
 List<Color> getErrorColors(BuildContext context) {
-  const double COLOR_DIFF_AMOUNT = 0.1;
+  const double COLOR_DIFF_AMOUNT = 0.15;
   Color err = Theme.of(context).colorScheme.error;
   return <Color>[darken(err, COLOR_DIFF_AMOUNT), err, lighten(err, COLOR_DIFF_AMOUNT)];
 }

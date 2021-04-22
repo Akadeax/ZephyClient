@@ -44,7 +44,6 @@ class LoginFormController extends State<LoginForm> {
 
   void attemptLogin(BuildContext context, SnackBar wrongLogin) async {
     if(formKey.currentState.validate()) {
-
       loginButton.currentState.isDisabled = true;
       var attempt = LoginAttemptPacket(LoginAttemptPacketData(
         identifier: identifier,
@@ -59,6 +58,8 @@ class LoginFormController extends State<LoginForm> {
           (buffer) => LoginResponsePacket.fromBuffer(buffer),
       )).readPacketData();
 
+      await Future.delayed(const Duration(seconds: 1));
+
       if(response.httpStatus == HttpStatus.unauthorized) {
         loginButton.currentState.isDisabled = false;
 
@@ -69,6 +70,7 @@ class LoginFormController extends State<LoginForm> {
     }
   }
 }
+
 
 class LoginFormView extends StatefulWidgetView<LoginForm, LoginFormController> {
   LoginFormView(LoginFormController state) : super(state);

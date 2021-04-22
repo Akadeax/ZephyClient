@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/circle_decoration_painter.dart';
 import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/providers/server_locator.dart';
 import 'package:zephy_client/screens/login_screen/login_form.dart';
@@ -61,7 +62,7 @@ class _LoginScreenView extends StatefulWidgetView<LoginScreen, _LoginScreenContr
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Expanded(flex: 7, child: Container()),
+            Expanded(flex: 6, child: Container()),
             Expanded(
               flex: 4,
               child: Text(
@@ -74,7 +75,7 @@ class _LoginScreenView extends StatefulWidgetView<LoginScreen, _LoginScreenContr
               ),
             ),
             Expanded(
-              flex: 13,
+              flex: 15,
               child: LoginForm(
                 key: controller.loginForm,
               ),
@@ -114,21 +115,3 @@ class _LoginScreenView extends StatefulWidgetView<LoginScreen, _LoginScreenContr
   }
 }
 
-class CircleDecorationPainter extends CustomPainter {
-  final ThemeData theme;
-  CircleDecorationPainter({@required this.theme});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-    paint.color = theme.colorScheme.secondary;
-    canvas.drawCircle(Offset(0, size.height * 0.8), 100, paint);
-    paint.color = theme.colorScheme.secondaryVariant;
-    canvas.drawCircle(Offset(size.width * 0.35, size.height * 1.5), 100, paint);
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
-}
