@@ -28,7 +28,7 @@ class ZephyApp extends StatelessWidget {
         navigatorKey: rootNav,
         debugShowCheckedModeBanner: false,
         title: "Zephy",
-        theme: ZephyLight.theme,
+        theme: ZephyDark.theme,
         onGenerateRoute: routeGenerator,
       ),
     );

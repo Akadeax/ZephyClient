@@ -11,6 +11,9 @@ import 'package:zephy_client/services/networking/packet/auth/login_response_pack
 
 class LoginForm extends StatefulWidget {
 
+  final String alreadyLoggedInError = "That account is already logged in!";
+  final String invalidLoginError = "Invalid Login data!";
+
   LoginForm({Key key}) : super(key: key);
 
   @override
@@ -25,8 +28,8 @@ class LoginFormController extends State<LoginForm> {
   GlobalKey<FormState> formKey = GlobalKey();
   GlobalKey<LoadingButtonController> loginButton = GlobalKey();
 
-  String identifier;
-  String password;
+  String identifier = "";
+  String password = "";
 
   String identifierValidator(String newVal) {
     if(newVal == null || newVal.isEmpty) {
@@ -36,13 +39,16 @@ class LoginFormController extends State<LoginForm> {
   }
 
   String passwordValidator(String newVal) {
-    if(newVal == null || newVal.isEmpty || newVal.length < 5) {
-      return "Please enter a valid password.";
+    if(newVal == null || newVal.isEmpty) {
+      return "Please enter a valid password";
     }
     return null;
   }
 
-  void attemptLogin(BuildContext context, SnackBar wrongLogin) async {
+  void attemptLogin(
+      BuildContext context,
+      SnackBar Function(BuildContext, String) errorSnackBar
+  ) async {
     if(formKey.currentState.validate()) {
       loginButton.currentState.isDisabled = true;
       var attempt = LoginAttemptPacket(LoginAttemptPacketData(
@@ -53,19 +59,33 @@ class LoginFormController extends State<LoginForm> {
       ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
       conn.sendPacket(attempt);
 
-      LoginResponsePacketData response = (await conn.packetHandler.waitForPacket(
+      LoginResponsePacketData response = (await conn.packetHandler.waitForPacket<LoginResponsePacket>(
           LoginResponsePacket.TYPE,
           (buffer) => LoginResponsePacket.fromBuffer(buffer),
       )).readPacketData();
 
       await Future.delayed(const Duration(seconds: 1));
 
-      if(response.httpStatus == HttpStatus.unauthorized) {
-        loginButton.currentState.isDisabled = false;
+      ScaffoldMessengerState msg = ScaffoldMessenger.of(context);
 
-        ScaffoldMessengerState msg = ScaffoldMessenger.of(context);
-        msg.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
-        msg.showSnackBar(wrongLogin);
+      switch(response.httpStatus) {
+        case HttpStatus.unauthorized:
+          loginButton.currentState.isDisabled = false;
+
+          msg.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+          msg.showSnackBar(errorSnackBar(context, "Your identifier or password is incorrect!"));
+          break;
+
+        case HttpStatus.forbidden:
+          loginButton.currentState.isDisabled = false;
+
+          msg.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+          msg.showSnackBar(errorSnackBar(context, "That user is already logged in!"));
+          break;
+
+        case HttpStatus.ok:
+          print("Login successful!");
+          // TODO: Push inbox screen with response.user
       }
     }
   }
@@ -123,22 +143,12 @@ class LoginFormView extends StatefulWidgetView<LoginForm, LoginFormController> {
   Widget loginButton(BuildContext context) {
     return LoadingButton(
       key: controller.loginButton,
-      onPressed: () => controller.attemptLogin(context, wrongLoginSnackbar(context)),
+      onPressed: () => controller.attemptLogin(context, errorSnackBar),
       child: Text("LOG IN"),
     );
   }
 
-  SnackBar wrongLoginSnackbar(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
-    return SnackBar(
-      content: Text(
-        "Wrong login data!",
-        style: theme.textTheme.subtitle2.copyWith(
-          color: theme.colorScheme.onError
-        ),
-      ),
-      backgroundColor: theme.colorScheme.error,
-    );
+  SnackBar errorSnackBar(BuildContext context, String message) {
+    return SnackBar(content: Text(message));
   }
 }

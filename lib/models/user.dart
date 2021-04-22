@@ -1,6 +1,6 @@
 class User {
   String sId;
-  Null fullName;
+  String fullName;
   String identifier;
   String password;
 

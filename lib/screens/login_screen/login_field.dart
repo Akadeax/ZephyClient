@@ -85,6 +85,7 @@ class _LoginFieldView extends StatefulWidgetView<LoginField, _LoginFieldControll
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    const double ICON_SIZE = 22;
 
     Color labelColor = controller.focusNode.hasFocus ?
     theme.colorScheme.primaryVariant :
@@ -93,6 +94,7 @@ class _LoginFieldView extends StatefulWidgetView<LoginField, _LoginFieldControll
     return TextFormField(
       focusNode: controller.focusNode,
       validator: widget.validator,
+      onChanged: widget.onChanged,
       obscureText: controller.hidePassword,
       decoration: InputDecoration(
           labelText: widget.labelText,
@@ -105,15 +107,17 @@ class _LoginFieldView extends StatefulWidgetView<LoginField, _LoginFieldControll
               borderSide: BorderSide(color: theme.colorScheme.primaryVariant)
           ),
 
-          // if isPasswordField add show/hide button
+          // if isPasswordField add show/hide password button,
+          // otherwise container of same size to keep spacing the same
           suffix: widget.isPasswordField ? InkWell(
             child: Icon(
               controller.hidePassword ? Icons.visibility_off : Icons.visibility,
               color: theme.colorScheme.onSurface,
-
+              size: ICON_SIZE,
             ),
             onTap: controller.toggleShowPassword,
-          ) : null,
+          ) : Container(width: ICON_SIZE, height: ICON_SIZE),
+
       ),
 
       autocorrect: false,
