@@ -38,8 +38,9 @@ class ZephyDark {
     secondaryVariant: Color(0xFF77B2E9),
     onSecondary: Colors.white,
 
-    background: Color(0xFF222222),
+    background: Color(0xFF363738),
     onBackground: Colors.white,
+    surface: Color(0xFF363738),
     onSurface: Color(0xFFB2B2B2),
     error: Color(0xFFFF5252),
     onError: Colors.white,

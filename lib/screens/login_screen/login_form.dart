@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
@@ -51,9 +52,13 @@ class LoginFormController extends State<LoginForm> {
   ) async {
     if(formKey.currentState.validate()) {
       loginButton.currentState.isDisabled = true;
+
+
+      String pwh = Crypt.sha512(password, salt: "zephy").toString();
+
       var attempt = LoginAttemptPacket(LoginAttemptPacketData(
         identifier: identifier,
-        password: password,
+        password: pwh,
       ));
 
       ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);

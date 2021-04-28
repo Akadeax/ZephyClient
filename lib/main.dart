@@ -6,7 +6,7 @@ import 'package:zephy_client/providers/server_locator.dart';
 import 'package:zephy_client/routes.dart';
 import 'package:zephy_client/theme/themes.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]

@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   adaptive_dialog: ^0.10.0+4
+  crypt: ^3.0.1
   flutter:
     sdk: flutter
   flutter_svg: ^0.19.3
