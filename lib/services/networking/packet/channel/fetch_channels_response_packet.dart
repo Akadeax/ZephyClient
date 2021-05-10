@@ -5,16 +5,16 @@ import 'package:zephy_client/services/networking/packet/packet.dart';
 
 class FetchChannelsResponsePacketData extends PacketData {
   int httpStatus;
-  List<Channel> channels;
+  List<BaseChannelData> channels;
 
   FetchChannelsResponsePacketData({this.httpStatus, this.channels});
 
   FetchChannelsResponsePacketData.fromJson(Map<String, dynamic> json) {
     httpStatus = json['httpStatus'];
     if (json['channels'] != null) {
-      channels = <Channel>[];
+      channels = <BaseChannelData>[];
       json['channels'].forEach((v) {
-        channels.add(new Channel.fromJson(v));
+        channels.add(new BaseChannelData.fromJson(v));
       });
     }
   }

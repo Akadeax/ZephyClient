@@ -3,21 +3,28 @@ import 'dart:convert';
 import 'package:zephy_client/services/networking/packet/packet.dart';
 
 class FetchChannelsRequestPacketData extends PacketData {
-  FetchChannelsRequestPacketData.fromJson(Map<String, dynamic> json);
+  String search;
+
+  FetchChannelsRequestPacketData({this.search});
+
+  FetchChannelsRequestPacketData.fromJson(Map<String, dynamic> json) {
+    search = json['search'];
+  }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['search'] = this.search;
     return data;
   }
 }
 
-class FetchChannelsPacket extends Packet<FetchChannelsRequestPacketData> {
+class FetchChannelsRequestPacket extends Packet<FetchChannelsRequestPacketData> {
   static const int TYPE = 3001;
-  FetchChannelsPacket(FetchChannelsRequestPacketData data) : super(TYPE, data) {
+  FetchChannelsRequestPacket(FetchChannelsRequestPacketData data) : super(TYPE, data) {
     writePacketData(data);
   }
 
-  FetchChannelsPacket.fromBuffer(List<int> buffer)
+  FetchChannelsRequestPacket.fromBuffer(List<int> buffer)
       : super.fromBuffer(buffer);
 
   @override

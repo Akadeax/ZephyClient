@@ -12,6 +12,7 @@ class ZephyLight {
 
     background: Colors.white,
     onBackground: Colors.black,
+    surface: Color(0xFFE8E8E8),
     onSurface: Color(0xFF707070),
 
     error: Color(0xFFFA3131),
@@ -22,11 +23,15 @@ class ZephyLight {
   static ThemeData get theme => ThemeData(
     brightness: Brightness.light,
     colorScheme: colorScheme,
+    cardColor: Color(0xFFF1F1F1),
     textTheme: textTheme,
     elevatedButtonTheme: _elevatedButtonThemeData(colorScheme),
     snackBarTheme: _snackBarTheme(colorScheme, textTheme),
   );
 }
+
+
+
 
 class ZephyDark {
   static ColorScheme get colorScheme => ColorScheme.dark().copyWith(
@@ -40,7 +45,7 @@ class ZephyDark {
 
     background: Color(0xFF363738),
     onBackground: Colors.white,
-    surface: Color(0xFF363738),
+    surface: Color(0xFF494949),
     onSurface: Color(0xFFB2B2B2),
     error: Color(0xFFFF5252),
     onError: Colors.white,
@@ -51,6 +56,7 @@ class ZephyDark {
   static ThemeData get theme => ThemeData(
     brightness: Brightness.dark,
     colorScheme: colorScheme,
+    cardColor: Color(0xFF2E2F31),
     textTheme: textTheme,
     elevatedButtonTheme: _elevatedButtonThemeData(colorScheme),
     scaffoldBackgroundColor: colorScheme.background,
