@@ -15,12 +15,12 @@ class ChatCard extends StatelessWidget {
 
 
   String getChannelTitle() {
-    return shortenIfNeeded(channel.name, 25);
+    return shortenIfNeeded(channel.name, 30);
   }
 
   String getChannelSubText() {
     if(channel.lastMessage == null) return channel.sId;
-    return shortenIfNeeded(channel.lastMessage.content, 35);
+    return shortenIfNeeded(channel.lastMessage.content, 40);
   }
 
   String getTimeAgoText() {
@@ -51,11 +51,12 @@ class _ChatCardView extends StatelessWidgetView<ChatCard> {
   }
 
   Widget buildStack(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Stack(
       alignment: Alignment.center,
       children: [
         Positioned(
-          left: 30,
+          left: 25,
           child: CircleAvatar(
             backgroundColor: rndChannelIconColor,
           ),
@@ -72,13 +73,15 @@ class _ChatCardView extends StatelessWidgetView<ChatCard> {
           left: 80,
           child: Text(
             controller.getChannelSubText(),
+            style: theme.textTheme.caption,
           ),
         ),
         Positioned(
-          right: 10,
-          top: 10,
+          right: 15,
+          top: 15,
           child: Text(
             controller.getTimeAgoText(),
+            style: theme.textTheme.caption,
           )
         ),
       ],

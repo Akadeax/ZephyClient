@@ -30,7 +30,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
 
   var channelFetchWait = PacketWait<FetchChannelsResponsePacket>(
       FetchChannelsResponsePacket.TYPE,
-      (buffer) => FetchChannelsResponsePacket.fromBuffer(buffer)
+          (buffer) => FetchChannelsResponsePacket.fromBuffer(buffer)
   );
 
   @override
@@ -38,7 +38,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
     channelFetchWait.startWait(
         conn,
-        (packet) => onChannelsReceived(packet.readPacketData())
+            (packet) => onChannelsReceived(packet.readPacketData())
     );
 
     requestChannels(context, delay: const Duration(milliseconds: 300));
@@ -103,7 +103,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   void onSettingsPressed() {
     // TODO: Add settings screen
   }
-  //endregion
+//endregion
 }
 
 class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenController> {
@@ -114,7 +114,7 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
     ThemeData theme = Theme.of(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, size: 30),
         backgroundColor: theme.colorScheme.primary,
         onPressed: controller.onAddPressed,
       ),
@@ -141,14 +141,50 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
   Widget buildList(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          color: theme.cardColor,
+          child: FadeTransition(
+            opacity: controller.animation,
+            child: ListView.builder(
+              itemCount: controller.displayChannels.length,
+              itemBuilder: controller.channelsItemBuilder,
+            ),
+          ),
+        ),
+        Positioned(
+          top: 0,
+          child: listGradient(context, true),
+        ),
+        Positioned(
+          bottom: 0,
+          child: listGradient(context, false),
+        )
+      ],
+    );
+  }
+
+  Widget listGradient(BuildContext context, bool top) {
+    ThemeData theme = Theme.of(context);
+    Size size = MediaQuery.of(context).size;
+
+    List<Color> colors = [
+      theme.colorScheme.background.withOpacity(1),
+      theme.cardColor.withOpacity(0),
+    ];
+
+    if(!top) colors = colors.reversed.toList();
+
     return Container(
-      color: theme.cardColor,
-      padding: EdgeInsets.only(top: 20),
-      child: FadeTransition(
-        opacity: controller.animation,
-        child: ListView.builder(
-          itemCount: controller.displayChannels.length,
-          itemBuilder: controller.channelsItemBuilder,
+      width: size.width,
+      height: 20,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: colors,
         ),
       ),
     );
@@ -161,35 +197,35 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
       widthFactor: 0.8,
       child: Stack(
         alignment: Alignment.bottomCenter,
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              child: Text(
-                "Chats",
-                style: Theme.of(context).textTheme.headline5,
-              ),
+        children: [
+          Positioned(
+            top: 0,
+            left: 0,
+            child: Text(
+              "Chats",
+              style: Theme.of(context).textTheme.headline5,
             ),
-            SizedBox(
-              child: SearchBar(
-                hintText: "Find a conversation",
-                onChanged: (s) => controller.onChannelSearchChanged(context, s),
-              ),
+          ),
+          SizedBox(
+            child: SearchBar(
+              hintText: "Find a conversation",
+              onChanged: (s) => controller.onChannelSearchChanged(context, s),
             ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                splashRadius: 15,
-                iconSize: 25,
-                icon: Icon(
-                  Icons.settings,
-                  color: theme.colorScheme.onSurface,
-                ),
-                onPressed: controller.onSettingsPressed,
+          ),
+          Positioned(
+            top: 0,
+            right: 0,
+            child: IconButton(
+              splashRadius: 15,
+              iconSize: 25,
+              icon: Icon(
+                Icons.settings,
+                color: theme.colorScheme.onSurface,
               ),
+              onPressed: controller.onSettingsPressed,
             ),
-          ],
+          ),
+        ],
       ),
     );
 
