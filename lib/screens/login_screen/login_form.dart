@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/error_snack_bar.dart';
 import 'package:zephy_client/components/loading_button.dart';
@@ -53,7 +54,6 @@ class LoginFormController extends State<LoginForm> {
     if(formKey.currentState.validate()) {
       loginButton.currentState.isDisabled = true;
 
-
       String pwh = Crypt.sha512(password, salt: "zephy").toString();
 
       var attempt = LoginAttemptPacket(LoginAttemptPacketData(
@@ -71,7 +71,6 @@ class LoginFormController extends State<LoginForm> {
 
       await Future.delayed(const Duration(seconds: 1));
 
-
       switch(response.httpStatus) {
         case HttpStatus.unauthorized:
           loginButton.currentState.isDisabled = false;
@@ -84,6 +83,10 @@ class LoginFormController extends State<LoginForm> {
           break;
 
         case HttpStatus.ok:
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          print("SETTING IN PREFS: ${response.accessToken}");
+          prefs.setString("accessToken", response.accessToken);
+
           Provider.of<ProfileHandler>(context, listen: false).user = response.user;
           rootNavPush("/inbox");
       }

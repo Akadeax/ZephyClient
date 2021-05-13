@@ -1,11 +1,8 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/circle_decoration_painter.dart';
-import 'package:zephy_client/providers/server_connection.dart';
-import 'package:zephy_client/providers/server_locator.dart';
 import 'package:zephy_client/screens/login_screen/login_form.dart';
 
 
@@ -28,12 +25,6 @@ class _LoginScreenController extends State<LoginScreen> {
 
   @override
   void initState() {
-    ServerLocator loc = Provider.of<ServerLocator>(context, listen: false);
-    ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
-    if(!conn.isConnected) {
-      conn.connect(loc.lastBroadcastResult);
-    }
-
     super.initState();
   }
 

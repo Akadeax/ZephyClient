@@ -1,9 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/circle_decoration_painter.dart';
 import 'package:zephy_client/components/loading/errable_loading.dart';
+import 'package:zephy_client/providers/profile_handler.dart';
+import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/providers/server_locator.dart';
+import 'package:zephy_client/services/networking/packet/auth/confirm_session_request_packet.dart';
+import 'package:zephy_client/services/networking/packet/auth/confirm_session_response_packet.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 class ConnectionScreen extends StatefulWidget {
@@ -39,7 +46,8 @@ class _ConnectionScreenController extends State<ConnectionScreen> {
 
           // Server Location was successful
           if (dataIsValid && !isLoading) {
-            rootNavPushDelayed("/login");
+            onConnected(context);
+            return Container();
           }
 
           bool shouldShowError = !dataIsValid && !isLoading;
@@ -52,9 +60,41 @@ class _ConnectionScreenController extends State<ConnectionScreen> {
     );
   }
 
+  void onConnected(BuildContext context) async {
+    ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
+    await conn.connect(locator.lastBroadcastResult);
+    
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String accessToken = prefs.getString("accessToken");
+    print("GETTING: $accessToken");
+
+    var requestPacket = ConfirmSessionRequestPacket(ConfirmSessionRequestPacketData(
+      accessToken: accessToken
+    ));
+    conn.sendPacket(requestPacket);
+
+    var response = (await conn.packetHandler.waitForPacket(
+        ConfirmSessionResponsePacket.TYPE,
+        (buffer) => ConfirmSessionResponsePacket.fromBuffer(buffer)
+    )).readPacketData();
+
+    switch(response.httpStatus) {
+      case HttpStatus.ok:
+        Provider.of<ProfileHandler>(context, listen: false)
+            .user = response.user;
+        rootNavPush("/inbox");
+        break;
+
+      default:
+        rootNavPush("/login");
+        break;
+    }
+  }
+
   void retryButton() {
-    currentLocateFuture = locator.locate();
-    setState(() {});
+    setState(() {
+      currentLocateFuture = locator.locate();
+    });
   }
 }
 

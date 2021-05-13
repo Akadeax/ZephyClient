@@ -3,17 +3,15 @@ import 'dart:convert';
 import 'package:zephy_client/models/user.dart';
 import 'package:zephy_client/services/networking/packet/packet.dart';
 
-class LoginResponsePacketData extends PacketData {
+class ConfirmSessionResponsePacketData extends PacketData {
   int httpStatus;
   User user;
-  String accessToken;
 
-  LoginResponsePacketData({this.httpStatus, this.user, this.accessToken});
+  ConfirmSessionResponsePacketData({this.httpStatus, this.user});
 
-  LoginResponsePacketData.fromJson(Map<String, dynamic> json) {
+  ConfirmSessionResponsePacketData.fromJson(Map<String, dynamic> json) {
     httpStatus = json['httpStatus'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
-    accessToken = json['accessToken'];
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -22,28 +20,27 @@ class LoginResponsePacketData extends PacketData {
     if (this.user != null) {
       data['user'] = this.user.toJson();
     }
-    data['accessToken'] = this.accessToken;
     return data;
   }
 }
 
-class LoginResponsePacket extends Packet<LoginResponsePacketData> {
-  static const int TYPE = 2002;
-  LoginResponsePacket(LoginResponsePacketData data) : super(TYPE, data) {
+class ConfirmSessionResponsePacket extends Packet<ConfirmSessionResponsePacketData> {
+  static const int TYPE = 2004;
+  ConfirmSessionResponsePacket(ConfirmSessionResponsePacketData data) : super(TYPE, data) {
     writePacketData(data);
   }
 
-  LoginResponsePacket.fromBuffer(List<int> buffer)
+  ConfirmSessionResponsePacket.fromBuffer(List<int> buffer)
       : super.fromBuffer(buffer);
 
   @override
-  LoginResponsePacketData readPacketData() {
+  ConfirmSessionResponsePacketData readPacketData() {
     String jsonString = readString(Packet.BASE_PACKET_SIZE, buffer.length - Packet.BASE_PACKET_SIZE);
-    return LoginResponsePacketData.fromJson(jsonDecode(jsonString));
+    return ConfirmSessionResponsePacketData.fromJson(jsonDecode(jsonString));
   }
 
   @override
-  void writePacketData(LoginResponsePacketData data) {
+  void writePacketData(ConfirmSessionResponsePacketData data) {
     Map<String, dynamic> jsonMap = data.toJson();
     String jsonString = jsonEncode(jsonMap);
     writeString(jsonString, Packet.BASE_PACKET_SIZE);
