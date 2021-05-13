@@ -17,12 +17,16 @@ class ServerConnection {
     this.packetHandler = PacketHandler(this);
   }
 
+  void onFatal(Exception e) {
+    print("FATAL: $e");
+    rootNavPush("/fatal");
+  }
+
   waitError() async {
     try {
       await _socket.done;
     } on Exception catch(e) {
-      print("FATAL: $e");
-      rootNavPush("/fatal");
+      onFatal(e);
     }
   }
 
@@ -78,7 +82,11 @@ class ServerConnection {
   }
 
   void sendPacket(Packet toSend) {
-    _socket.add(toSend.buffer);
+    try {
+      _socket.add(toSend.buffer);
+    } on Exception catch(e) {
+      onFatal(e);
+    }
   }
 
   bool get isConnected => _socket != null;

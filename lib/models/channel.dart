@@ -28,18 +28,25 @@ class Channel {
 }
 
 class BaseChannelData {
+  Message lastMessage;
   String sId;
   String name;
 
-  BaseChannelData({this.sId, this.name});
+  BaseChannelData({this.lastMessage, this.sId, this.name});
 
   BaseChannelData.fromJson(Map<String, dynamic> json) {
+    lastMessage = json['lastMessage'] != null
+        ? new Message.fromJson(json['lastMessage'])
+        : null;
     sId = json['_id'];
     name = json['name'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.lastMessage != null) {
+      data['lastMessage'] = this.lastMessage.toJson();
+    }
     data['_id'] = this.sId;
     data['name'] = this.name;
     return data;

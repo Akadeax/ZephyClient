@@ -4,11 +4,14 @@ import 'package:crypt/crypt.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/error_snack_bar.dart';
 import 'package:zephy_client/components/loading_button.dart';
+import 'package:zephy_client/providers/profile_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/screens/login_screen/login_field.dart';
 import 'package:zephy_client/services/networking/packet/auth/login_attempt_packet.dart';
 import 'package:zephy_client/services/networking/packet/auth/login_response_packet.dart';
+import 'package:zephy_client/util/nav_util.dart';
 
 class LoginForm extends StatefulWidget {
 
@@ -46,10 +49,7 @@ class LoginFormController extends State<LoginForm> {
     return null;
   }
 
-  void attemptLogin(
-      BuildContext context,
-      SnackBar Function(BuildContext, String) errorSnackBar
-  ) async {
+  void attemptLogin(BuildContext context) async {
     if(formKey.currentState.validate()) {
       loginButton.currentState.isDisabled = true;
 
@@ -71,26 +71,21 @@ class LoginFormController extends State<LoginForm> {
 
       await Future.delayed(const Duration(seconds: 1));
 
-      ScaffoldMessengerState msg = ScaffoldMessenger.of(context);
 
       switch(response.httpStatus) {
         case HttpStatus.unauthorized:
           loginButton.currentState.isDisabled = false;
-
-          msg.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
-          msg.showSnackBar(errorSnackBar(context, "Your identifier or password is incorrect!"));
+          showErrorSnackBar(context, "Your identifier or password is incorrect!");
           break;
 
         case HttpStatus.forbidden:
           loginButton.currentState.isDisabled = false;
-
-          msg.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
-          msg.showSnackBar(errorSnackBar(context, "That user is already logged in!"));
+          showErrorSnackBar(context, "That user is already logged in!");
           break;
 
         case HttpStatus.ok:
-          print("Login successful!");
-          // TODO: Push inbox screen with response.user
+          Provider.of<ProfileHandler>(context, listen: false).user = response.user;
+          rootNavPush("/inbox");
       }
     }
   }
@@ -110,17 +105,17 @@ class LoginFormView extends StatefulWidgetView<LoginForm, LoginFormController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            identifierField(context),
-            passwordField(context),
+            buildIdentifierField(context),
+            buildPasswordField(context),
             SizedBox(height: 10),
-            loginButton(context),
+            buildLoginButton(context),
           ],
         ),
       ),
     );
   }
 
-  Widget identifierField(BuildContext context) {
+  buildIdentifierField(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 10),
       child: LoginField(
@@ -132,7 +127,7 @@ class LoginFormView extends StatefulWidgetView<LoginForm, LoginFormController> {
     );
   }
 
-  Widget passwordField(BuildContext context) {
+  buildPasswordField(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 50),
       child: LoginField(
@@ -145,15 +140,11 @@ class LoginFormView extends StatefulWidgetView<LoginForm, LoginFormController> {
     );
   }
 
-  Widget loginButton(BuildContext context) {
+  buildLoginButton(BuildContext context) {
     return LoadingButton(
       key: controller.loginButton,
-      onPressed: () => controller.attemptLogin(context, errorSnackBar),
+      onPressed: () => controller.attemptLogin(context),
       child: Text("LOG IN"),
     );
-  }
-
-  SnackBar errorSnackBar(BuildContext context, String message) {
-    return SnackBar(content: Text(message));
   }
 }
