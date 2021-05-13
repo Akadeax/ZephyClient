@@ -9,6 +9,7 @@ import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/services/networking/packet/channel/fetch_channels_request_packet.dart';
 import 'package:zephy_client/services/networking/packet/channel/fetch_channels_response_packet.dart';
 import 'package:zephy_client/services/networking/packet/packet_wait.dart';
+import 'package:zephy_client/util/nav_util.dart';
 
 import 'chat_card.dart';
 
@@ -38,7 +39,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
     channelFetchWait.startWait(
         conn,
-            (packet) => onChannelsReceived(packet.readPacketData())
+        (packet) => onChannelsReceived(packet.readPacketData())
     );
 
     requestChannels(context, delay: const Duration(milliseconds: 300));
@@ -60,15 +61,21 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   }
   //endregion
 
-  /// updates displayChannels with newest data received
-  void onChannelsReceived(FetchChannelsResponsePacketData data) async {
-    if(data.httpStatus == HttpStatus.ok) {
-      setState(() {
-        displayChannels = data.channels;
-      });
+  /// update local display based on received packets
+  void onChannelsReceived(FetchChannelsResponsePacketData data) {
 
-      listAnimController.reset();
-      listAnimController.forward();
+    switch(data.httpStatus) {
+      case HttpStatus.ok:
+        setState(() {
+          displayChannels = data.channels;
+        });
+
+        listAnimController.reset();
+        listAnimController.forward();
+        break;
+      case HttpStatus.unauthorized:
+        rootNavPush("/fatal");
+        break;
     }
   }
 
@@ -140,6 +147,21 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
 
   Widget buildList(BuildContext context) {
     ThemeData theme = Theme.of(context);
+
+    if(controller.displayChannels.length == 0) {
+      return Container(
+        color: theme.cardColor,
+        child: Center(
+          child: FractionallySizedBox(
+            heightFactor: 0.8,
+            child: Text(
+              "No channels found! :(",
+              style: theme.textTheme.caption,
+            ),
+          )
+        )
+      );
+    }
 
     return Stack(
       alignment: Alignment.topCenter,
