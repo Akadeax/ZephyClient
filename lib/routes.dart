@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zephy_client/screens/connection_screen/connection_screen.dart';
 import 'package:zephy_client/screens/fatal_error_screen/fatal_error_screen.dart';
-import 'package:zephy_client/screens/inbox_screen/inbox_screen.dart';
+import 'screens/inbox_screen/chats_list/inbox_screen.dart';
 import 'package:zephy_client/screens/login_screen/login_screen.dart';
 
 const String initialRoute = "/connect";
