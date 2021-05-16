@@ -7,10 +7,12 @@ import 'package:zephy_client/util/time_util.dart';
 
 class ChatCard extends StatelessWidget {
   final BaseChannelData channel;
+  final void Function() onPressed;
 
   const ChatCard({
     Key key,
     @required this.channel,
+    this.onPressed,
   }) : super(key: key);
 
 

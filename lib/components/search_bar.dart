@@ -7,11 +7,13 @@ class SearchBar extends StatefulWidget {
 
   final void Function(String) onChanged;
   final String hintText;
+  final double width;
 
   const SearchBar({
     Key key,
     @required this.onChanged,
     @required this.hintText,
+    this.width,
   }) : super(key: key);
 
   @override
@@ -44,23 +46,28 @@ class _SearchBarView extends StatefulWidgetView<SearchBar, _SearchBarController>
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    return TextField(
-      onChanged: controller.onSearchChanged,
-      cursorColor: theme.colorScheme.onSurface,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-        hintText: widget.hintText,
+    return Container(
+      width: widget.width,
+      height: 40,
+      child: TextField(
+        onChanged: controller.onSearchChanged,
+        cursorColor: theme.colorScheme.onSurface,
+        style: theme.textTheme.button,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+          hintText: widget.hintText,
 
-        suffixIcon: Icon(
-          Icons.search,
-          color: theme.colorScheme.onSurface,
+          suffixIcon: Icon(
+            Icons.search,
+            color: theme.colorScheme.onSurface,
+          ),
+          fillColor: theme.colorScheme.surface,
+          hoverColor: theme.colorScheme.surface,
+          filled: true,
+          border: _border(context),
+          enabledBorder: _border(context),
+          focusedBorder: _border(context),
         ),
-        fillColor: theme.colorScheme.surface,
-        hoverColor: theme.colorScheme.surface,
-        filled: true,
-        border: _border(context),
-        enabledBorder: _border(context),
-        focusedBorder: _border(context),
       ),
     );
   }
