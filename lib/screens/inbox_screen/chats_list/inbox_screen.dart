@@ -6,6 +6,7 @@ import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/search_bar.dart';
 import 'package:zephy_client/models/channel.dart';
 import 'package:zephy_client/providers/server_connection.dart';
+import 'package:zephy_client/screens/inbox_screen/create_conversation/create_conversation_overlay.dart';
 import 'package:zephy_client/services/networking/packet/channel/fetch_channels_request_packet.dart';
 import 'package:zephy_client/services/networking/packet/channel/fetch_channels_response_packet.dart';
 import 'package:zephy_client/services/networking/packet/packet_wait.dart';
@@ -39,7 +40,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
     channelFetchWait.startWait(
         conn,
-        (packet) => onChannelsReceived(packet.readPacketData())
+            (packet) => onChannelsReceived(packet.readPacketData())
     );
 
     requestChannels(context, delay: const Duration(milliseconds: 300));
@@ -99,18 +100,32 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   Widget channelsItemBuilder(BuildContext context, int index) {
     return ChatCard(
       channel: displayChannels[index],
+      onPressed: onChatPressed,
     );
   }
 
   //region redirects
-  void onAddPressed() {
-    // TODO: Add add page, hehe
+  void onChatPressed() {
+    // TODO: push chat
+  }
+
+  void onAddPressed(BuildContext context) {
+    showDialog(context: context, builder: (_) {
+      return CreateConversationOverlay();
+    });
   }
 
   void onSettingsPressed() {
     // TODO: Add settings screen
   }
-//endregion
+  //endregion
+
+  @override
+  void dispose() {
+    listAnimController.dispose();
+    channelFetchWait.dispose();
+    super.dispose();
+  }
 }
 
 class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenController> {
@@ -120,17 +135,18 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add, size: 30),
         backgroundColor: theme.colorScheme.primary,
-        onPressed: controller.onAddPressed,
+        onPressed: () => controller.onAddPressed(context),
       ),
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: 60),
+            SizedBox(height: 50),
             SizedBox(
-              height: 90,
+              height: 80,
               child: buildTopBar(context),
             ),
 
@@ -147,21 +163,6 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
 
   Widget buildList(BuildContext context) {
     ThemeData theme = Theme.of(context);
-
-    if(controller.displayChannels.length == 0) {
-      return Container(
-        color: theme.cardColor,
-        child: Center(
-          child: FractionallySizedBox(
-            heightFactor: 0.8,
-            child: Text(
-              "No channels found! :(",
-              style: theme.textTheme.caption,
-            ),
-          )
-        )
-      );
-    }
 
     return Stack(
       alignment: Alignment.topCenter,
@@ -228,11 +229,9 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
-          SizedBox(
-            child: SearchBar(
-              hintText: "Find a conversation",
-              onChanged: (s) => controller.onChannelSearchChanged(context, s),
-            ),
+          SearchBar(
+            hintText: "Find a conversation",
+            onChanged: (s) => controller.onChannelSearchChanged(context, s),
           ),
           Positioned(
             top: 0,

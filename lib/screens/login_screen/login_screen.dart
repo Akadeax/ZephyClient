@@ -72,32 +72,32 @@ class _LoginScreenView extends StatefulWidgetView<LoginScreen, _LoginScreenContr
               ),
             ),
             Expanded(
-              flex: 5,
-              child: Center(
-                child: TextButton(
-                  onPressed: () => controller.needAccountPressed(context),
-                  child: Text(
-                    widget.noAccountButtonText,
-                    style: theme.textTheme.bodyText2.copyWith(
-                      color: theme.colorScheme.primaryVariant,
-                      decoration: TextDecoration.underline,
+                flex: 5,
+                child: Center(
+                  child: TextButton(
+                    onPressed: () => controller.needAccountPressed(context),
+                    child: Text(
+                      widget.noAccountButtonText,
+                      style: theme.textTheme.bodyText2.copyWith(
+                        color: theme.colorScheme.primaryVariant,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
-                ),
-              )
+                )
             ),
             Expanded(
-              flex: 5,
-              child: Stack(
-                children: [
-                  CustomPaint(
-                    size: Size.infinite,
-                    painter: CircleDecorationPainter(
-                      theme: Theme.of(context)
-                    ),
-                  )
-                ],
-              )
+                flex: 5,
+                child: Stack(
+                  children: [
+                    CustomPaint(
+                      size: Size.infinite,
+                      painter: CircleDecorationPainter(
+                          theme: Theme.of(context)
+                      ),
+                    )
+                  ],
+                )
             )
           ],
         ),

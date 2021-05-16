@@ -106,6 +106,7 @@ class LoginFormView extends StatefulWidgetView<LoginForm, LoginFormController> {
         key: controller.formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildIdentifierField(context),
