@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:zephy_client/models/user.dart';
-import 'package:zephy_client/services/networking/packet/packet.dart';
+import 'package:zephy_client/networking/packet/packet.dart';
 
 class FetchUserListResponsePacketData extends PacketData {
   int httpStatus;

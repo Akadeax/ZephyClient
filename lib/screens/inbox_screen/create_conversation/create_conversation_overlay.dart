@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/search_bar.dart';
 import 'package:zephy_client/models/user.dart';
+import 'package:zephy_client/networking/packet/packet_wait.dart';
+import 'package:zephy_client/networking/packet/user/fetch_user_list_request_packet.dart';
+import 'package:zephy_client/networking/packet/user/fetch_user_list_response_packet.dart';
 import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/screens/inbox_screen/create_conversation/profile_card.dart';
-import 'package:zephy_client/services/networking/packet/packet_wait.dart';
-import 'package:zephy_client/services/networking/packet/user/fetch_user_list_request_packet.dart';
-import 'package:zephy_client/services/networking/packet/user/fetch_user_list_response_packet.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 class CreateConversationOverlay extends StatefulWidget {

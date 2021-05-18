@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:zephy_client/networking/packet/packet.dart';
+import 'package:zephy_client/networking/packet/packet_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
-import 'package:zephy_client/services/networking/packet/packet.dart';
-import 'package:zephy_client/services/networking/packet/packet_handler.dart';
 
 /// Opens a stream that waits and calls a callback for all packets of
 /// TPacketType that are received.

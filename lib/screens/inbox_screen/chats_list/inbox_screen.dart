@@ -5,11 +5,11 @@ import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/search_bar.dart';
 import 'package:zephy_client/models/channel.dart';
+import 'package:zephy_client/networking/packet/channel/fetch_channels_request_packet.dart';
+import 'package:zephy_client/networking/packet/channel/fetch_channels_response_packet.dart';
+import 'package:zephy_client/networking/packet/packet_wait.dart';
 import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/screens/inbox_screen/create_conversation/create_conversation_overlay.dart';
-import 'package:zephy_client/services/networking/packet/channel/fetch_channels_request_packet.dart';
-import 'package:zephy_client/services/networking/packet/channel/fetch_channels_response_packet.dart';
-import 'package:zephy_client/services/networking/packet/packet_wait.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 import 'chat_card.dart';

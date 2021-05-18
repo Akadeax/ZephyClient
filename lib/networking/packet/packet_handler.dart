@@ -3,8 +3,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:zephy_client/networking/packet/packet.dart';
 import 'package:zephy_client/providers/server_connection.dart';
-import 'package:zephy_client/services/networking/packet/packet.dart';
 
 typedef S PacketCreator<S>(List<int> buffer);
 
