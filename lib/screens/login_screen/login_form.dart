@@ -74,12 +74,12 @@ class LoginFormController extends State<LoginForm> {
       switch(response.httpStatus) {
         case HttpStatus.unauthorized:
           loginButton.currentState.isDisabled = false;
-          showErrorSnackBar(context, "Your identifier or password is incorrect!");
+          showErrorSnackBar("Your identifier or password is incorrect!", context);
           break;
 
         case HttpStatus.forbidden:
           loginButton.currentState.isDisabled = false;
-          showErrorSnackBar(context, "That user is already logged in!");
+          showErrorSnackBar("That user is already logged in!", context);
           break;
 
         case HttpStatus.ok:

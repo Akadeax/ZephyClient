@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
 
-void showErrorSnackBar(BuildContext context, String message) {
-  ScaffoldMessengerState msg = ScaffoldMessenger.of(context);
-  msg.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
-  msg.showSnackBar(_getSnackBar(context, message));
+void showErrorSnackBar(String message, BuildContext context) {
+  var state = ScaffoldMessenger.of(context);
+
+  state.hideCurrentSnackBar(reason: SnackBarClosedReason.dismiss);
+  state.showSnackBar(errorSnackBar(context, message));
 }
 
-SnackBar _getSnackBar(BuildContext context, String message) {
+
+
+SnackBar errorSnackBar(BuildContext context, String message) {
   ThemeData theme = Theme.of(context);
+
   return SnackBar(
     backgroundColor: theme.errorColor,
     content: Text(
       message,
-      style: theme.textTheme.bodyText1,
+      style: theme.textTheme.bodyText1.copyWith(
+        color: theme.colorScheme.onError,
+      ),
     ),
   );
 }

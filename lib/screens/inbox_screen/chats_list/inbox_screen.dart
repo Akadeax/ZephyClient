@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/error_snack_bar.dart';
 import 'package:zephy_client/components/search_bar.dart';
 import 'package:zephy_client/models/channel.dart';
+import 'package:zephy_client/networking/packet/channel/create_channel_response_packet.dart';
 import 'package:zephy_client/networking/packet/channel/fetch_channels_request_packet.dart';
 import 'package:zephy_client/networking/packet/channel/fetch_channels_response_packet.dart';
 import 'package:zephy_client/networking/packet/packet_wait.dart';
@@ -32,21 +34,40 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
 
   var channelFetchWait = PacketWait<FetchChannelsResponsePacket>(
       FetchChannelsResponsePacket.TYPE,
-          (buffer) => FetchChannelsResponsePacket.fromBuffer(buffer)
+      (buffer) => FetchChannelsResponsePacket.fromBuffer(buffer)
   );
+  var newChannelWait = PacketWait<CreateChannelResponsePacket>(
+      CreateChannelResponsePacket.TYPE,
+      (buffer) => CreateChannelResponsePacket.fromBuffer(buffer)
+  );
+
+  ScaffoldMessengerState messenger;
 
   @override
   void initState() {
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
+
     channelFetchWait.startWait(
         conn,
-            (packet) => onChannelsReceived(packet.readPacketData())
+        (packet) => onChannelsReceived(packet.readPacketData())
     );
+    newChannelWait.startWait(
+        conn,
+        (packet) => onNewChannelReceived(packet.readPacketData())
+    );
+
+
 
     requestChannels(context, delay: const Duration(milliseconds: 300));
     initAnimationState();
 
     super.initState();
+  }
+
+  @override
+  didChangeDependencies() {
+    messenger = ScaffoldMessenger.of(context);
+    super.didChangeDependencies();
   }
 
   //region animation
@@ -67,12 +88,8 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
 
     switch(data.httpStatus) {
       case HttpStatus.ok:
-        setState(() {
-          displayChannels = data.channels;
-        });
-
-        listAnimController.reset();
-        listAnimController.forward();
+        displayChannels = data.channels;
+        reloadListWithAnim();
         break;
       case HttpStatus.unauthorized:
         rootNavPush("/fatal");
@@ -80,8 +97,33 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
     }
   }
 
+  void onNewChannelReceived(CreateChannelResponsePacketData data) {
+    Navigator.of(context).pop();
+
+    switch(data.httpStatus) {
+      case HttpStatus.ok:
+        displayChannels.add(data.newChannel.toBaseChannelData());
+        reloadListWithAnim();
+        break;
+      case HttpStatus.unauthorized:
+        rootNavPush("/fatal");
+        break;
+      case HttpStatus.conflict:
+        showErrorSnackBar("That channel already exists!", context);
+        break;
+      case HttpStatus.badRequest:
+        showErrorSnackBar("That request was invalid!", context);
+    }
+  }
+
   void onChannelSearchChanged(BuildContext context, String search) {
     requestChannels(context, search: search);
+  }
+
+  void reloadListWithAnim() {
+    listAnimController.reset();
+    listAnimController.forward();
+    setState(() {});
   }
 
 
