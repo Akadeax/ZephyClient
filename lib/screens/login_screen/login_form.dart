@@ -7,11 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/error_snack_bar.dart';
 import 'package:zephy_client/components/loading_button.dart';
+import 'package:zephy_client/networking/packet/auth/login_attempt_packet.dart';
+import 'package:zephy_client/networking/packet/auth/login_response_packet.dart';
 import 'package:zephy_client/providers/profile_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/screens/login_screen/login_field.dart';
-import 'package:zephy_client/services/networking/packet/auth/login_attempt_packet.dart';
-import 'package:zephy_client/services/networking/packet/auth/login_response_packet.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 class LoginForm extends StatefulWidget {
@@ -74,12 +74,12 @@ class LoginFormController extends State<LoginForm> {
       switch(response.httpStatus) {
         case HttpStatus.unauthorized:
           loginButton.currentState.isDisabled = false;
-          showErrorSnackBar(context, "Your identifier or password is incorrect!");
+          showErrorSnackBar("Your identifier or password is incorrect!", context);
           break;
 
         case HttpStatus.forbidden:
           loginButton.currentState.isDisabled = false;
-          showErrorSnackBar(context, "That user is already logged in!");
+          showErrorSnackBar("That user is already logged in!", context);
           break;
 
         case HttpStatus.ok:

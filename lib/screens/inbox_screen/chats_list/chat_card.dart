@@ -21,12 +21,12 @@ class ChatCard extends StatelessWidget {
   }
 
   String getChannelSubText() {
-    if(channel.lastMessage == null) return channel.sId;
+    if(channel.lastMessage == null) return "Start to chat!";
     return shortenIfNeeded(channel.lastMessage.content, 40);
   }
 
   String getTimeAgoText() {
-    if(channel.lastMessage == null) return "never";
+    if(channel.lastMessage == null) return "";
     return timestampToShortForm(channel.lastMessage.sentAt);
   }
 

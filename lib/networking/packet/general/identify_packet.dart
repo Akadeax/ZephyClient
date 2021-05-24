@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:zephy_client/services/networking/packet/packet.dart';
+import 'package:zephy_client/networking/packet/packet.dart';
 
 class IdentifyPacketData extends PacketData {
   String src = "CLIENT";

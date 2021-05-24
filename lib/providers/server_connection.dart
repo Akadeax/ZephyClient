@@ -2,9 +2,9 @@ import 'dart:async';
  import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:zephy_client/networking/packet/packet.dart';
+import 'package:zephy_client/networking/packet/packet_handler.dart';
 import 'package:zephy_client/providers/server_locator.dart';
-import 'package:zephy_client/services/networking/packet/packet.dart';
-import 'package:zephy_client/services/networking/packet/packet_handler.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 class ServerConnection {

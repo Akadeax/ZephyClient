@@ -25,6 +25,13 @@ class Channel {
     data['name'] = this.name;
     return data;
   }
+
+  BaseChannelData toBaseChannelData() {
+    return BaseChannelData(
+      sId: this.sId,
+      name: this.name,
+    );
+  }
 }
 
 class BaseChannelData {

@@ -6,11 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/circle_decoration_painter.dart';
 import 'package:zephy_client/components/loading/errable_loading.dart';
+import 'package:zephy_client/networking/packet/auth/confirm_session_request_packet.dart';
+import 'package:zephy_client/networking/packet/auth/confirm_session_response_packet.dart';
 import 'package:zephy_client/providers/profile_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/providers/server_locator.dart';
-import 'package:zephy_client/services/networking/packet/auth/confirm_session_request_packet.dart';
-import 'package:zephy_client/services/networking/packet/auth/confirm_session_response_packet.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 class ConnectionScreen extends StatefulWidget {
