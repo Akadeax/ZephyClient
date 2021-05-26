@@ -58,7 +58,7 @@ class _ProfileCardView extends StatelessWidgetView<ProfileCard> {
 
         CircleAvatar(
           radius: 25,
-          backgroundColor: rndChannelIconColor,
+          backgroundColor: avatarColor(controller.user?.sId),
         ),
         Positioned(
           bottom: 0,

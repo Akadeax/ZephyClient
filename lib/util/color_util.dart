@@ -3,11 +3,14 @@ import 'package:random_color/random_color.dart';
 
 RandomColor colorRandomizer = RandomColor();
 
-Color get rndChannelIconColor {
-  return colorRandomizer.randomColor(
-      colorHue: ColorHue.blue,
-      colorSaturation: ColorSaturation.highSaturation,
-      colorBrightness: ColorBrightness.light
+Color avatarColor(String id) {
+  if(id == null || id.length < 3 || id.isEmpty) return Colors.black;
+
+  return Color.fromARGB(
+    255,
+      id.codeUnitAt(id.codeUnits.length - 1),
+      id.codeUnitAt(id.codeUnits.length - 11),
+      id.codeUnitAt(id.codeUnits.length - 21)
   );
 }
 

@@ -60,7 +60,7 @@ class _ChatCardView extends StatelessWidgetView<ChatCard> {
         Positioned(
           left: 25,
           child: CircleAvatar(
-            backgroundColor: rndChannelIconColor,
+            backgroundColor: avatarColor(controller.channel?.sId),
           ),
         ),
         Positioned(
