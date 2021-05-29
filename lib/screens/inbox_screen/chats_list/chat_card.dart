@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/field_avatar.dart';
 import 'package:zephy_client/models/channel.dart';
 import 'package:zephy_client/util/color_util.dart';
+import 'package:zephy_client/util/nav_util.dart';
 import 'package:zephy_client/util/string_util.dart';
 import 'package:zephy_client/util/time_util.dart';
 
 class ChatCard extends StatelessWidget {
   final BaseChannelData channel;
-  final void Function() onPressed;
 
   const ChatCard({
     Key key,
     @required this.channel,
-    this.onPressed,
   }) : super(key: key);
 
 
@@ -43,7 +43,7 @@ class _ChatCardView extends StatelessWidgetView<ChatCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // TODO: Push chat page
+        rootNavPush("/chat", controller.channel);
       },
       child: Container(
         height: 70,
@@ -59,9 +59,10 @@ class _ChatCardView extends StatelessWidgetView<ChatCard> {
       children: [
         Positioned(
           left: 25,
-          child: CircleAvatar(
-            backgroundColor: avatarColor(controller.channel?.sId),
-          ),
+          child: FieldAvatar(
+            sId: controller.channel?.sId,
+            baseText: controller.channel?.name,
+          )
         ),
         Positioned(
           top: 15,

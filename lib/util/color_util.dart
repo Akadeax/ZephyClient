@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:random_color/random_color.dart';
-
-RandomColor colorRandomizer = RandomColor();
 
 Color avatarColor(String id) {
   if(id == null || id.length < 3 || id.isEmpty) return Colors.black;

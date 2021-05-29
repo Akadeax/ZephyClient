@@ -142,15 +142,10 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   Widget channelsItemBuilder(BuildContext context, int index) {
     return ChatCard(
       channel: displayChannels[index],
-      onPressed: onChatPressed,
     );
   }
 
   //region redirects
-  void onChatPressed() {
-    // TODO: push chat
-  }
-
   void onAddPressed(BuildContext context) {
     showDialog(context: context, builder: (_) {
       return CreateConversationOverlay();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/field_avatar.dart';
 import 'package:zephy_client/models/user.dart';
 import 'package:zephy_client/util/color_util.dart';
 import 'package:zephy_client/util/string_util.dart';
@@ -56,18 +57,19 @@ class _ProfileCardView extends StatelessWidgetView<ProfileCard> {
       clipBehavior: Clip.none,
       children: [
 
-        CircleAvatar(
-          radius: 25,
-          backgroundColor: avatarColor(controller.user?.sId),
+        FieldAvatar(
+          sId: controller.user?.sId,
+          baseText: controller.user?.fullName,
+          size: 25,
         ),
         Positioned(
           bottom: 0,
           right: 0,
           child: buildCircle(
-            size: 17,
+            size: 15,
             color: theme.colorScheme.background,
             child: buildCircle(
-              size: 14,
+              size: 11,
               color: statusColor
             )
           )

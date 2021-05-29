@@ -176,6 +176,7 @@ class _CreateConversationOverlayView extends StatefulWidgetView<CreateConversati
 
   Widget buildTopBar(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    Size size = MediaQuery.of(context).size;
 
     return Stack(
       alignment: Alignment.center,
@@ -190,7 +191,7 @@ class _CreateConversationOverlayView extends StatefulWidgetView<CreateConversati
         Positioned(
           top: 50,
           child: SearchBar(
-            width: 250,
+            width: size.width * 0.6,
             onChanged: (search) => controller.onUserSearchChanged(context, search),
             hintText: "Find someone",
           ),

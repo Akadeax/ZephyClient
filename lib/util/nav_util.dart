@@ -1,8 +1,8 @@
 import 'package:flutter/scheduler.dart';
 import 'package:zephy_client/main.dart';
 
-void rootNavPush(String route) {
-  rootNav.currentState.pushReplacementNamed(route);
+void rootNavPush(String route, [Object arg]) {
+  rootNav.currentState.pushReplacementNamed(route, arguments: arg);
 }
 
 void rootNavPushDelayed(String route) {
