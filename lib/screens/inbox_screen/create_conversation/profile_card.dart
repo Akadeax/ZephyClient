@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/field_avatar.dart';
 import 'package:zephy_client/models/user.dart';
-import 'package:zephy_client/util/color_util.dart';
 import 'package:zephy_client/util/string_util.dart';
 
 class ProfileCard extends StatelessWidget {
