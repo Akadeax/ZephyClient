@@ -3,11 +3,15 @@ import 'package:widget_view/widget_view.dart';
 
 class FatalErrorScreen extends StatelessWidget {
 
+  final String error;
+  FatalErrorScreen(this.error);
+
   final String fatalErrorText =
 """
 A fatal error has occured.
 Please consider restarting the app or
 contacting an administrator.
+Error: 
 """;
 
   @override
@@ -35,7 +39,7 @@ class _FatalErrorScreenView extends StatelessWidgetView<FatalErrorScreen> {
             ),
             SizedBox(height: 40),
             Text(
-              controller.fatalErrorText,
+              controller.fatalErrorText + controller.error,
               style: theme.textTheme.subtitle1,
               textAlign: TextAlign.center,
             )

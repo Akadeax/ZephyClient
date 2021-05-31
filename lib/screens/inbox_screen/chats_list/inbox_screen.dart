@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/error_snack_bar.dart';
+import 'package:zephy_client/components/list_gradient.dart';
 import 'package:zephy_client/components/search_bar.dart';
 import 'package:zephy_client/models/channel.dart';
 import 'package:zephy_client/networking/packet/channel/create_channel_response_packet.dart';
@@ -18,6 +19,8 @@ import 'chat_card.dart';
 
 class InboxScreen extends StatefulWidget {
   final Duration animDuration = const Duration(milliseconds: 300);
+  static const String UNAUTHORIZED_TO_FETCH_CHANNELS = "Unauthorized to fetch channels";
+  static const String CREATE_CHANNEL_UNAUTHORIZED = "Unauthorized to create a new channel.";
 
   InboxScreen({Key key}) : super(key: key);
 
@@ -92,7 +95,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
         reloadListWithAnim();
         break;
       case HttpStatus.unauthorized:
-        rootNavPush("/fatal");
+        rootNavPush("/fatal", InboxScreen.UNAUTHORIZED_TO_FETCH_CHANNELS);
         break;
     }
   }
@@ -106,7 +109,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
         reloadListWithAnim();
         break;
       case HttpStatus.unauthorized:
-        rootNavPush("/fatal");
+        rootNavPush("/fatal", InboxScreen.CREATE_CHANNEL_UNAUTHORIZED);
         break;
       case HttpStatus.conflict:
         showErrorSnackBar("That channel already exists!", context);
@@ -216,37 +219,13 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
         ),
         Positioned(
           top: 0,
-          child: listGradient(context, true),
+          child: ListGradient(top: true),
         ),
         Positioned(
           bottom: 0,
-          child: listGradient(context, false),
+          child: ListGradient(top: false),
         )
       ],
-    );
-  }
-
-  Widget listGradient(BuildContext context, bool top) {
-    ThemeData theme = Theme.of(context);
-    Size size = MediaQuery.of(context).size;
-
-    List<Color> colors = [
-      theme.colorScheme.background.withOpacity(1),
-      theme.cardColor.withOpacity(0),
-    ];
-
-    if(!top) colors = colors.reversed.toList();
-
-    return Container(
-      width: size.width,
-      height: 20,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: colors,
-        ),
-      ),
     );
   }
 

@@ -14,7 +14,7 @@ final Map<String, RouteBuilder> routes = {
   "/inbox": (BuildContext context, [Object param]) => InboxScreen(),
   "/chat": (BuildContext context, [Object param]) => ChatScreen(param),
 
-  "/fatal": (BuildContext context, [Object param]) => FatalErrorScreen(),
+  "/fatal": (BuildContext context, [Object param]) => FatalErrorScreen(param),
 };
 
 
