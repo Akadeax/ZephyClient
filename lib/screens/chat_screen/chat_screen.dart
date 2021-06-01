@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/models/channel.dart';
+import 'package:zephy_client/networking/packet/message/send_message_request_packet.dart';
 import 'package:zephy_client/providers/current_channel.dart';
+import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/util/nav_util.dart';
 import 'package:zephy_client/util/string_util.dart';
 
@@ -30,7 +33,7 @@ class _ChatScreenController extends State<ChatScreen> {
     super.initState();
   }
 
-  Widget channelProvider(BuildContext context, {@required Widget child}) {
+  Widget channelProvider({@required Widget child}) {
     return ChangeNotifierProvider<CurrentChannel>.value(
       value: _currentChannel,
       child: child,
@@ -45,8 +48,17 @@ class _ChatScreenController extends State<ChatScreen> {
     // TODO: add settings
   }
 
-  void onMessageSend(BuildContext context) {
-    // TODO: message send packet
+  void onMessageSend() {
+    if(messageFieldController.text.isEmpty) return;
+
+    var conn = Provider.of<ServerConnection>(context, listen: false);
+    var request = SendMessageRequestPacket(SendMessageRequestPacketData(
+      forChannel: _currentChannel.channel.sId,
+      content: messageFieldController.text
+    ));
+    conn.sendPacket(request);
+
+    messageFieldController.clear();
   }
 
   String get channelName {
@@ -67,29 +79,21 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return controller.channelProvider(
-        context,
-        child: Scaffold(
-            body: Column(
-              children: [
-                Expanded(
-                  flex: 10,
-                  child: topBar(context),
-                ),
-                Expanded(
-                  flex: 50,
-                  child: Container(
-                    color: theme.cardColor,
-                    child: MessageListDisplay()
-                  ),
-                ),
-                Expanded(
-                  flex: 5,
-                  child: messageSendField(context),
-                )
-              ],
-            )
-        )
+    return Scaffold(
+      body: controller.channelProvider(
+        child: Column(
+          children: [
+            topBar(context),
+            Expanded(
+              child: Container(
+                color: theme.cardColor,
+                child: MessageListDisplay()
+              ),
+            ),
+            messageSendField(context)
+          ],
+        ),
+      ),
     );
   }
 
@@ -97,7 +101,7 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
     ThemeData theme = Theme.of(context);
 
     return Container(
-      width: MediaQuery.of(context).size.width,
+      height: 100,
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: Stack(
         alignment: Alignment.bottomLeft,
@@ -136,7 +140,8 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
   Widget messageSendField(BuildContext context) {
     ThemeData theme = Theme.of(context);
 
-    return Padding(
+    return Container(
+      height: 50,
       padding: EdgeInsets.only(left: 30),
       child: Row(
         children: [
@@ -160,7 +165,7 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
                     color: Colors.white,
                   ),
                 ),
-                onTap: () => controller.onMessageSend(context),
+                onTap: controller.onMessageSend,
               ),
             ),
           )

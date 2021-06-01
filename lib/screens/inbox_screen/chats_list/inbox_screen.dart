@@ -105,7 +105,9 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
 
     switch(data.httpStatus) {
       case HttpStatus.ok:
-        displayChannels.add(data.newChannel.toBaseChannelData());
+        if(currentSearch.isEmpty) {
+          displayChannels.add(data.newChannel.toBaseChannelData());
+        }
         reloadListWithAnim();
         break;
       case HttpStatus.unauthorized:
@@ -119,7 +121,9 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
     }
   }
 
+  String currentSearch = "";
   void onChannelSearchChanged(BuildContext context, String search) {
+    currentSearch = search;
     requestChannels(context, search: search);
   }
 
@@ -176,7 +180,6 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add, size: 30),
         backgroundColor: theme.colorScheme.primary,
@@ -251,7 +254,7 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
             onChanged: (s) => controller.onChannelSearchChanged(context, s),
           ),
           Positioned(
-            top: 0,
+            top: -7,
             right: 0,
             child: IconButton(
               splashRadius: 15,

@@ -97,7 +97,7 @@ class _SingleMessageDisplayView extends StatelessWidgetView<SingleMessageDisplay
           ),
         ),
         Container(
-          child: Text(
+          child: SelectableText(
             controller.message.content,
             style: theme.textTheme.bodyText2.copyWith(
               color: controller.isClient(context)
