@@ -22,6 +22,7 @@ class _ChatScreenController extends State<ChatScreen> {
   Widget build(BuildContext context) => _ChatScreenView(this);
 
   CurrentChannel _currentChannel;
+  TextEditingController messageFieldController = TextEditingController();
 
   @override
   void initState() {
@@ -42,6 +43,10 @@ class _ChatScreenController extends State<ChatScreen> {
 
   void onSettingsPressed() {
     // TODO: add settings
+  }
+
+  void onMessageSend(BuildContext context) {
+    // TODO: message send packet
   }
 
   String get channelName {
@@ -68,19 +73,19 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
             body: Column(
               children: [
                 Expanded(
-                  flex: 1,
+                  flex: 10,
                   child: topBar(context),
                 ),
                 Expanded(
-                  flex: 7,
+                  flex: 50,
                   child: Container(
                     color: theme.cardColor,
                     child: MessageListDisplay()
                   ),
                 ),
                 Expanded(
-                  flex: 1,
-                  child: Container(),
+                  flex: 5,
+                  child: messageSendField(context),
                 )
               ],
             )
@@ -121,6 +126,42 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
                 splashRadius: 20,
                 onPressed: controller.onSettingsPressed,
                 icon: Icon(Icons.settings)
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget messageSendField(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
+    return Padding(
+      padding: EdgeInsets.only(left: 30),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller.messageFieldController,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+              ),
+              textAlign: TextAlign.justify,
+            ),
+          ),
+          SizedBox(
+            width: 100,
+            child: Material(
+              color: theme.colorScheme.secondary,
+              child: InkWell(
+                child: Center(
+                  child: Icon(
+                    Icons.send,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => controller.onMessageSend(context),
+              ),
             ),
           )
         ],

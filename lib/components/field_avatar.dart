@@ -28,13 +28,14 @@ class _FieldAvatarView extends StatelessWidgetView<FieldAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData theme = Theme.of(context);
-
     return CircleAvatar(
       backgroundColor: avatarColor(controller.sId),
       child: Text(
         controller.getCompressedText(),
-        style: theme.textTheme.bodyText2,
+        style: TextStyle(
+          fontSize: 17,
+          color: Colors.white,
+        ),
       )
     );
   }

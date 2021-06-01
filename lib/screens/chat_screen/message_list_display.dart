@@ -68,10 +68,6 @@ class _MessageListDisplayView extends StatefulWidgetView<MessageListDisplay, _Me
           top: 0,
           child: ListGradient(top: true),
         ),
-        Positioned(
-          bottom: 0,
-          child: ListGradient(top: false),
-        )
       ],
     );
   }

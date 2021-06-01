@@ -76,7 +76,7 @@ class _SingleMessageDisplayView extends StatelessWidgetView<SingleMessageDisplay
       decoration: BoxDecoration(
         color: controller.isClient(context)
           ? theme.colorScheme.secondary
-          : theme.colorScheme.background,
+          : theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
       ),
       child: bubbleContent(context),
@@ -90,11 +90,20 @@ class _SingleMessageDisplayView extends StatelessWidgetView<SingleMessageDisplay
       children: [
         Text(
           controller.getMessageCaption(context),
-          style: theme.textTheme.caption,
+          style: theme.textTheme.caption.copyWith(
+            color: controller.isClient(context)
+              ? Colors.white60
+              : theme.colorScheme.onSurface,
+          ),
         ),
         Container(
           child: Text(
-              controller.message.content
+            controller.message.content,
+            style: theme.textTheme.bodyText2.copyWith(
+              color: controller.isClient(context)
+                ? theme.colorScheme.onSecondary
+                : theme.colorScheme.onBackground,
+            )
           ),
         ),
       ],

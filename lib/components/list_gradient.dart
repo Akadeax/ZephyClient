@@ -30,7 +30,7 @@ class _ListGradientView extends StatelessWidgetView<ListGradient> {
 
     return Container(
       width: size.width,
-      height: 20,
+      height: 12,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

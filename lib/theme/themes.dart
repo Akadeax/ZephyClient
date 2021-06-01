@@ -23,7 +23,7 @@ class ZephyLight {
   static ThemeData get theme => ThemeData(
     brightness: Brightness.light,
     colorScheme: colorScheme,
-    cardColor: Color(0xFFF1F1F1),
+    cardColor: Color(0xFFD2D2D2),
     textTheme: textTheme,
     elevatedButtonTheme: _elevatedButtonThemeData(colorScheme),
     snackBarTheme: _snackBarTheme(colorScheme, textTheme),
