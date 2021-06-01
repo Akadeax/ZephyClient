@@ -42,7 +42,7 @@ class _ChatCardView extends StatelessWidgetView<ChatCard> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        rootNavPush("/chat", controller.channel);
+        rootNavPushReplace("/chat", controller.channel);
       },
       child: Container(
         height: 70,

@@ -88,7 +88,7 @@ class LoginFormController extends State<LoginForm> {
           prefs.setString("accessToken", response.accessToken);
 
           Provider.of<ProfileHandler>(context, listen: false).user = response.user;
-          rootNavPush("/inbox");
+          rootNavPushReplace("/inbox");
       }
     }
   }

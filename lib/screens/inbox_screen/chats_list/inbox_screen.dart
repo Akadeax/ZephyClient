@@ -95,7 +95,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
         reloadListWithAnim();
         break;
       case HttpStatus.unauthorized:
-        rootNavPush("/fatal", InboxScreen.UNAUTHORIZED_TO_FETCH_CHANNELS);
+        rootNavPushReplace("/fatal", InboxScreen.UNAUTHORIZED_TO_FETCH_CHANNELS);
         break;
     }
   }
@@ -109,7 +109,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
         reloadListWithAnim();
         break;
       case HttpStatus.unauthorized:
-        rootNavPush("/fatal", InboxScreen.CREATE_CHANNEL_UNAUTHORIZED);
+        rootNavPushReplace("/fatal", InboxScreen.CREATE_CHANNEL_UNAUTHORIZED);
         break;
       case HttpStatus.conflict:
         showErrorSnackBar("That channel already exists!", context);
@@ -164,6 +164,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   void dispose() {
     listAnimController.dispose();
     channelFetchWait.dispose();
+    newChannelWait.dispose();
     super.dispose();
   }
 }

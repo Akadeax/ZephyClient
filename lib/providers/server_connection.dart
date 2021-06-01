@@ -19,7 +19,7 @@ class ServerConnection {
 
   void onFatal(Exception e) {
     print("FATAL: $e");
-    rootNavPush("/fatal", "Fatal server error: $e");
+    rootNavPushReplace("/fatal", "Fatal server error: $e");
   }
 
   waitError() async {

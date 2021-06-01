@@ -82,11 +82,11 @@ class _ConnectionScreenController extends State<ConnectionScreen> {
       case HttpStatus.ok:
         Provider.of<ProfileHandler>(context, listen: false)
             .user = response.user;
-        rootNavPush("/inbox");
+        rootNavPushReplace("/inbox");
         break;
 
       default:
-        rootNavPush("/login");
+        rootNavPushReplace("/login");
         break;
     }
   }

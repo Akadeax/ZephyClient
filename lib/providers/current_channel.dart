@@ -37,7 +37,7 @@ class CurrentChannel extends ChangeNotifier {
       messagePage++;
       notifyListeners();
     } else {
-      rootNavPush("/fatal", FETCHED_MESSAGES_BAD_REQUEST);
+      rootNavPushReplace("/fatal", FETCHED_MESSAGES_BAD_REQUEST);
     }
   }
 
@@ -48,5 +48,11 @@ class CurrentChannel extends ChangeNotifier {
       page: messagePage,
     ));
     conn.sendPacket(request);
+  }
+
+  @override
+  void dispose() {
+    messageReceiveWait.dispose();
+    super.dispose();
   }
 }

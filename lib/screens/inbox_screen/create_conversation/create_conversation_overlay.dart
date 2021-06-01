@@ -74,7 +74,7 @@ class _CreateConversationOverlayController extends State<CreateConversationOverl
         listAnimController.forward();
         break;
       case HttpStatus.unauthorized:
-        rootNavPush("/fatal");
+        rootNavPushReplace("/fatal");
         break;
     }
   }
