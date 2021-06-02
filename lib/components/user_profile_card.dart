@@ -4,11 +4,11 @@ import 'package:zephy_client/components/field_avatar.dart';
 import 'package:zephy_client/models/user.dart';
 import 'package:zephy_client/util/string_util.dart';
 
-class ProfileCard extends StatelessWidget {
+class UserProfileCard extends StatelessWidget {
   final ListedUser user;
   final void Function() onPressed;
 
-  ProfileCard({
+  UserProfileCard({
     Key key,
     this.user,
     this.onPressed,
@@ -22,8 +22,8 @@ class ProfileCard extends StatelessWidget {
   }
 }
 
-class _ProfileCardView extends StatelessWidgetView<ProfileCard> {
-  const _ProfileCardView(ProfileCard controller) : super(controller);
+class _ProfileCardView extends StatelessWidgetView<UserProfileCard> {
+  const _ProfileCardView(UserProfileCard controller) : super(controller);
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +48,8 @@ class _ProfileCardView extends StatelessWidgetView<ProfileCard> {
     ThemeData theme = Theme.of(context);
 
     Color statusColor = controller.user.onlineStatus == ListedUser.online ?
-        Colors.greenAccent :
-        Colors.grey;
+    Colors.greenAccent :
+    Colors.grey;
 
     return Stack(
       alignment: Alignment.center,
@@ -62,16 +62,16 @@ class _ProfileCardView extends StatelessWidgetView<ProfileCard> {
           size: 25,
         ),
         Positioned(
-          bottom: 0,
-          right: 0,
-          child: buildCircle(
-            size: 15,
-            color: theme.colorScheme.background,
+            bottom: 0,
+            right: 0,
             child: buildCircle(
-              size: 11,
-              color: statusColor
+                size: 15,
+                color: theme.colorScheme.background,
+                child: buildCircle(
+                    size: 11,
+                    color: statusColor
+                )
             )
-          )
         ),
       ],
     );
