@@ -58,13 +58,14 @@ class CurrentChannel extends ChangeNotifier {
   _onNewMessageReceived(SendMessageResponsePacketData data) {
     // if the received message is not in the currently loaded
     // channel, the user will get a notification instead
-    if(data.message?.channel != channel.sId) return;
+    if(data.channel != channel.sId) return;
 
     if(data.httpStatus != HttpStatus.ok) {
       showErrorSnackBar("Couldn't send message!", channelContext);
       return;
     }
 
+    print("---------------");
     fetchedMessages.insert(0, data.message);
     notifyListeners();
   }
