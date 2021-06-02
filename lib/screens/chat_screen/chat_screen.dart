@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/models/channel.dart';
@@ -147,6 +148,9 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
         children: [
           Expanded(
             child: TextField(
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(2000, maxLengthEnforcement: MaxLengthEnforcement.enforced),
+              ],
               controller: controller.messageFieldController,
               decoration: InputDecoration(
                 border: InputBorder.none,
