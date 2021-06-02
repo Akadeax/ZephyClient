@@ -48,7 +48,7 @@ class CurrentChannel extends ChangeNotifier {
   void _onFetchedMessagesReceived(PopulateMessagesResponsePacketData data) {
     if(data.httpStatus == HttpStatus.ok && data.page == messagePage) {
       fetchedMessages.addAll(data.fetchedMessages);
-      messagePage++;
+      messagePage = data.page;
       notifyListeners();
     } else {
       rootNavPushReplace("/fatal", FETCHED_MESSAGES_BAD_REQUEST);
@@ -65,7 +65,6 @@ class CurrentChannel extends ChangeNotifier {
       return;
     }
 
-    print("---------------");
     fetchedMessages.insert(0, data.message);
     notifyListeners();
   }
@@ -74,7 +73,7 @@ class CurrentChannel extends ChangeNotifier {
     var conn = Provider.of<ServerConnection>(context, listen: false);
     var request = PopulateMessagesRequestPacket(PopulateMessagesRequestPacketData(
       forChannel: channel.sId,
-      page: messagePage,
+      page: messagePage + 1,
     ));
     conn.sendPacket(request);
   }
