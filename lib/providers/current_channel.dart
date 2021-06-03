@@ -46,7 +46,7 @@ class CurrentChannel extends ChangeNotifier {
   }
 
   void _onFetchedMessagesReceived(PopulateMessagesResponsePacketData data) {
-    if(data.httpStatus == HttpStatus.ok && data.page == messagePage) {
+    if(data.httpStatus == HttpStatus.ok) {
       fetchedMessages.addAll(data.fetchedMessages);
       messagePage = data.page;
       notifyListeners();

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/circle_decoration_painter.dart';
+import 'package:zephy_client/components/first_build_fade_in.dart';
 import 'package:zephy_client/screens/login_screen/login_form.dart';
 
 
@@ -56,12 +57,15 @@ class _LoginScreenView extends StatefulWidgetView<LoginScreen, _LoginScreenContr
             Expanded(flex: 6, child: Container()),
             Expanded(
               flex: 4,
-              child: Text(
-                "Sign in",
-                textAlign: TextAlign.center,
-                style: theme.textTheme.headline4.copyWith(
-                  color: theme.colorScheme.onBackground,
-                  fontWeight: FontWeight.w600,
+              child: FirstBuildFadeIn(
+                delay: const Duration(milliseconds: 300),
+                child: Text(
+                  "Sign in",
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.headline4.copyWith(
+                    color: theme.colorScheme.onBackground,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),
