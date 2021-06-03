@@ -5,12 +5,14 @@ import 'package:zephy_client/networking/packet/packet.dart';
 
 class FetchUserListResponsePacketData extends PacketData {
   int httpStatus;
+  int page;
   List<ListedUser> users;
 
-  FetchUserListResponsePacketData({this.httpStatus, this.users});
+  FetchUserListResponsePacketData({this.httpStatus, this.page, this.users});
 
   FetchUserListResponsePacketData.fromJson(Map<String, dynamic> json) {
     httpStatus = json['httpStatus'];
+    page = json['page'];
     if (json['users'] != null) {
       users = [];
       json['users'].forEach((v) {
@@ -22,6 +24,7 @@ class FetchUserListResponsePacketData extends PacketData {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['httpStatus'] = this.httpStatus;
+    data['page'] = this.page;
     if (this.users != null) {
       data['users'] = this.users.map((v) => v.toJson()).toList();
     }

@@ -4,18 +4,21 @@ import 'package:zephy_client/networking/packet/packet.dart';
 
 class FetchUserListRequestPacketData extends PacketData {
   String search;
+  int page;
   List<String> optionalExcludeIds;
 
-  FetchUserListRequestPacketData({this.search, this.optionalExcludeIds});
+  FetchUserListRequestPacketData({this.search, this.page, this.optionalExcludeIds});
 
   FetchUserListRequestPacketData.fromJson(Map<String, dynamic> json) {
     search = json['search'];
+    page = json['page'];
     optionalExcludeIds = json['optionalExcludeIds'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['search'] = this.search;
+    data['page'] = this.page;
     data['optionalExcludeIds'] = this.optionalExcludeIds;
     return data;
   }
