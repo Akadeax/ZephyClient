@@ -155,7 +155,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   //region redirects
   void onAddPressed(BuildContext context) {
     showDialog(context: context, builder: (_) {
-      return CreateConversationOverlay();
+      return CreateConversationModal();
     });
   }
 

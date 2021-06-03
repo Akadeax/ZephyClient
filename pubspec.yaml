@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   adaptive_dialog: ^0.10.0+4
+  auto_size_text_field: ^0.1.7
   crypt: ^3.0.1
   flutter:
     sdk: flutter

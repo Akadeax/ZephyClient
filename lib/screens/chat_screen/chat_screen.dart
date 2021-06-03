@@ -7,6 +7,7 @@ import 'package:zephy_client/models/channel.dart';
 import 'package:zephy_client/networking/packet/message/send_message_request_packet.dart';
 import 'package:zephy_client/providers/current_channel.dart';
 import 'package:zephy_client/providers/server_connection.dart';
+import 'package:zephy_client/screens/chat_screen/settings/chat_settings_modal.dart';
 import 'package:zephy_client/util/nav_util.dart';
 import 'package:zephy_client/util/string_util.dart';
 
@@ -46,7 +47,11 @@ class _ChatScreenController extends State<ChatScreen> {
   }
 
   void onSettingsPressed() {
-    // TODO: add settings
+    showDialog(context: context, builder: (_) {
+      return ChatSettingsModal(
+        channel: _currentChannel,
+      );
+    });
   }
 
   void onMessageSend() {

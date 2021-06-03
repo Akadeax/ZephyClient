@@ -3,7 +3,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/components/first_build_fade_in.dart';
-import 'package:zephy_client/components/list_gradient.dart';
 import 'package:zephy_client/providers/current_channel.dart';
 import 'package:zephy_client/screens/chat_screen/single_message_display.dart';
 
@@ -31,7 +30,7 @@ class _MessageListDisplayController extends State<MessageListDisplay> {
       });
     });
     channel = Provider.of<CurrentChannel>(context, listen: false);
-    channel.fetchNextPage(context);
+    channel.initialFetch();
 
     scrollController = ScrollController();
     scrollController.addListener(_scrollListener);
@@ -44,7 +43,7 @@ class _MessageListDisplayController extends State<MessageListDisplay> {
 
   void _scrollListener() {
     if(listEndReached) {
-      channel.fetchNextPage(context);
+      channel.fetchNextPage();
     }
   }
 

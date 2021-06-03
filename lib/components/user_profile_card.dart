@@ -27,7 +27,7 @@ class _ProfileCardView extends StatelessWidgetView<UserProfileCard> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: controller.onPressed,
       child: Stack(
         alignment: Alignment.center,
