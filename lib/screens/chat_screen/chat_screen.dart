@@ -153,6 +153,7 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
               ],
               controller: controller.messageFieldController,
               decoration: InputDecoration(
+                hintText: "Type a message...",
                 border: InputBorder.none,
               ),
               textAlign: TextAlign.justify,

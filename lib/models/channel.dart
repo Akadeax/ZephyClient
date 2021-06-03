@@ -1,15 +1,13 @@
 import 'message.dart';
 
 class Channel {
-  List<String> messages;
   List<String> members;
   String sId;
   String name;
 
-  Channel({this.messages, this.members, this.sId, this.name});
+  Channel({this.members, this.sId, this.name});
 
   Channel.fromJson(Map<String, dynamic> json) {
-    messages = json['messages'].cast<String>();
     members = json['members'].cast<String>();
     sId = json['_id'];
     name = json['name'];
@@ -17,7 +15,6 @@ class Channel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['messages'] = this.messages;
     data['members'] = this.members;
     data['_id'] = this.sId;
     data['name'] = this.name;
