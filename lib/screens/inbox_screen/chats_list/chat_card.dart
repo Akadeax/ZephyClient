@@ -29,6 +29,10 @@ class ChatCard extends StatelessWidget {
     return timestampToShortForm(channel.lastMessage.sentAt);
   }
 
+  void onPressed() {
+    rootNavPush("/chat", channel);
+  }
+
   @override
   Widget build(BuildContext context) => _ChatCardView(this);
 }
@@ -41,9 +45,7 @@ class _ChatCardView extends StatelessWidgetView<ChatCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        rootNavPushReplace("/chat", controller.channel);
-      },
+      onTap: controller.onPressed,
       child: Container(
         height: 70,
         child: buildStack(context),

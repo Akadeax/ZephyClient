@@ -87,7 +87,6 @@ class _ListedUserModalController extends State<ListedUserModal> with SingleTicke
   void onUsersReceived(FetchUserListResponsePacketData data) {
     switch(data.httpStatus) {
       case HttpStatus.ok:
-        print("Received page ${data.page}.");
         // if brand new search, reset usersPage and
         // give displayUsers new values
         if(data.page == 1) {
@@ -130,7 +129,6 @@ class _ListedUserModalController extends State<ListedUserModal> with SingleTicke
       page: currentPage + 1,
       optionalExcludeIds: widget.optionalExcludes?.call(),
     ));
-    print("Requesting page ${currentPage + 1}.");
     conn.sendPacket(packet);
   }
 

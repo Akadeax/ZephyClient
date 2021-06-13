@@ -84,7 +84,7 @@ class LoginFormController extends State<LoginForm> {
 
         case HttpStatus.ok:
           SharedPreferences prefs = await SharedPreferences.getInstance();
-          print("SETTING IN PREFS: ${response.accessToken}");
+          print("Setting session token in prefs: ${response.accessToken}");
           prefs.setString("accessToken", response.accessToken);
 
           Provider.of<ProfileHandler>(context, listen: false).user = response.user;

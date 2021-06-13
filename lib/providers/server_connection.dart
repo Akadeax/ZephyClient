@@ -8,6 +8,8 @@ import 'package:zephy_client/providers/server_locator.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 class ServerConnection {
+  static const int TCP_PORT = 6557;
+
   Socket _socket;
   StreamController<Uint8List> packetStream = StreamController<Uint8List>.broadcast();
 
@@ -39,7 +41,7 @@ class ServerConnection {
       return false;
     }
 
-    _socket = await Socket.connect(connInfo.receivedFromAddress, connInfo.receivedFromPort);
+    _socket = await Socket.connect(connInfo.receivedFromAddress, TCP_PORT);
 
     _socket.listen(_listen);
 

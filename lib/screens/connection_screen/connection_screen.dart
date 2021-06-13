@@ -63,10 +63,11 @@ class _ConnectionScreenController extends State<ConnectionScreen> {
   void onConnected(BuildContext context) async {
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
     await conn.connect(locator.lastBroadcastResult);
-    
+
+    // check prefs for an existing session tokenfor auto login
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String accessToken = prefs.getString("accessToken");
-    print("GETTING: $accessToken");
+    print("Session token from prefs: $accessToken");
 
     var requestPacket = ConfirmSessionRequestPacket(ConfirmSessionRequestPacketData(
       accessToken: accessToken
