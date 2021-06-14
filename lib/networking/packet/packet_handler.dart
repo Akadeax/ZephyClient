@@ -22,8 +22,15 @@ class PacketHandler with ChangeNotifier {
   /// note: Damn you flutter, you can't cancel futures? This causes bugs with messages still
   /// being waited for in this function but not actually in any function scope, maybe
   /// fix one day.
-  // TODO: Add timeout
-  Future<TPacketType> waitForPacket<TPacketType extends Packet>(int type, PacketCreator<TPacketType> creator, {int timeoutSecs = 2}) async {
+  Future<TPacketType> waitForPacket<TPacketType extends Packet>(int type, PacketCreator<TPacketType> creator, {Duration timeout = const Duration(seconds: 1)}) async {
+    var res = _waitForPacket(type, creator).timeout(timeout, onTimeout: () {
+      print("packet wait for $type timed out after $timeout seconds.");
+      return null;
+    });
+    return res;
+  }
+
+  Future<TPacketType> _waitForPacket<TPacketType extends Packet>(int type, PacketCreator<TPacketType> creator) async {
     _activeRequests.add(type);
     notifyNextFrame();
 
