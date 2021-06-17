@@ -1,6 +1,4 @@
-import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/models/user.dart';
 import 'package:zephy_client/providers/current_channel.dart';
@@ -37,7 +35,7 @@ class _ChatSettingsModalController extends State<ChatSettingsModal> {
     );
   }
 
-  void onRemovePressed(User member) {
+  void onRemovePressed(ListedUser member) {
     // TODO: remove user packet
   }
 
@@ -117,7 +115,6 @@ class _ChatSettingsModalView extends StatefulWidgetView<ChatSettingsModal, _Chat
 
   Widget buildTopBar(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    Size size = MediaQuery.of(context).size;
 
     return Stack(
       alignment: Alignment.center,

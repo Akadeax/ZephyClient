@@ -26,7 +26,7 @@ class Message {
 }
 
 class PopulatedMessage {
-  User author;
+  BaseUser author;
   String sId;
   String content;
   int sentAt;
@@ -36,7 +36,7 @@ class PopulatedMessage {
 
   PopulatedMessage.fromJson(Map<String, dynamic> json) {
     author =
-    json['author'] != null ? new User.fromJson(json['author']) : null;
+    json['author'] != null ? new BaseUser.fromJson(json['author']) : null;
     sId = json['_id'];
     content = json['content'];
     sentAt = json['sentAt'];

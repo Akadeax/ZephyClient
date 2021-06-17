@@ -5,8 +5,8 @@ import 'package:zephy_client/models/user.dart';
 import 'package:zephy_client/util/string_util.dart';
 
 class RemovableMemberCard extends StatelessWidget {
-  final User member;
-  final Function(User member) onRemovePressed;
+  final ListedUser member;
+  final Function(ListedUser member) onRemovePressed;
   RemovableMemberCard({
     @required this.member,
     @required this.onRemovePressed,

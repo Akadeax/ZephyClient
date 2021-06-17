@@ -5,14 +5,14 @@ import 'package:zephy_client/networking/packet/packet.dart';
 
 class LoginResponsePacketData extends PacketData {
   int httpStatus;
-  User user;
+  BaseUser user;
   String accessToken;
 
   LoginResponsePacketData({this.httpStatus, this.user, this.accessToken});
 
   LoginResponsePacketData.fromJson(Map<String, dynamic> json) {
     httpStatus = json['httpStatus'];
-    user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    user = json['user'] != null ? new BaseUser.fromJson(json['user']) : null;
     accessToken = json['accessToken'];
   }
 

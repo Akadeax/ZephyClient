@@ -21,40 +21,33 @@ class CurrentChannel extends ChangeNotifier {
 
   BaseChannelData channel;
   List<PopulatedMessage> fetchedMessages = [];
-  List<User> members;
+  List<ListedUser> members;
   int messagePage = -1;
-
-  var _fetchMessagesWait = PacketWait<PopulateMessagesResponsePacket>(
-      PopulateMessagesResponsePacket.TYPE,
-      (buffer) => PopulateMessagesResponsePacket.fromBuffer(buffer)
-  );
-
-  var _fetchMembersWait = PacketWait<FetchMembersResponsePacket>(
-      FetchMembersResponsePacket.TYPE,
-      (buffer) => FetchMembersResponsePacket.fromBuffer(buffer)
-  );
-
-  var _newMessageWait = PacketWait<SendMessageResponsePacket>(
-      SendMessageResponsePacket.TYPE,
-      (buffer) => SendMessageResponsePacket.fromBuffer(buffer)
-  );
 
   BuildContext channelContext;
 
   CurrentChannel(this.channel, BuildContext context) {
     channelContext = context;
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
+
+    _initFetchMessageWait(conn);
+    _initFetchMembersWait(conn);
+    _initNewMessageWait(conn);
+
+    initialFetch();
+  }
+
+
+  // region fetch messages
+  var _fetchMessagesWait = PacketWait<PopulateMessagesResponsePacket>(
+      PopulateMessagesResponsePacket.TYPE,
+          (buffer) => PopulateMessagesResponsePacket.fromBuffer(buffer)
+  );
+
+  void _initFetchMessageWait(ServerConnection conn) {
     _fetchMessagesWait.startWait(
         conn,
         (packet) => _onFetchedMessagesReceived(packet.readPacketData())
-    );
-    _fetchMembersWait.startWait(
-        conn,
-        (packet) => _onFetchedMembersReceived(packet.readPacketData())
-    );
-    _newMessageWait.startWait(
-        conn,
-        (packet) => _onNewMessageReceived(packet.readPacketData())
     );
   }
 
@@ -67,6 +60,20 @@ class CurrentChannel extends ChangeNotifier {
       rootNavPushReplace("/fatal", FETCHED_CHANNEL_BAD_REQUEST);
     }
   }
+  // endregion
+
+  // region fetch members
+  var _fetchMembersWait = PacketWait<FetchMembersResponsePacket>(
+      FetchMembersResponsePacket.TYPE,
+      (buffer) => FetchMembersResponsePacket.fromBuffer(buffer)
+  );
+
+  void _initFetchMembersWait(ServerConnection conn) {
+    _fetchMembersWait.startWait(
+        conn,
+        (packet) => _onFetchedMembersReceived(packet.readPacketData())
+    );
+  }
 
   void _onFetchedMembersReceived(FetchMembersResponsePacketData data) {
     if(data.httpStatus == HttpStatus.ok) {
@@ -75,6 +82,20 @@ class CurrentChannel extends ChangeNotifier {
     } else {
       rootNavPushReplace("/fatal", FETCHED_CHANNEL_BAD_REQUEST);
     }
+  }
+  // endregion
+
+  // region new message
+  var _newMessageWait = PacketWait<SendMessageResponsePacket>(
+      SendMessageResponsePacket.TYPE,
+      (buffer) => SendMessageResponsePacket.fromBuffer(buffer)
+  );
+
+  void _initNewMessageWait(ServerConnection conn) {
+    _newMessageWait.startWait(
+        conn,
+        (packet) => _onNewMessageReceived(packet.readPacketData())
+    );
   }
 
   void _onNewMessageReceived(SendMessageResponsePacketData data) {
@@ -91,11 +112,13 @@ class CurrentChannel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // endregion
 
+
+
+  /// fetches first page of messages and all members
   void initialFetch() {
-    // fetches first page of messages
     fetchNextPage();
-
     fetchMembers();
   }
 
@@ -118,7 +141,7 @@ class CurrentChannel extends ChangeNotifier {
 
   List<String> getMemberIds() {
     var list = <String>[];
-    for(User u in members) list.add(u.sId);
+    for(ListedUser u in members) list.add(u.sId);
     return list;
   }
 

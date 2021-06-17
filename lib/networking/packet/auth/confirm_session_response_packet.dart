@@ -5,13 +5,13 @@ import 'package:zephy_client/networking/packet/packet.dart';
 
 class ConfirmSessionResponsePacketData extends PacketData {
   int httpStatus;
-  User user;
+  BaseUser user;
 
   ConfirmSessionResponsePacketData({this.httpStatus, this.user});
 
   ConfirmSessionResponsePacketData.fromJson(Map<String, dynamic> json) {
     httpStatus = json['httpStatus'];
-    user = json['user'] != null ? User.fromJson(json['user']) : null;
+    user = json['user'] != null ? BaseUser.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {

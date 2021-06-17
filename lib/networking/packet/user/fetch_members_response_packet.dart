@@ -6,7 +6,7 @@ import 'package:zephy_client/networking/packet/packet.dart';
 class FetchMembersResponsePacketData extends PacketData {
   int httpStatus;
   String channel;
-  List<User> members;
+  List<ListedUser> members;
 
   FetchMembersResponsePacketData({this.channel, this.members});
 
@@ -14,9 +14,9 @@ class FetchMembersResponsePacketData extends PacketData {
     httpStatus = json['httpStatus'];
     channel = json['channel'];
     if (json['members'] != null) {
-      members = <User>[];
+      members = <ListedUser>[];
       json['members'].forEach((v) {
-        members.add(new User.fromJson(v));
+        members.add(new ListedUser.fromJson(v));
       });
     }
   }
