@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
 import 'package:zephy_client/models/user.dart';
+import 'package:zephy_client/networking/packet/channel/modify_members_request_packet.dart';
 import 'package:zephy_client/providers/current_channel.dart';
+import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/screens/chat_screen/settings/add_to_conversation_modal.dart';
 import 'package:zephy_client/screens/chat_screen/settings/removable_member_card.dart';
 
@@ -36,7 +39,15 @@ class _ChatSettingsModalController extends State<ChatSettingsModal> {
   }
 
   void onRemovePressed(ListedUser member) {
-    // TODO: remove user packet
+    ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
+
+    var packet = ModifyMembersRequestPacket(ModifyMembersRequestPacketData(
+      action: MemberAction.REMOVE_MEMBER,
+      user: member.sId,
+      channel: widget.channel.channel.sId,
+    ));
+
+    conn.sendPacket(packet);
   }
 
   void onAddPressed(BuildContext context) {
@@ -86,7 +97,7 @@ class _ChatSettingsModalView extends StatefulWidgetView<ChatSettingsModal, _Chat
                         right: 10,
                         top: 5,
                         child: IconButton(
-                          splashRadius: 25,
+                          splashRadius: 20,
                           icon: Icon(Icons.person_add),
                           onPressed: () => controller.onAddPressed(context),
                         ),
@@ -99,11 +110,15 @@ class _ChatSettingsModalView extends StatefulWidgetView<ChatSettingsModal, _Chat
                     color: theme.cardColor,
                     borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
                   ),
-                  child: ListView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    shrinkWrap: true,
-                    itemCount: widget.channel.members.length,
-                    itemBuilder: controller.itemBuilder,
+                  child: Consumer<CurrentChannel>(
+                    builder: (_, __, ___) {
+                      return ListView.builder(
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                        shrinkWrap: true,
+                        itemCount: widget.channel.members.length,
+                        itemBuilder: controller.itemBuilder,
+                      );
+                    }
                   ),
                 ),
               ],

@@ -20,10 +20,13 @@ class ListedUserModal extends StatefulWidget {
 
   final String title;
   final List<String> Function() optionalExcludes;
+  final void Function(ListedUser user) onUserPressed;
+
   ListedUserModal({
     Key key,
     @required this.title,
     this.optionalExcludes,
+    this.onUserPressed,
   }) : super(key: key);
 
   @override

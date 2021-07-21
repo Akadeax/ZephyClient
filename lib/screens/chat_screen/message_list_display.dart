@@ -17,18 +17,12 @@ class _MessageListDisplayController extends State<MessageListDisplay> {
   @override
   Widget build(BuildContext context) => _MessageListDisplayView(this);
 
-  bool loaded = false;
-
   CurrentChannel channel;
   ScrollController scrollController;
 
   @override
   void initState() {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      setState(() {
-        loaded = true;
-      });
-    });
+
     channel = Provider.of<CurrentChannel>(context, listen: false);
     channel.initialFetch();
 

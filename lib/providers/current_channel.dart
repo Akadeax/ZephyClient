@@ -6,13 +6,18 @@ import 'package:zephy_client/components/error_snack_bar.dart';
 import 'package:zephy_client/models/channel.dart';
 import 'package:zephy_client/models/message.dart';
 import 'package:zephy_client/models/user.dart';
+import 'package:zephy_client/networking/packet/channel/modify_members_request_packet.dart';
+import 'package:zephy_client/networking/packet/channel/modify_members_response_packet.dart';
 import 'package:zephy_client/networking/packet/message/populate_messages_request_packet.dart';
 import 'package:zephy_client/networking/packet/message/populate_messages_response_packet.dart';
 import 'package:zephy_client/networking/packet/message/send_message_response_packet.dart';
+import 'package:zephy_client/networking/packet/packet.dart';
 import 'package:zephy_client/networking/packet/packet_wait.dart';
 import 'package:zephy_client/networking/packet/user/fetch_members_request_packet.dart';
 import 'package:zephy_client/networking/packet/user/fetch_members_response_packet.dart';
+import 'package:zephy_client/providers/profile_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
+import 'package:zephy_client/util/bit_converter.dart';
 import 'package:zephy_client/util/nav_util.dart';
 
 class CurrentChannel extends ChangeNotifier {
@@ -33,8 +38,7 @@ class CurrentChannel extends ChangeNotifier {
     _initFetchMessageWait(conn);
     _initFetchMembersWait(conn);
     _initNewMessageWait(conn);
-
-    initialFetch();
+    _initModifyMembersWait(conn);
   }
 
 
@@ -114,6 +118,38 @@ class CurrentChannel extends ChangeNotifier {
 
   // endregion
 
+  // region member modify
+  var _modifyMembersWait = PacketWait<ModifyMembersResponsePacket>(
+      ModifyMembersResponsePacket.TYPE,
+          (buffer) => ModifyMembersResponsePacket.fromBuffer(buffer)
+  );
+
+  void _initModifyMembersWait(ServerConnection conn) {
+    _modifyMembersWait.startWait(
+        conn,
+            (packet) => _onModifyMembersReceived(packet.readPacketData())
+    );
+  }
+
+  void _onModifyMembersReceived(ModifyMembersResponsePacketData data) {
+    if(data.httpCode == HttpStatus.ok) {
+      switch(data.action) {
+        case MemberAction.ADD_MEMBER:
+          members.add(data.user);
+          break;
+        case MemberAction.REMOVE_MEMBER:
+          members.removeWhere((u) => u.sId == data.user.sId);
+          ProfileHandler profile = Provider.of<ProfileHandler>(channelContext, listen: false);
+          if(profile.user.sId == data.user.sId) {
+            rootNavPushReplace("/inbox");
+          }
+          break;
+      }
+      notifyListeners();
+    }
+  }
+
+  // endregion
 
 
   /// fetches first page of messages and all members
@@ -150,6 +186,7 @@ class CurrentChannel extends ChangeNotifier {
     _fetchMessagesWait.dispose();
     _fetchMembersWait.dispose();
     _newMessageWait.dispose();
+    _modifyMembersWait.dispose();
     super.dispose();
   }
 }

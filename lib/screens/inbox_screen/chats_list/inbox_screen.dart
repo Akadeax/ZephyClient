@@ -11,6 +11,7 @@ import 'package:zephy_client/networking/packet/channel/create_channel_response_p
 import 'package:zephy_client/networking/packet/channel/fetch_channels_request_packet.dart';
 import 'package:zephy_client/networking/packet/channel/fetch_channels_response_packet.dart';
 import 'package:zephy_client/networking/packet/packet_wait.dart';
+import 'package:zephy_client/providers/profile_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
 import 'package:zephy_client/screens/inbox_screen/create_conversation/create_conversation_overlay.dart';
 import 'package:zephy_client/util/nav_util.dart';
@@ -250,7 +251,9 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
             ),
           ),
           SearchBar(
-            hintText: "Find a conversation",
+            // TODO: Debug, remove
+            //hintText: "Find a conversation",
+            hintText: Provider.of<ProfileHandler>(context, listen: false).user.fullName,
             onChanged: (s) => controller.onChannelSearchChanged(context, s),
           ),
           Positioned(

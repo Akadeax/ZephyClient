@@ -48,8 +48,10 @@ class _ChatScreenController extends State<ChatScreen> {
 
   void onSettingsPressed() {
     showDialog(context: context, builder: (_) {
-      return ChatSettingsModal(
-        channel: _currentChannel,
+      return channelProvider(
+        child: ChatSettingsModal(
+          channel: _currentChannel,
+        ),
       );
     });
   }
