@@ -229,7 +229,7 @@ class _ListedUserModalView extends StatefulWidgetView<ListedUserModal, _ListedUs
         ),
         Positioned(
           top: 50,
-          child: SearchBar(
+          child: DebouncedTextField(
             width: size.width * 0.6,
             onChanged: (search) => controller.onUserSearchChanged(context, search),
             hintText: "Find someone",

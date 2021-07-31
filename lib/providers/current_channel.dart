@@ -6,6 +6,8 @@ import 'package:zephy_client/components/error_snack_bar.dart';
 import 'package:zephy_client/models/channel.dart';
 import 'package:zephy_client/models/message.dart';
 import 'package:zephy_client/models/user.dart';
+import 'package:zephy_client/networking/packet/channel/modify_channel_request_packet.dart';
+import 'package:zephy_client/networking/packet/channel/modify_channel_response_packet.dart';
 import 'package:zephy_client/networking/packet/channel/modify_members_request_packet.dart';
 import 'package:zephy_client/networking/packet/channel/modify_members_response_packet.dart';
 import 'package:zephy_client/networking/packet/message/populate_messages_request_packet.dart';
@@ -39,6 +41,7 @@ class CurrentChannel extends ChangeNotifier {
     _initFetchMembersWait(conn);
     _initNewMessageWait(conn);
     _initModifyMembersWait(conn);
+    _initModifyChannelWait(conn);
   }
 
 
@@ -51,7 +54,7 @@ class CurrentChannel extends ChangeNotifier {
   void _initFetchMessageWait(ServerConnection conn) {
     _fetchMessagesWait.startWait(
         conn,
-        (packet) => _onFetchedMessagesReceived(packet.readPacketData())
+            (packet) => _onFetchedMessagesReceived(packet.readPacketData())
     );
   }
 
@@ -69,13 +72,13 @@ class CurrentChannel extends ChangeNotifier {
   // region fetch members
   var _fetchMembersWait = PacketWait<FetchMembersResponsePacket>(
       FetchMembersResponsePacket.TYPE,
-      (buffer) => FetchMembersResponsePacket.fromBuffer(buffer)
+          (buffer) => FetchMembersResponsePacket.fromBuffer(buffer)
   );
 
   void _initFetchMembersWait(ServerConnection conn) {
     _fetchMembersWait.startWait(
         conn,
-        (packet) => _onFetchedMembersReceived(packet.readPacketData())
+            (packet) => _onFetchedMembersReceived(packet.readPacketData())
     );
   }
 
@@ -92,13 +95,13 @@ class CurrentChannel extends ChangeNotifier {
   // region new message
   var _newMessageWait = PacketWait<SendMessageResponsePacket>(
       SendMessageResponsePacket.TYPE,
-      (buffer) => SendMessageResponsePacket.fromBuffer(buffer)
+          (buffer) => SendMessageResponsePacket.fromBuffer(buffer)
   );
 
   void _initNewMessageWait(ServerConnection conn) {
     _newMessageWait.startWait(
         conn,
-        (packet) => _onNewMessageReceived(packet.readPacketData())
+            (packet) => _onNewMessageReceived(packet.readPacketData())
     );
   }
 
@@ -127,30 +130,71 @@ class CurrentChannel extends ChangeNotifier {
   void _initModifyMembersWait(ServerConnection conn) {
     _modifyMembersWait.startWait(
         conn,
-            (packet) => _onModifyMembersReceived(packet.readPacketData())
+        (packet) => _onModifyMembersReceived(packet.readPacketData())
     );
   }
 
   void _onModifyMembersReceived(ModifyMembersResponsePacketData data) {
-    if(data.httpCode == HttpStatus.ok) {
-      switch(data.action) {
-        case MemberAction.ADD_MEMBER:
-          members.add(data.user);
-          break;
-        case MemberAction.REMOVE_MEMBER:
-          members.removeWhere((u) => u.sId == data.user.sId);
-          ProfileHandler profile = Provider.of<ProfileHandler>(channelContext, listen: false);
-          if(profile.user.sId == data.user.sId) {
-            rootNavPushReplace("/inbox");
-          }
-          break;
-      }
-      notifyListeners();
+    if(data.httpStatus == HttpStatus.conflict) {
+      showErrorSnackBar("That user has already been added!", channelContext);
+    } else if(data.httpStatus == HttpStatus.notFound) {
+      showErrorSnackBar("That user is not a member of that channel!", channelContext);
     }
+
+    if(data.httpStatus != HttpStatus.ok) return;
+
+    switch(data.action) {
+      case MemberAction.ADD_MEMBER:
+        members.add(data.user);
+        break;
+
+      case MemberAction.REMOVE_MEMBER:
+        members.removeWhere((u) => u.sId == data.user.sId);
+        ProfileHandler profile = Provider.of<ProfileHandler>(channelContext, listen: false);
+        if(profile.user.sId == data.user.sId) {
+          rootNavPushReplace("/inbox");
+        }
+        break;
+
+    }
+
+    notifyListeners();
   }
 
   // endregion
 
+  // region channel modify
+  var _modifyChannelWait = PacketWait<ModifyChannelResponsePacket>(
+      ModifyChannelResponsePacket.TYPE,
+          (buffer) => ModifyChannelResponsePacket.fromBuffer(buffer)
+  );
+
+  void _initModifyChannelWait(ServerConnection conn) {
+    _modifyChannelWait.startWait(
+        conn,
+            (packet) => _onModifyChannelReceived(packet.readPacketData())
+    );
+  }
+
+  void _onModifyChannelReceived(ModifyChannelResponsePacketData data) {
+    if(data.httpStatus == HttpStatus.notFound) {
+      showErrorSnackBar("that channel couldn't be found!", channelContext);
+    } else if(data.httpStatus == HttpStatus.badRequest) {
+      showErrorSnackBar("that modification is invalid!", channelContext);
+    }
+
+    if(data.httpStatus != HttpStatus.ok) return;
+
+    switch(data.action) {
+      case ChannelAction.MODIFY_NAME:
+        channel.name = data.data;
+        break;
+    }
+
+    notifyListeners();
+  }
+
+  // endregion
 
   /// fetches first page of messages and all members
   void initialFetch() {
@@ -170,7 +214,7 @@ class CurrentChannel extends ChangeNotifier {
   void fetchMembers() {
     var conn = Provider.of<ServerConnection>(channelContext, listen: false);
     var request = FetchMembersRequestPacket(FetchMembersRequestPacketData(
-      channel: channel.sId
+        channel: channel.sId
     ));
     conn.sendPacket(request);
   }
@@ -187,6 +231,7 @@ class CurrentChannel extends ChangeNotifier {
     _fetchMembersWait.dispose();
     _newMessageWait.dispose();
     _modifyMembersWait.dispose();
+    _modifyChannelWait.dispose();
     super.dispose();
   }
 }

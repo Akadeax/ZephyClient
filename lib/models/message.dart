@@ -53,3 +53,12 @@ class PopulatedMessage {
     return data;
   }
 }
+
+Message populatedMessageToMessage(PopulatedMessage message) {
+  return Message(
+    sId: message.sId,
+    author: message.author.sId,
+    content: message.content,
+    sentAt: message.sentAt,
+  );
+}

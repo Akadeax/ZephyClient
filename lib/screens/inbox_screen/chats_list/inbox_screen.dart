@@ -7,9 +7,15 @@ import 'package:zephy_client/components/error_snack_bar.dart';
 import 'package:zephy_client/components/list_gradient.dart';
 import 'package:zephy_client/components/search_bar.dart';
 import 'package:zephy_client/models/channel.dart';
+import 'package:zephy_client/models/message.dart';
 import 'package:zephy_client/networking/packet/channel/create_channel_response_packet.dart';
 import 'package:zephy_client/networking/packet/channel/fetch_channels_request_packet.dart';
 import 'package:zephy_client/networking/packet/channel/fetch_channels_response_packet.dart';
+import 'package:zephy_client/networking/packet/channel/modify_channel_request_packet.dart';
+import 'package:zephy_client/networking/packet/channel/modify_channel_response_packet.dart';
+import 'package:zephy_client/networking/packet/channel/modify_members_request_packet.dart';
+import 'package:zephy_client/networking/packet/channel/modify_members_response_packet.dart';
+import 'package:zephy_client/networking/packet/message/send_message_response_packet.dart';
 import 'package:zephy_client/networking/packet/packet_wait.dart';
 import 'package:zephy_client/providers/profile_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
@@ -44,6 +50,18 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
       CreateChannelResponsePacket.TYPE,
       (buffer) => CreateChannelResponsePacket.fromBuffer(buffer)
   );
+  var modifyChannelWait = PacketWait<ModifyChannelResponsePacket>(
+      ModifyChannelResponsePacket.TYPE,
+      (buffer) => ModifyChannelResponsePacket.fromBuffer(buffer)
+  );
+  var sendMessageWait = PacketWait<SendMessageResponsePacket>(
+      SendMessageResponsePacket.TYPE,
+      (buffer) => SendMessageResponsePacket.fromBuffer(buffer)
+  );
+  var modifyMembersWait = PacketWait<ModifyMembersResponsePacket>(
+      ModifyMembersResponsePacket.TYPE,
+      (buffer) => ModifyMembersResponsePacket.fromBuffer(buffer)
+  );
 
   ScaffoldMessengerState messenger;
 
@@ -58,6 +76,18 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
     newChannelWait.startWait(
         conn,
         (packet) => onNewChannelReceived(packet.readPacketData())
+    );
+    modifyChannelWait.startWait(
+        conn,
+        (packet) => onModifyChannelReceived(packet.readPacketData())
+    );
+    sendMessageWait.startWait(
+        conn,
+        (packet) => onSendMessageReceived(packet.readPacketData())
+    );
+    modifyMembersWait.startWait(
+        conn,
+        (packet) => onModifyMembersReceived(packet.readPacketData())
     );
 
 
@@ -89,7 +119,6 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
 
   /// update local display based on received packets
   void onChannelsReceived(FetchChannelsResponsePacketData data) {
-
     switch(data.httpStatus) {
       case HttpStatus.ok:
         displayChannels = data.channels;
@@ -121,6 +150,41 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
         showErrorSnackBar("That request was invalid!", context);
     }
   }
+
+  void onModifyChannelReceived(ModifyChannelResponsePacketData data) {
+    if(data.httpStatus != HttpStatus.ok) return;
+
+    var channel = displayChannels.firstWhere((element) => element.sId == data.channel);
+    if(channel == null) return;
+
+    setState(() {
+      switch(data.action) {
+        case ChannelAction.MODIFY_NAME:
+          channel.name = data.data;
+          break;
+      }
+    });
+  }
+
+  void onSendMessageReceived(SendMessageResponsePacketData data) {
+    if(data.httpStatus != HttpStatus.ok) return;
+    var channel = displayChannels.firstWhere((element) => element.sId == data.channel);
+    if(channel == null) return;
+
+    setState(() {
+      channel.lastMessage = populatedMessageToMessage(data.message);
+    });
+  }
+
+  void onModifyMembersReceived(ModifyMembersResponsePacketData data) {
+    if(data.httpStatus != HttpStatus.ok) return;
+    if(data.action != MemberAction.REMOVE_MEMBER) return;
+    print("test");
+    setState(() {
+      displayChannels.removeWhere((channel) => channel.sId == data.channel);
+    });
+  }
+
 
   String currentSearch = "";
   void onChannelSearchChanged(BuildContext context, String search) {
@@ -168,8 +232,13 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   @override
   void dispose() {
     listAnimController.dispose();
+
     channelFetchWait.dispose();
     newChannelWait.dispose();
+    modifyChannelWait.dispose();
+    sendMessageWait.dispose();
+    modifyMembersWait.dispose();
+
     super.dispose();
   }
 }
@@ -250,7 +319,7 @@ class _InboxScreenView extends StatefulWidgetView <InboxScreen, _InboxScreenCont
               style: Theme.of(context).textTheme.headline5,
             ),
           ),
-          SearchBar(
+          DebouncedTextField(
             // TODO: Debug, remove
             //hintText: "Find a conversation",
             hintText: Provider.of<ProfileHandler>(context, listen: false).user.fullName,

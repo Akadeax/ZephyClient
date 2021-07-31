@@ -126,9 +126,13 @@ class _ChatScreenView extends StatefulWidgetView<ChatScreen, _ChatScreenControll
           Positioned(
             left: 60,
             bottom: 18,
-            child: Text(
-              controller.channelName,
-              style: theme.textTheme.headline6,
+            child: Consumer<CurrentChannel>(
+              builder: (_, channel, __) {
+                return Text(
+                  channel.channel.name,
+                  style: theme.textTheme.headline6,
+                );
+              },
             ),
           ),
           Positioned(

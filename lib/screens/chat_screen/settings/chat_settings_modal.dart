@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_view/widget_view.dart';
+import 'package:zephy_client/components/search_bar.dart';
 import 'package:zephy_client/models/user.dart';
+import 'package:zephy_client/networking/packet/channel/modify_channel_request_packet.dart';
 import 'package:zephy_client/networking/packet/channel/modify_members_request_packet.dart';
 import 'package:zephy_client/providers/current_channel.dart';
 import 'package:zephy_client/providers/server_connection.dart';
@@ -57,6 +59,20 @@ class _ChatSettingsModalController extends State<ChatSettingsModal> {
       );
     });
   }
+
+  void onNameTextChanged(String newName) {
+    nameController.text = widget.channel.channel.name;
+
+    ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
+
+    var packet = ModifyChannelRequestPacket(ModifyChannelRequestPacketData(
+      channel: widget.channel.channel.sId,
+      action: ChannelAction.MODIFY_NAME,
+      data: newName,
+    ));
+    conn.sendPacket(packet);
+
+  }
 }
 
 class _ChatSettingsModalView extends StatefulWidgetView<ChatSettingsModal, _ChatSettingsModalController> {
@@ -86,12 +102,22 @@ class _ChatSettingsModalView extends StatefulWidgetView<ChatSettingsModal, _Chat
                     children: [
                       Container(
                         padding: EdgeInsets.only(left: 20, right: 70),
-                        child: TextField(
-                          controller: controller.nameController,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                          ),
-                        )
+                        child: Consumer<CurrentChannel>(
+                          builder: (_, channel, ___) {
+                            controller.nameController.text = channel.channel.name;
+                            controller.nameController.selection = TextSelection.fromPosition(TextPosition(
+                                offset: controller.nameController.text.length)
+                            );
+
+                            return DebouncedTextField(
+                              controller: controller.nameController,
+                              onChanged: controller.onNameTextChanged,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                            );
+                          }
+                        ),
                       ),
                       Positioned(
                         right: 10,

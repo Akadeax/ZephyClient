@@ -3,30 +3,34 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:widget_view/widget_view.dart';
 
-class SearchBar extends StatefulWidget {
+class DebouncedTextField extends StatefulWidget {
 
   final void Function(String) onChanged;
   final String hintText;
+  final InputDecoration decoration;
+  final TextEditingController controller;
   final double width;
 
-  const SearchBar({
+  const DebouncedTextField({
     Key key,
     @required this.onChanged,
-    @required this.hintText,
+    this.hintText,
+    this.decoration,
+    this.controller,
     this.width,
   }) : super(key: key);
 
   @override
-  _SearchBarController createState() => _SearchBarController();
+  _DebouncedTextFieldController createState() => _DebouncedTextFieldController();
 }
 
-class _SearchBarController extends State<SearchBar> {
+class _DebouncedTextFieldController extends State<DebouncedTextField> {
   @override
-  Widget build(BuildContext context) => _SearchBarView(this);
+  Widget build(BuildContext context) => _DebouncedTextFieldView(this);
 
   Timer _debounce;
 
-  void onSearchChanged(String query) {
+  void onTextChanged(String query) {
     if(_debounce?.isActive ?? false) _debounce.cancel();
     _debounce = Timer(const Duration(milliseconds: 350), () {
       widget.onChanged.call(query);
@@ -40,8 +44,8 @@ class _SearchBarController extends State<SearchBar> {
   }
 }
 
-class _SearchBarView extends StatefulWidgetView<SearchBar, _SearchBarController> {
-  const _SearchBarView(_SearchBarController controller) : super(controller);
+class _DebouncedTextFieldView extends StatefulWidgetView<DebouncedTextField, _DebouncedTextFieldController> {
+  const _DebouncedTextFieldView(_DebouncedTextFieldController controller) : super(controller);
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +54,13 @@ class _SearchBarView extends StatefulWidgetView<SearchBar, _SearchBarController>
       width: widget.width,
       height: 40,
       child: TextField(
-        onChanged: controller.onSearchChanged,
+        controller: widget.controller,
+        onChanged: controller.onTextChanged,
         cursorColor: theme.colorScheme.onSurface,
         style: theme.textTheme.button,
-        decoration: InputDecoration(
+        decoration: widget.decoration ?? InputDecoration(
           contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-          hintText: widget.hintText,
+          hintText: widget.hintText ?? "",
 
           suffixIcon: Icon(
             Icons.search,

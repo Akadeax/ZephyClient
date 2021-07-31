@@ -4,24 +4,27 @@ import 'package:zephy_client/models/user.dart';
 import 'package:zephy_client/networking/packet/packet.dart';
 
 class ModifyMembersResponsePacketData extends PacketData {
-  int httpCode;
+  int httpStatus;
   ListedUser user;
+  String channel;
   int action;
 
-  ModifyMembersResponsePacketData({this.httpCode, this.user, this.action});
+  ModifyMembersResponsePacketData({this.httpStatus, this.user, this.action});
 
   ModifyMembersResponsePacketData.fromJson(Map<String, dynamic> json) {
-    httpCode = json['httpCode'];
+    httpStatus = json['httpStatus'];
     user = json['user'] != null ? new ListedUser.fromJson(json['user']) : null;
+    channel = json['channel'];
     action = json['action'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['httpCode'] = this.httpCode;
+    data['httpStatus'] = this.httpStatus;
     if (this.user != null) {
       data['user'] = this.user.toJson();
     }
+    data['channel'] = this.channel;
     data['action'] = this.action;
     return data;
   }
