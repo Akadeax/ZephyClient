@@ -33,30 +33,41 @@ class CurrentChannel extends ChangeNotifier {
 
   BuildContext channelContext;
 
+  PacketWaitList packetList = PacketWaitList();
+
   CurrentChannel(this.channel, BuildContext context) {
     channelContext = context;
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
 
-    _initFetchMessageWait(conn);
-    _initFetchMembersWait(conn);
-    _initNewMessageWait(conn);
-    _initModifyMembersWait(conn);
-    _initModifyChannelWait(conn);
-  }
-
-
-  // region fetch messages
-  var _fetchMessagesWait = PacketWait<PopulateMessagesResponsePacket>(
-      PopulateMessagesResponsePacket.TYPE,
-          (buffer) => PopulateMessagesResponsePacket.fromBuffer(buffer)
-  );
-
-  void _initFetchMessageWait(ServerConnection conn) {
-    _fetchMessagesWait.startWait(
-        conn,
-            (packet) => _onFetchedMessagesReceived(packet.readPacketData())
+    packetList.add(
+        PopulateMessagesResponsePacket.TYPE,
+            (buffer) => PopulateMessagesResponsePacket.fromBuffer(buffer),
+            (p) => _onFetchedMessagesReceived(p.readPacketData())
     );
+    packetList.add(
+        FetchMembersResponsePacket.TYPE,
+            (buffer) => FetchMembersResponsePacket.fromBuffer(buffer),
+            (p) => _onFetchedMembersReceived(p.readPacketData())
+    );
+    packetList.add(
+        SendMessageResponsePacket.TYPE,
+            (buffer) => SendMessageResponsePacket.fromBuffer(buffer),
+            (p) => _onNewMessageReceived(p.readPacketData())
+    );
+    packetList.add(
+        ModifyMembersResponsePacket.TYPE,
+            (buffer) => ModifyMembersResponsePacket.fromBuffer(buffer),
+            (p) => _onModifyMembersReceived(p.readPacketData())
+    );
+    packetList.add(
+        ModifyChannelResponsePacket.TYPE,
+            (buffer) => ModifyChannelResponsePacket.fromBuffer(buffer),
+            (p) => _onModifyChannelReceived(p.readPacketData())
+    );
+
+    packetList.start(context);
   }
+
 
   void _onFetchedMessagesReceived(PopulateMessagesResponsePacketData data) {
     if(data.httpStatus == HttpStatus.ok) {
@@ -67,20 +78,6 @@ class CurrentChannel extends ChangeNotifier {
       rootNavPushReplace("/fatal", FETCHED_CHANNEL_BAD_REQUEST);
     }
   }
-  // endregion
-
-  // region fetch members
-  var _fetchMembersWait = PacketWait<FetchMembersResponsePacket>(
-      FetchMembersResponsePacket.TYPE,
-          (buffer) => FetchMembersResponsePacket.fromBuffer(buffer)
-  );
-
-  void _initFetchMembersWait(ServerConnection conn) {
-    _fetchMembersWait.startWait(
-        conn,
-            (packet) => _onFetchedMembersReceived(packet.readPacketData())
-    );
-  }
 
   void _onFetchedMembersReceived(FetchMembersResponsePacketData data) {
     if(data.httpStatus == HttpStatus.ok) {
@@ -89,20 +86,6 @@ class CurrentChannel extends ChangeNotifier {
     } else {
       rootNavPushReplace("/fatal", FETCHED_CHANNEL_BAD_REQUEST);
     }
-  }
-  // endregion
-
-  // region new message
-  var _newMessageWait = PacketWait<SendMessageResponsePacket>(
-      SendMessageResponsePacket.TYPE,
-          (buffer) => SendMessageResponsePacket.fromBuffer(buffer)
-  );
-
-  void _initNewMessageWait(ServerConnection conn) {
-    _newMessageWait.startWait(
-        conn,
-            (packet) => _onNewMessageReceived(packet.readPacketData())
-    );
   }
 
   void _onNewMessageReceived(SendMessageResponsePacketData data) {
@@ -117,21 +100,6 @@ class CurrentChannel extends ChangeNotifier {
 
     fetchedMessages.insert(0, data.message);
     notifyListeners();
-  }
-
-  // endregion
-
-  // region member modify
-  var _modifyMembersWait = PacketWait<ModifyMembersResponsePacket>(
-      ModifyMembersResponsePacket.TYPE,
-          (buffer) => ModifyMembersResponsePacket.fromBuffer(buffer)
-  );
-
-  void _initModifyMembersWait(ServerConnection conn) {
-    _modifyMembersWait.startWait(
-        conn,
-        (packet) => _onModifyMembersReceived(packet.readPacketData())
-    );
   }
 
   void _onModifyMembersReceived(ModifyMembersResponsePacketData data) {
@@ -161,21 +129,6 @@ class CurrentChannel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // endregion
-
-  // region channel modify
-  var _modifyChannelWait = PacketWait<ModifyChannelResponsePacket>(
-      ModifyChannelResponsePacket.TYPE,
-          (buffer) => ModifyChannelResponsePacket.fromBuffer(buffer)
-  );
-
-  void _initModifyChannelWait(ServerConnection conn) {
-    _modifyChannelWait.startWait(
-        conn,
-            (packet) => _onModifyChannelReceived(packet.readPacketData())
-    );
-  }
-
   void _onModifyChannelReceived(ModifyChannelResponsePacketData data) {
     if(data.httpStatus == HttpStatus.notFound) {
       showErrorSnackBar("that channel couldn't be found!", channelContext);
@@ -193,8 +146,6 @@ class CurrentChannel extends ChangeNotifier {
 
     notifyListeners();
   }
-
-  // endregion
 
   /// fetches first page of messages and all members
   void initialFetch() {
@@ -227,11 +178,7 @@ class CurrentChannel extends ChangeNotifier {
 
   @override
   void dispose() {
-    _fetchMessagesWait.dispose();
-    _fetchMembersWait.dispose();
-    _newMessageWait.dispose();
-    _modifyMembersWait.dispose();
-    _modifyChannelWait.dispose();
+    packetList.dispose();
     super.dispose();
   }
 }

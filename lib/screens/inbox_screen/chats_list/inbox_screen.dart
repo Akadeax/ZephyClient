@@ -42,26 +42,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
 
   List<BaseChannelData> displayChannels = [];
 
-  var channelFetchWait = PacketWait<FetchChannelsResponsePacket>(
-      FetchChannelsResponsePacket.TYPE,
-      (buffer) => FetchChannelsResponsePacket.fromBuffer(buffer)
-  );
-  var newChannelWait = PacketWait<CreateChannelResponsePacket>(
-      CreateChannelResponsePacket.TYPE,
-      (buffer) => CreateChannelResponsePacket.fromBuffer(buffer)
-  );
-  var modifyChannelWait = PacketWait<ModifyChannelResponsePacket>(
-      ModifyChannelResponsePacket.TYPE,
-      (buffer) => ModifyChannelResponsePacket.fromBuffer(buffer)
-  );
-  var sendMessageWait = PacketWait<SendMessageResponsePacket>(
-      SendMessageResponsePacket.TYPE,
-      (buffer) => SendMessageResponsePacket.fromBuffer(buffer)
-  );
-  var modifyMembersWait = PacketWait<ModifyMembersResponsePacket>(
-      ModifyMembersResponsePacket.TYPE,
-      (buffer) => ModifyMembersResponsePacket.fromBuffer(buffer)
-  );
+  PacketWaitList packetList = PacketWaitList();
 
   ScaffoldMessengerState messenger;
 
@@ -69,28 +50,33 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   void initState() {
     ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
 
-    channelFetchWait.startWait(
-        conn,
-        (packet) => onChannelsReceived(packet.readPacketData())
+    packetList.add(
+        FetchChannelsResponsePacket.TYPE,
+            (buffer) => FetchChannelsResponsePacket.fromBuffer(buffer),
+            (packet) => onChannelsReceived(packet.readPacketData())
     );
-    newChannelWait.startWait(
-        conn,
-        (packet) => onNewChannelReceived(packet.readPacketData())
+    packetList.add(
+        CreateChannelResponsePacket.TYPE,
+            (buffer) => CreateChannelResponsePacket.fromBuffer(buffer),
+            (p) => onChannelsReceived(p.readPacketData())
     );
-    modifyChannelWait.startWait(
-        conn,
-        (packet) => onModifyChannelReceived(packet.readPacketData())
+    packetList.add(
+        ModifyChannelResponsePacket.TYPE,
+            (buffer) => ModifyChannelResponsePacket.fromBuffer(buffer),
+            (p) => onNewChannelReceived(p.readPacketData())
     );
-    sendMessageWait.startWait(
-        conn,
-        (packet) => onSendMessageReceived(packet.readPacketData())
+    packetList.add(
+        SendMessageResponsePacket.TYPE,
+            (buffer) => SendMessageResponsePacket.fromBuffer(buffer),
+            (p) => onSendMessageReceived(p.readPacketData())
     );
-    modifyMembersWait.startWait(
-        conn,
-        (packet) => onModifyMembersReceived(packet.readPacketData())
+    packetList.add(
+        ModifyMembersResponsePacket.TYPE,
+            (buffer) => ModifyMembersResponsePacket.fromBuffer(buffer),
+            (p) => onModifyMembersReceived(p.readPacketData())
     );
 
-
+    packetList.start(context);
 
     requestChannels(context, delay: const Duration(milliseconds: 300));
     initAnimationState();
@@ -233,11 +219,7 @@ class _InboxScreenController extends State<InboxScreen> with SingleTickerProvide
   void dispose() {
     listAnimController.dispose();
 
-    channelFetchWait.dispose();
-    newChannelWait.dispose();
-    modifyChannelWait.dispose();
-    sendMessageWait.dispose();
-    modifyMembersWait.dispose();
+    packetList.dispose();
 
     super.dispose();
   }

@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:zephy_client/networking/packet/packet.dart';
 import 'package:zephy_client/networking/packet/packet_handler.dart';
 import 'package:zephy_client/providers/server_connection.dart';
@@ -12,14 +14,14 @@ class PacketWait<TPacketType extends Packet> {
 
   int type;
   PacketCreator<TPacketType> creator;
-  StreamSubscription<TPacketType> stream;
+  StreamSubscription<TPacketType> _stream;
   PacketWait(this.type, this.creator);
 
   void startWait(ServerConnection conn, [Function(TPacketType packet) onGot]) async {
-    if(stream != null) return;
+    if(_stream != null) return;
     print("starting packet wait stream ($type)...");
 
-    stream = conn.packetHandler.packetStream<TPacketType>(type, creator).listen((packet) {
+    _stream = conn.packetHandler.packetStream<TPacketType>(type, creator).listen((packet) {
       if(disposed) return;
       if(onGot != null) onGot(packet);
       print("received packet in packet wait ($type)");
@@ -28,7 +30,38 @@ class PacketWait<TPacketType extends Packet> {
 
   void dispose() {
     print("cancelling wait of type $type.");
-    stream.cancel();
+    _stream.cancel();
     disposed = true;
+  }
+}
+
+class PacketWaitList {
+  final Map<PacketWait, Function(dynamic)> waits = {};
+
+  PacketWaitList();
+
+  void add<TPacketType extends Packet>(
+      int type,
+      PacketCreator<TPacketType> creator,
+      Function(TPacketType) onGot) {
+    PacketWait newWait = PacketWait(type, creator);
+    waits[newWait] = onGot;
+  }
+
+  void start(BuildContext context) {
+    print("START CALLED");
+    ServerConnection conn = Provider.of<ServerConnection>(context, listen: false);
+    if(conn == null) throw ProviderNotFoundException(conn.runtimeType, conn.runtimeType);
+
+    for(PacketWait wait in waits.keys) {
+      print("STARTING ${wait.type}");
+      wait.startWait(conn, waits[wait]);
+    }
+  }
+
+  void dispose() {
+    for(PacketWait wait in waits.keys) {
+      wait.dispose();
+    }
   }
 }
